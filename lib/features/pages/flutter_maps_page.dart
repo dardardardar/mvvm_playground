@@ -9,7 +9,9 @@ import 'package:latlong2/latlong.dart' as latLng;
 import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/functions/geolocation.dart';
 import 'package:provider/provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
+// add-- permisions
 class FlutterMapPage extends StatefulWidget {
   const FlutterMapPage({super.key});
 
@@ -54,6 +56,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
 
   Stream<latLng.LatLng> getLocationStream() async* {
     while (true) {
+      await Permission.location.request();
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
 
