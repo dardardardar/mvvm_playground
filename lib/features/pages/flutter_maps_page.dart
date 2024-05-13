@@ -217,7 +217,9 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                         showModalInputQty(context,
                             isNear: userLocation.status.contains(true),
                             data: Tree(
-                                name: userLocation.name,
+                                name: userLocation.currentTree.isEmpty
+                                    ? 'No Tree found'
+                                    : userLocation.currentTree.first,
                                 position: latLng.LatLng(
                                     userLocation.centerlocation.latitude ?? 0,
                                     userLocation.centerlocation.longitude ??
