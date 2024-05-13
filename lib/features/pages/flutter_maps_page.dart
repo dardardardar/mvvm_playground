@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart';
 
 import 'package:geolocator/geolocator.dart';
@@ -9,6 +10,7 @@ import 'package:latlong2/latlong.dart' as latLng;
 import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/functions/geolocation.dart';
 import 'package:mvvm_playground/widgets/input.dart';
+import 'package:mvvm_playground/widgets/modal_sheets.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -73,8 +75,9 @@ class _HomeViewPageState extends State<FlutterMapPage> {
   Stream<latLng.LatLng> getLocationStream() async* {
     while (true) {
       await Permission.location.request();
+      await Permission.locationWhenInUse.request();
       Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
+          desiredAccuracy: LocationAccuracy.bestForNavigation);
 
       yield latLng.LatLng(position.latitude, position.longitude);
       await Future.delayed(Duration(seconds: 1));
@@ -192,8 +195,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    Wrap(
                       children: [
                         Text('Lat : ${userLocationCurrent.latitude}'),
                         SizedBox(
@@ -214,7 +216,12 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                       onTap: () {
                         showModalInputQty(context,
                             isNear: userLocation.status.contains(true),
-                            data: userLocation);
+                            data: Tree(
+                                name: userLocation.name,
+                                position: latLng.LatLng(
+                                    userLocation.centerlocation.latitude ?? 0,
+                                    userLocation.centerlocation.longitude ??
+                                        0)));
                       },
                       child: Container(
                         padding: EdgeInsets.all(12),
@@ -235,64 +242,6 @@ class _HomeViewPageState extends State<FlutterMapPage> {
         } else {
           return CircularProgressIndicator(); // Loading indicator while waiting for data
         }
-      },
-    );
-  }
-
-  void showModalInputQty(BuildContext context,
-      {bool? isNear, required GeoLocation data}) {
-    showModalBottomSheet<void>(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.black,
-      useSafeArea: true,
-      builder: (context) {
-        return Container(
-          color: Colors.black,
-          child: SafeArea(
-            child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(8),
-              child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Text(
-                  'Input collected items',
-                  style: textHeadingAlt,
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                Text(
-                  'Name: ${data.currentTree.isEmpty ? 'No tree found' : data.currentTree.first}',
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                InputQty(onQtyChanged: (value) {}),
-                SizedBox(
-                  height: 8,
-                ),
-                InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: primaryColor),
-                    child: Text('Submit'),
-                  ),
-                )
-              ]),
-            ),
-          ),
-        );
       },
     );
   }
