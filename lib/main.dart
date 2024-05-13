@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/features/pages/flutter_maps_page.dart';
 import 'package:mvvm_playground/functions/geolocation.dart';
 import 'package:mvvm_playground/functions/location.dart';
@@ -17,9 +18,7 @@ class MyApp extends StatelessWidget {
       create: (context) => LocationService().locationStream,
       child: MaterialApp(
         title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
+        theme: theme,
         home: const FlutterMapPage(),
       ),
     );

@@ -8,6 +8,8 @@ const dangerColor = Color(0xFFff5f56);
 
 var theme = ThemeData(
     brightness: Brightness.dark,
+    bottomSheetTheme:
+        const BottomSheetThemeData(surfaceTintColor: Colors.transparent),
     colorScheme: const ColorScheme(
         brightness: Brightness.dark,
         primary: primaryColor,

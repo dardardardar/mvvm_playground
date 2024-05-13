@@ -8,6 +8,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart' as latLng;
 import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/functions/geolocation.dart';
+import 'package:mvvm_playground/widgets/input.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -42,7 +43,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
   );
 
   List<dynamic> tree = [
-    {"lat": -6.2277937, "long": 106.8327623, "tree": 'Palma One'},
+    {"lat": -6.2277937, "long": 106.833560, "tree": 'Palma One'},
     {"lat": -6.228418, "long": 106.833359, "tree": 'Tikungan Pom Bensin'},
     {"lat": -6.228384, "long": 106.834523, "tree": 'Belokan Nasi Soto'},
     {"lat": -6.2283196, "long": 106.8336922, "tree": 'Kebab Turki'},
@@ -89,8 +90,8 @@ class _HomeViewPageState extends State<FlutterMapPage> {
           var userLocation = Provider.of<GeoLocation>(context);
           userLocation.radiuscentermeters = 10;
           for (var i = 0; i < tree.length; i++) {
-            userLocation.setPointCenter(
-                tree[i]['lat'] ?? 0.0, tree[i]['long'] ?? 0.0);
+            userLocation.setPointCenter(tree[i]['lat'] ?? 0.0,
+                tree[i]['long'] ?? 0.0, tree[i]['tree'] ?? 'No Tree found');
           }
           var userLocationCurrent = snapshot.data!;
           return Column(
@@ -100,7 +101,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                 child: FlutterMap(
                   mapController: mapController,
                   options: MapOptions(
-                      initialZoom: 15,
+                      initialZoom: 19.5,
                       initialCenter: latLng.LatLng(userLocationCurrent.latitude,
                           userLocationCurrent.longitude)),
                   children: [
@@ -131,8 +132,8 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                             point: latLng.LatLng(userLocationCurrent.latitude,
                                 userLocationCurrent.longitude),
                             child: Icon(
-                              Icons.supervised_user_circle,
-                              color: Colors.green,
+                              Icons.circle,
+                              color: Colors.purple,
                             )),
                         for (var i = 0; i < tree.length; i++)
                           Marker(
@@ -141,6 +142,9 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                             point: latLng.LatLng(
                                 tree[i]['lat'] ?? 0.0, tree[i]['long'] ?? 0.0),
                             child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
                               children: [
                                 Container(
                                   padding: EdgeInsets.all(8),
@@ -178,6 +182,20 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                     Text('Longitude : ${userLocationCurrent.longitude}'),
                     Text(
                         'Posisi dekat Pohon?: ${userLocation.status.contains(true)}'),
+                    InkWell(
+                      onTap: () {
+                        showModalInputQty(context,
+                            isNear: userLocation.status.contains(true),
+                            data: userLocation);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: primaryColor),
+                        child: Text('Input Qty'),
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -188,6 +206,64 @@ class _HomeViewPageState extends State<FlutterMapPage> {
         } else {
           return CircularProgressIndicator(); // Loading indicator while waiting for data
         }
+      },
+    );
+  }
+
+  void showModalInputQty(BuildContext context,
+      {bool? isNear, required GeoLocation data}) {
+    showModalBottomSheet<void>(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.black,
+      useSafeArea: true,
+      builder: (context) {
+        return Container(
+          color: Colors.black,
+          child: SafeArea(
+            child: Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(8),
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+                Text(
+                  'Input collected items',
+                  style: textHeadingAlt,
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  'Name: ${data.name.isEmpty ? 'No tree found' : data.name}',
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                InputQty(onQtyChanged: (value) {}),
+                SizedBox(
+                  height: 8,
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: primaryColor),
+                    child: Text('Submit'),
+                  ),
+                )
+              ]),
+            ),
+          ),
+        );
       },
     );
   }

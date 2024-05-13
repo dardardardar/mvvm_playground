@@ -7,6 +7,7 @@ class GeoLocation {
   GeoPoint centerlocation = new GeoPoint.createZeroPoint();
   GeoPoint outerlocation = new GeoPoint.createNullPoint();
   double radiuscentermeters = 0.0;
+  String name = '';
   bool isInRange = false;
   List<dynamic> status = [];
   List<dynamic> currentTree = [];
@@ -29,6 +30,9 @@ class GeoLocation {
   GeoLocation.fromJson(Map<String, dynamic> json) {
     setPointUser(json['latitude'], json['longitude']);
   }
+  setCurrentTree(String tree) {
+    name = tree;
+  }
 
   //setter
   void setPointUserLocationData(LocationData loc) {
@@ -49,12 +53,13 @@ class GeoLocation {
     this._calculateRadiusMetersAndInRange();
   }
 
-  void setPointCenterLocationData(LocationData loc) {
-    setPointCenter(loc.latitude!, loc.longitude!);
-  }
+  // void setPointCenterLocationData(LocationData loc) {
+  //   setPointCenter(loc.latitude!, loc.longitude!);
+  // }
 
-  void setPointCenter(double lat, double long) {
+  void setPointCenter(double lat, double long, String tree) {
     centerlocation.setPoint(lat, long);
+    name = tree;
     this._calculateRadiusMetersAndInRange();
   }
 
