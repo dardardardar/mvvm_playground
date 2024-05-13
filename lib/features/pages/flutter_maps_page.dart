@@ -12,6 +12,8 @@ import 'package:mvvm_playground/widgets/input.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../models/tree_model.dart';
+
 // add-- permisions
 class FlutterMapPage extends StatefulWidget {
   const FlutterMapPage({super.key});
@@ -42,13 +44,26 @@ class _HomeViewPageState extends State<FlutterMapPage> {
     useStrokeWidthInMeter: true,
   );
 
-  List<dynamic> tree = [
-    {"lat": -6.2277937, "long": 106.833560, "tree": 'Palma One'},
-    {"lat": -6.228418, "long": 106.833359, "tree": 'Tikungan Pom Bensin'},
-    {"lat": -6.228384, "long": 106.834523, "tree": 'Belokan Nasi Soto'},
-    {"lat": -6.2283196, "long": 106.8336922, "tree": 'Kebab Turki'},
+  // List<dynamic> tree = [
+  //   {"lat": -6.2277937, "long": 106.833560, "tree": 'Palma One'},
+  //   {"lat": -6.228418, "long": 106.833359, "tree": 'Tikungan Pom Bensin'},
+  //   {"lat": -6.228384, "long": 106.834523, "tree": 'Belokan Nasi Soto'},
+  //   {"lat": -6.2283196, "long": 106.8336922, "tree": 'Kebab Turki'},
+  // ];
+  List<Tree> tree = [
+    Tree(
+        name: 'Palma One',
+        position: const latLng.LatLng(-6.2277937, 106.833333)),
+    Tree(
+        name: 'Tikungan Pom Bensin',
+        position: const latLng.LatLng(-6.228418, 106.833359)),
+    Tree(
+        name: 'Belokan Nasi Soto',
+        position: const latLng.LatLng(-6.228384, 106.834523)),
+    Tree(
+        name: 'Kebab Turki',
+        position: const latLng.LatLng(-6.2283196, 106.8336922)),
   ];
-
   @override
   void initState() {
     super.initState();
@@ -90,8 +105,8 @@ class _HomeViewPageState extends State<FlutterMapPage> {
           var userLocation = Provider.of<GeoLocation>(context);
           userLocation.radiuscentermeters = 10;
           for (var i = 0; i < tree.length; i++) {
-            userLocation.setPointCenter(tree[i]['lat'] ?? 0.0,
-                tree[i]['long'] ?? 0.0, tree[i]['tree'] ?? 'No Tree found');
+            userLocation.setPointCenter(tree[i].position.latitude,
+                tree[i].position.longitude, tree[i].name);
           }
           var userLocationCurrent = snapshot.data!;
           return Column(
@@ -139,8 +154,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                           Marker(
                             width: 300.0,
                             height: 300.0,
-                            point: latLng.LatLng(
-                                tree[i]['lat'] ?? 0.0, tree[i]['long'] ?? 0.0),
+                            point: tree[i].position,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -160,7 +174,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                       borderRadius: BorderRadius.circular(6),
                                       color: primaryColor),
                                   child: Text(
-                                    tree[i]['tree'],
+                                    tree[i].name,
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white),
@@ -236,7 +250,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                   height: 8,
                 ),
                 Text(
-                  'Name: ${data.name.isEmpty ? 'No tree found' : data.name}',
+                  'Name: ${data.currentTree.isEmpty ? 'No tree found' : data.currentTree.first}',
                 ),
                 SizedBox(
                   height: 8,

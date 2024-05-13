@@ -16,7 +16,7 @@ class GeoLocation {
   GeoLocation({required this.userlocation});
 
   GeoLocation.createZeroUserPoint() {
-    this.userlocation = new GeoPoint.createZeroPoint();
+    userlocation = new GeoPoint.createZeroPoint();
   }
 
   GeoLocation.createUserPoint(double lat, double long) {
@@ -41,7 +41,7 @@ class GeoLocation {
 
   void setPointUser(double lat, double long) {
     userlocation.setPoint(lat, long);
-    this._calculateRadiusMetersAndInRange();
+    _calculateRadiusMetersAndInRange();
   }
 
   void setPointOuterLocationData(LocationData loc) {
@@ -50,7 +50,7 @@ class GeoLocation {
 
   void setPointOuter(double lat, double long) {
     outerlocation.setPoint(lat, long);
-    this._calculateRadiusMetersAndInRange();
+    _calculateRadiusMetersAndInRange();
   }
 
   // void setPointCenterLocationData(LocationData loc) {
@@ -60,11 +60,11 @@ class GeoLocation {
   void setPointCenter(double lat, double long, String tree) {
     centerlocation.setPoint(lat, long);
     name = tree;
-    this._calculateRadiusMetersAndInRange();
+    _calculateRadiusMetersAndInRange();
   }
 
   set setRadius(double radiusmeters) {
-    this.radiuscentermeters = radiusmeters;
+    radiuscentermeters = radiusmeters;
     _calculateInRange();
   }
 
@@ -77,28 +77,33 @@ class GeoLocation {
     return centerlocation.distanceWith(outerlocation);
   }
 
+  String getName() {
+    return name;
+  }
+
   double distanceUserFromOuter() {
-    double radius =
-        this.distanceUserFromCenter() - this.distanceOuterFromCenter();
+    double radius = distanceUserFromCenter() - distanceOuterFromCenter();
     return radius < 0 ? -radius : radius;
   }
 
   //calculation
   void _calculateRadiusMetersAndInRange() {
-    if (this.radiuscentermeters == 0.0) this._calculateRadiusMeters();
+    if (radiuscentermeters == 0.0) _calculateRadiusMeters();
     _calculateInRange();
   }
 
   void _calculateRadiusMeters() {
-    if (this.outerlocation.latitude != null &&
-        this.outerlocation.longitude != null)
-      this.radiuscentermeters = this.distanceOuterFromCenter();
+    if (outerlocation.latitude != null && outerlocation.longitude != null)
+      radiuscentermeters = distanceOuterFromCenter();
   }
 
   void _calculateInRange() {
-    status.add(this.radiuscentermeters >= this.distanceUserFromCenter());
-    if (this.radiuscentermeters >= this.distanceUserFromCenter()) {}
-    this.isInRange = this.radiuscentermeters >= this.distanceUserFromCenter();
+    status.add(radiuscentermeters >= distanceUserFromCenter());
+    if (radiuscentermeters >= distanceUserFromCenter()) {}
+    isInRange = radiuscentermeters >= distanceUserFromCenter();
+    if (isInRange) {
+      currentTree.add(name);
+    }
   }
 }
 
@@ -109,22 +114,22 @@ class GeoPoint {
   GeoPoint({required this.latitude, required this.longitude});
 
   GeoPoint.createNullPoint() {
-    this.latitude = null;
-    this.longitude = null;
+    latitude = null;
+    longitude = null;
   }
 
   GeoPoint.createZeroPoint() {
-    this.latitude = 0.0;
-    this.longitude = 0.0;
+    latitude = 0.0;
+    longitude = 0.0;
   }
 
   void setPoint(double lat, double long) {
-    this.latitude = lat;
-    this.longitude = long;
+    latitude = lat;
+    longitude = long;
   }
 
   double distanceWith(GeoPoint otherpoint) {
-    return GeolocatorPlatform.instance.distanceBetween(this.latitude!,
-        this.longitude!, otherpoint.latitude!, otherpoint.longitude!);
+    return GeolocatorPlatform.instance.distanceBetween(
+        latitude!, longitude!, otherpoint.latitude!, otherpoint.longitude!);
   }
 }
