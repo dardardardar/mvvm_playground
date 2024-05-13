@@ -93,7 +93,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      body: _buildInputDataBody(context),
+      body: SafeArea(child: _buildInputDataBody(context)),
     );
   }
 
@@ -188,14 +188,28 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                   ],
                 ),
               ),
-              Expanded(
-                flex: 1,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
-                    Text('Latitude : ${userLocationCurrent.latitude}'),
-                    Text('Longitude : ${userLocationCurrent.longitude}'),
-                    Text(
-                        'Posisi dekat Pohon?: ${userLocation.status.contains(true)}'),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Lat : ${userLocationCurrent.latitude}'),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Text('Long : ${userLocationCurrent.latitude}'),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Text(
+                            'isInRange : ${userLocation.status.contains(true)}'),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 12,
+                    ),
                     InkWell(
                       onTap: () {
                         showModalInputQty(context,
@@ -203,11 +217,12 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                             data: userLocation);
                       },
                       child: Container(
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: primaryColor),
-                        child: Text('Input Qty'),
+                        padding: EdgeInsets.all(12),
+                        decoration: ShapeDecoration(
+                            shape: CircleBorder(
+                                side: BorderSide(color: Colors.white)),
+                            color: Colors.transparent),
+                        child: Icon(Icons.add),
                       ),
                     )
                   ],
