@@ -32,13 +32,13 @@ class _HomeViewPageState extends State<FlutterMapPage> {
 
   Polyline firstPolyline = Polyline(
     points: [
-      latLng.LatLng(-6.2279168, 106.8333919),
-      latLng.LatLng(-6.2279168, 106.8333919),
-      latLng.LatLng(-6.2280967, 106.833408),
-      latLng.LatLng(-6.2280823, 106.8334129),
-      latLng.LatLng(-6.2283086, 106.8334488),
-      latLng.LatLng(-6.2284237, 106.8334237),
-      latLng.LatLng(-6.228418, 106.833809),
+      latLng.LatLng(-6.227787860077413, 106.83344878298254),
+      latLng.LatLng(-6.228012025218627, 106.83346895355372),
+      latLng.LatLng(-6.228020460551202, 106.83333653209965),
+      latLng.LatLng(-6.228115365486504, 106.83334392789742),
+      latLng.LatLng(-6.228108380578882, 106.83341906947368),
+      latLng.LatLng(-6.228129120134003, 106.83344056435672),
+      latLng.LatLng(-6.228342800341565, 106.83344878298254),
     ],
     color: Colors.green,
     strokeWidth: 2.0,
@@ -119,6 +119,9 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                 child: FlutterMap(
                   mapController: mapController,
                   options: MapOptions(
+                      onTap: (p, l) {
+                        print('${l.latitude}, ${l.longitude}');
+                      },
                       initialZoom: 19.5,
                       initialCenter: latLng.LatLng(userLocationCurrent.latitude,
                           userLocationCurrent.longitude)),
