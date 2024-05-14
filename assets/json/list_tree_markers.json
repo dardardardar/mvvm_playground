@@ -1,0 +1,24 @@
+{
+  "data": [
+    {
+      "name": "Palma Oness",
+      "lat": "-6.2277937",
+      "lon": "106.833333"
+    },
+    {
+      "name": "Tikungan Pom Bensin",
+      "lat": "-6.228418",
+      "lon": "106.833359"
+    },
+    {
+      "name": "Belokan Nasi Soto",
+      "lat": "-6.228384",
+      "lon": "106.834523"
+    },
+    {
+      "name": "Kebab Turki",
+      "lat": "-6.2283196",
+      "lon": "106.8336922"
+    }
+  ]
+}

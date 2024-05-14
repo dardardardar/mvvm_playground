@@ -20,18 +20,21 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<GeoLocation>(
-      initialData: GeoLocation.createZeroUserPoint(),
-      create: (context) => LocationService().locationStream,
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider<HomeCubit>(
-            create: (_) => HomeCubit(),
-          ),
-          BlocProvider<MapsCubit>(
-            create: (_) => MapsCubit(),
-          ),
-        ],
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<HomeCubit>(
+          create: (_) => HomeCubit(),
+        ),
+        BlocProvider<GMapsCubit>(
+          create: (_) => GMapsCubit(),
+        ),
+        BlocProvider<MapsCubit>(
+          create: (_) => MapsCubit(),
+        ),
+      ],
+      child: StreamProvider<GeoLocation>(
+        initialData: GeoLocation.createZeroUserPoint(),
+        create: (context) => LocationService().locationStream,
         child: MaterialApp(
           title: 'Flutter Demo',
           theme: theme,

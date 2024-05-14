@@ -30,14 +30,14 @@ class _GmapsPageState extends State<GmapsPage> {
   @override
   void initState() {
     super.initState();
-    context.read<MapsCubit>().initLocation();
-    context.read<MapsCubit>().add(markers);
+    context.read<GMapsCubit>().initLocation();
+    context.read<GMapsCubit>().add(markers);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocBuilder<MapsCubit, BaseState>(builder: (context, state) {
+      body: BlocBuilder<GMapsCubit, BaseState>(builder: (context, state) {
         if (state is GeneralErrorState) {
           return Center(
             child: Text(state.error),
