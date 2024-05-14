@@ -4,13 +4,22 @@ import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/features/cubit/home_cubit.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/pages/flutter_maps_page.dart';
-import 'package:mvvm_playground/features/pages/gmaps_page.dart';
+import 'package:mvvm_playground/features/repository/crud_repo.dart';
 import 'package:mvvm_playground/functions/geolocation.dart';
 import 'package:mvvm_playground/functions/location.dart';
 import 'package:mvvm_playground/functions/set_location.dart';
+import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 
+final getIt = GetIt.instance;
+void setup() {
+  final _crudRepository = CRUDRepository();
+  final mapsCubit = MapsCubit(_crudRepository);
+  getIt.registerSingleton<MapsCubit>(mapsCubit);
+}
+
 void main() {
+  setup();
   WidgetsFlutterBinding.ensureInitialized();
   determinePosition();
   runApp(const MyApp());
@@ -28,9 +37,7 @@ class MyApp extends StatelessWidget {
         BlocProvider<GMapsCubit>(
           create: (_) => GMapsCubit(),
         ),
-        BlocProvider<MapsCubit>(
-          create: (_) => MapsCubit(),
-        ),
+        BlocProvider(create: (_) => getIt.get<MapsCubit>()),
       ],
       child: StreamProvider<GeoLocation>(
         initialData: GeoLocation.createZeroUserPoint(),

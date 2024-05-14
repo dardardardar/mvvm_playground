@@ -52,20 +52,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
     isDotted: false,
     useStrokeWidthInMeter: true,
   );
-  List<Tree> tree = [
-    Tree(
-        name: 'Palma One',
-        position: const latLng.LatLng(-6.2277937, 106.833333)),
-    Tree(
-        name: 'Tikungan Pom Bensin',
-        position: const latLng.LatLng(-6.228418, 106.833359)),
-    Tree(
-        name: 'Belokan Nasi Soto',
-        position: const latLng.LatLng(-6.228384, 106.834523)),
-    Tree(
-        name: 'Kebab Turki',
-        position: const latLng.LatLng(-6.2283196, 106.8336922)),
-  ];
+
   @override
   void initState() {
     super.initState();
@@ -97,23 +84,24 @@ class _HomeViewPageState extends State<FlutterMapPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      body: SafeArea(child: _buildInputDataBody(context)),
+      body: _buildInputDataBody(context),
     );
   }
 
   Widget _buildInputDataBody(BuildContext context) {
     return BlocBuilder<MapsCubit, BaseState>(
       builder: (context, state) {
-        if (state is SuccessState<Trees>) {
+        if (state is SuccessState<List<Tree>>) {
+          final pohon = state.data;
           return StreamBuilder<latLng.LatLng>(
             stream: locationStream,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 var userLocation = Provider.of<GeoLocation>(context);
                 userLocation.radiuscentermeters = 10;
-                for (var i = 0; i < tree.length; i++) {
-                  userLocation.setPointCenter(tree[i].position.latitude,
-                      tree[i].position.longitude, tree[i].name);
+                for (var i = 0; i < pohon.length; i++) {
+                  userLocation.setPointCenter(pohon[i].position.latitude,
+                      pohon[i].position.longitude, pohon[i].name);
                 }
                 var userLocationCurrent = snapshot.data!;
                 return Column(
@@ -178,11 +166,11 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                       color: primaryColor,
                                     ),
                                   )),
-                              for (var i = 0; i < state.data.data.length; i++)
+                              for (var i = 0; i < pohon.length; i++)
                                 Marker(
                                   width: 300.0,
                                   height: 300.0,
-                                  point: state.data.data[i].position,
+                                  point: pohon[i].position,
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
@@ -204,7 +192,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                 BorderRadius.circular(6),
                                             color: primaryColor),
                                         child: Text(
-                                          state.data.data[i].name,
+                                          pohon[i].name,
                                           style: const TextStyle(
                                               fontWeight: FontWeight.bold,
                                               color: Colors.white),
