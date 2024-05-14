@@ -41,7 +41,7 @@ class InputQty extends StatefulWidget {
     this.minVal = 0,
     this.maxVal = 999999999999,
     this.initVal = 0,
-    this.width = 25,
+    this.width = 32,
     required this.onQtyChanged,
     this.btnColor,
   });
@@ -89,27 +89,34 @@ class _InputQty extends State<InputQty> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: value <= 0
-                  ? backgroundColor
-                  : widget.btnColor ?? primaryColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.horizontal(left: Radius.circular(8)),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor:
+                    value <= 0 ? Colors.black : widget.btnColor ?? primaryColor,
+                shape: CircleBorder(),
+                padding: EdgeInsets.zero,
+                fixedSize: Size(30, 30),
+                minimumSize: Size(20, 20),
               ),
-              padding: EdgeInsets.zero,
-              fixedSize: Size(30, 30),
-              minimumSize: Size(20, 20),
+              onPressed: value <= 0
+                  ? null
+                  : () {
+                      _onDecrease();
+                      widget.onQtyChanged(value);
+                    },
+              child: Icon(
+                Icons.remove,
+              ),
             ),
-            onPressed: () {
-              _onDecrease();
-              widget.onQtyChanged(value);
-            },
-            child: const Icon(Icons.remove),
           ),
           SizedBox(
             width: widget.width,
             child: TextField(
+              onTapOutside: (event) {
+                FocusManager.instance.primaryFocus?.unfocus();
+              },
               textAlign: TextAlign.center,
               controller: qtyController,
               decoration: InputDecoration(
@@ -123,22 +130,22 @@ class _InputQty extends State<InputQty> {
               },
             ),
           ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: widget.btnColor ?? primaryColor,
-              shape: RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.horizontal(right: Radius.circular(8)),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: widget.btnColor ?? primaryColor,
+                shape: CircleBorder(),
+                padding: EdgeInsets.zero,
+                fixedSize: Size(30, 30),
+                minimumSize: Size(20, 20),
               ),
-              padding: EdgeInsets.zero,
-              fixedSize: Size(30, 30),
-              minimumSize: Size(20, 20),
+              onPressed: () {
+                _onIncrease();
+                widget.onQtyChanged(value);
+              },
+              child: const Icon(Icons.add),
             ),
-            onPressed: () {
-              _onIncrease();
-              widget.onQtyChanged(value);
-            },
-            child: const Icon(Icons.add),
           ),
         ],
       ),

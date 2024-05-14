@@ -1,18 +1,17 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
-
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart' as latLng;
 import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
 import 'package:mvvm_playground/functions/geolocation.dart';
-import 'package:mvvm_playground/widgets/input.dart';
 import 'package:mvvm_playground/widgets/modal_sheets.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -137,9 +136,12 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                             userAgentPackageName: 'com.example.app',
                           ),
-                          PolylineLayer(
-                            polylines: [firstPolyline],
-                            polylineCulling: true,
+                          Visibility(
+                            visible: false,
+                            child: PolylineLayer(
+                              polylines: [firstPolyline],
+                              polylineCulling: true,
+                            ),
                           ),
                           CircleLayer(
                             circles: [
@@ -155,14 +157,26 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                           MarkerLayer(
                             markers: [
                               Marker(
-                                  width: 300.0,
-                                  height: 300.0,
                                   point: latLng.LatLng(
                                       userLocationCurrent.latitude,
                                       userLocationCurrent.longitude),
-                                  child: Icon(
-                                    Icons.circle,
-                                    color: Colors.purple,
+                                  child: Container(
+                                    decoration: const ShapeDecoration(
+                                        shape: CircleBorder(),
+                                        shadows: [
+                                          BoxShadow(
+                                            color: Colors.black12,
+                                            spreadRadius: 5,
+                                            blurRadius: 7,
+                                            offset: Offset(0,
+                                                3), // changes position of shadow
+                                          ),
+                                        ],
+                                        color: Colors.white),
+                                    child: Icon(
+                                      Icons.circle,
+                                      color: primaryColor,
+                                    ),
                                   )),
                               for (var i = 0; i < state.data.data.length; i++)
                                 Marker(
@@ -214,7 +228,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                               SizedBox(
                                 width: 8,
                               ),
-                              Text('Long : ${userLocationCurrent.latitude}'),
+                              Text('Long : ${userLocationCurrent.longitude}'),
                               SizedBox(
                                 width: 8,
                               ),

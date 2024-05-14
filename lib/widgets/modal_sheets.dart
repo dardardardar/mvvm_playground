@@ -7,7 +7,7 @@ void showModalInputQty(BuildContext context,
     {bool? isNear, required Tree data}) {
   showModalBottomSheet<void>(
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10.0),
+      borderRadius: BorderRadius.circular(16.0),
     ),
     context: context,
     isScrollControlled: true,
@@ -15,30 +15,33 @@ void showModalInputQty(BuildContext context,
     useSafeArea: true,
     builder: (context) {
       return Container(
-        color: Colors.black,
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+          color: Colors.black,
+        ),
         child: SafeArea(
           child: Container(
             width: double.infinity,
-            padding: EdgeInsets.all(8),
+            padding: EdgeInsets.all(16),
             child: Column(mainAxisSize: MainAxisSize.min, children: [
               Text(
-                'Input collected items',
+                'Input collected items'.toUpperCase(),
                 style: textHeadingAlt,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 8,
               ),
               Text(
                 'Name: ${data.name.isEmpty ? 'No tree found' : data.name}',
               ),
-              SizedBox(
+              const SizedBox(
                 height: 8,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 8,
               ),
               InputQty(onQtyChanged: (value) {}),
-              SizedBox(
+              const SizedBox(
                 height: 8,
               ),
               InkWell(
@@ -46,11 +49,12 @@ void showModalInputQty(BuildContext context,
                   Navigator.pop(context);
                 },
                 child: Container(
-                  padding: EdgeInsets.all(8),
+                  width: MediaQuery.of(context).size.width / 3,
+                  padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       color: primaryColor),
-                  child: Text('Submit'),
+                  child: Center(child: Text('Submit'.toUpperCase())),
                 ),
               )
             ]),
