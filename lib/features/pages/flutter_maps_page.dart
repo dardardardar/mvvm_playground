@@ -111,9 +111,11 @@ class _HomeViewPageState extends State<FlutterMapPage> {
               if (snapshot.hasData) {
                 var userLocation = Provider.of<GeoLocation>(context);
                 userLocation.radiuscentermeters = 10;
-                for (var i = 0; i < tree.length; i++) {
-                  userLocation.setPointCenter(tree[i].position.latitude,
-                      tree[i].position.longitude, tree[i].name);
+                for (var i = 0; i < state.data.data.length; i++) {
+                  userLocation.setPointCenter(
+                      state.data.data[i].position.latitude,
+                      state.data.data[i].position.longitude,
+                      state.data.data[i].name);
                 }
                 var userLocationCurrent = snapshot.data!;
                 return Column(
@@ -124,7 +126,8 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                         mapController: mapController,
                         options: MapOptions(
                             onTap: (p, l) {
-                              print('${l.latitude}, ${l.longitude}');
+                              print(
+                                  'latLng.LatLng(${l.latitude}, ${l.longitude})');
                             },
                             initialZoom: 19.5,
                             initialCenter: latLng.LatLng(
@@ -233,7 +236,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                 width: 8,
                               ),
                               Text(
-                                  'isInRange : ${userLocation.status.contains(true)}'),
+                                  'Tree detected : ${userLocation.status.contains(true)}'),
                             ],
                           ),
                           SizedBox(
@@ -259,8 +262,14 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                               padding: EdgeInsets.all(12),
                               decoration: ShapeDecoration(
                                   shape: CircleBorder(
-                                      side: BorderSide(color: Colors.white)),
-                                  color: Colors.transparent),
+                                      side: BorderSide(
+                                          color:
+                                              userLocation.status.contains(true)
+                                                  ? primaryColor
+                                                  : Colors.white)),
+                                  color: userLocation.status.contains(true)
+                                      ? primaryColor
+                                      : Colors.transparent),
                               child: Icon(Icons.add),
                             ),
                           )
