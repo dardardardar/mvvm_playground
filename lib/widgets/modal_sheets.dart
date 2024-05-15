@@ -4,13 +4,15 @@ import 'package:latlong2/latlong.dart';
 import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/models/tree_model.dart';
+import 'package:mvvm_playground/functions/geolocation.dart';
 import 'package:mvvm_playground/widgets/input.dart';
+import 'package:provider/provider.dart';
 
 void showModalInputQty(BuildContext context,
     {bool? isNear, required Tree data, required LatLng current}) {
-  void sendQty() {
+  void sendQty(qty) {
     context.read<MapsCubit>().sendQty(
-          qty: 2,
+          qty: qty,
           data: data,
         );
   }
@@ -24,6 +26,7 @@ void showModalInputQty(BuildContext context,
     backgroundColor: Colors.black,
     useSafeArea: true,
     builder: (context) {
+      var userloc = Provider.of<GeoLocation>(context);
       return Container(
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
@@ -50,13 +53,15 @@ void showModalInputQty(BuildContext context,
               const SizedBox(
                 height: 16,
               ),
-              InputQty(onQtyChanged: (value) {}),
+              InputQty(onQtyChanged: (value) {
+                userloc.setQty(value);
+              }),
               const SizedBox(
                 height: 8,
               ),
               InkWell(
                 onTap: () {
-                  sendQty();
+                  sendQty(userloc.qty);
                   Navigator.pop(context);
                 },
                 child: Container(

@@ -9,6 +9,7 @@ class GeoLocation {
   double radiuscentermeters = 0.0;
   String name = '';
   String idTree = '';
+  double qty = 0.0;
   bool isInRange = false;
   List<dynamic> status = [];
   List<dynamic> currentTree = [];
@@ -50,6 +51,11 @@ class GeoLocation {
     _calculateRadiusMetersAndInRange();
   }
 
+  void setQty(value) {
+    var getQty = double.parse(value.toString());
+    qty = getQty;
+  }
+
   void setPointOuterLocationData(LocationData loc) {
     setPointOuter(loc.latitude!, loc.longitude!);
   }
@@ -58,10 +64,6 @@ class GeoLocation {
     outerlocation.setPoint(lat, long);
     _calculateRadiusMetersAndInRange();
   }
-
-  // void setPointCenterLocationData(LocationData loc) {
-  //   setPointCenter(loc.latitude!, loc.longitude!);
-  // }
 
   void setPointCenter(double lat, double long, String tree) {
     centerlocation.setPoint(lat, long);

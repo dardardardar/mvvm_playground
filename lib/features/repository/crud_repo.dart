@@ -39,7 +39,7 @@ class CRUDRepository {
     }
   }
 
-  Future<BaseState> sendQty(double qty, Tree tree) async {
+  Future<BaseState> sendQty(double? qty, Tree tree) async {
     try {
       final result = await Api.post('wp-json/sinar/v1/bum/input', {
         "qty": qty,
