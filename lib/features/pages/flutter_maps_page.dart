@@ -32,7 +32,7 @@ class FlutterMapPage extends StatefulWidget {
 class _HomeViewPageState extends State<FlutterMapPage> {
   late MapController mapController = MapController();
   late Stream<latLng.LatLng> locationStream;
-  bool isDebugMode = false;
+  bool isDebugMode = true;
   Polyline firstPolyline = Polyline(
     points: [
       latLng.LatLng(-6.227787860077413, 106.83344878298254),
@@ -133,19 +133,16 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                 polylineCulling: true,
                               ),
                             ),
-                            Visibility(
-                              visible: isDebugMode,
-                              child: CircleLayer(
-                                  circles:
-                                      List.generate(state.data.length, (index) {
-                                return CircleMarker(
-                                  point: state.data[index].position,
-                                  radius: 10,
-                                  color: primaryColor.withOpacity(0.5),
-                                  useRadiusInMeter: true,
-                                );
-                              })),
-                            ),
+                            CircleLayer(
+                                circles:
+                                    List.generate(state.data.length, (index) {
+                              return CircleMarker(
+                                point: state.data[index].position,
+                                radius: 10,
+                                color: primaryColor.withOpacity(0.5),
+                                useRadiusInMeter: true,
+                              );
+                            })),
                             MarkerLayer(
                               markers: [
                                 Marker(
@@ -225,6 +222,63 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                               ],
                             ),
                           ],
+                        ),
+                      ),
+                      Visibility(
+                        visible: isDebugMode,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Wrap(
+                                children: [
+                                  Text('Lat : ${userLocationCurrent.latitude}'),
+                                  SizedBox(
+                                    width: 8,
+                                  ),
+                                  Text(
+                                      'Long : ${userLocationCurrent.longitude}'),
+                                  SizedBox(
+                                    width: 8,
+                                  ),
+                                  Text(
+                                      'isInRange : ${userLocation.status.contains(true)}'),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 12,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  showModalInputQty(context,
+                                      current: userLocationCurrent,
+                                      isNear:
+                                          userLocation.status.contains(true),
+                                      data: Tree(
+                                          idTree: '',
+                                          name: userLocation.currentTree.isEmpty
+                                              ? 'No Tree found'
+                                              : userLocation.currentTree.first,
+                                          position: latLng.LatLng(
+                                              userLocation.centerlocation
+                                                      .latitude ??
+                                                  0,
+                                              userLocation.centerlocation
+                                                      .longitude ??
+                                                  0)));
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(12),
+                                  decoration: ShapeDecoration(
+                                      shape: CircleBorder(
+                                          side:
+                                              BorderSide(color: Colors.white)),
+                                      color: Colors.transparent),
+                                  child: Icon(Icons.add),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ],
