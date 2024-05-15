@@ -39,12 +39,12 @@ class CRUDRepository {
     }
   }
 
-  Future<BaseState> sendQty(double? qty, Tree tree) async {
+  Future<BaseState> sendQty(double? qty, idTree, Tree tree) async {
     try {
       final result = await Api.post('wp-json/sinar/v1/bum/input', {
         "qty": qty,
-        "id_user": '2',
-        "id_tree": tree.idTree,
+        "id_user": '12',
+        "id_tree": idTree,
         "lat": tree.position.latitude,
         "long": tree.position.longitude,
       });

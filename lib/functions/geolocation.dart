@@ -33,13 +33,6 @@ class GeoLocation {
   GeoLocation.fromJson(Map<String, dynamic> json) {
     setPointUser(json['latitude'], json['longitude']);
   }
-  setCurrentTree(String tree) {
-    name = tree;
-  }
-
-  setidTree(String idTree) {
-    idTree = idTree;
-  }
 
   //setter
   void setPointUserLocationData(LocationData loc) {
@@ -65,9 +58,11 @@ class GeoLocation {
     _calculateRadiusMetersAndInRange();
   }
 
-  void setPointCenter(double lat, double long, String tree) {
+  void setPointCenter(
+      double lat, double long, String tree, String idTreeSecond) {
     centerlocation.setPoint(lat, long);
     name = tree;
+    idTree = idTreeSecond;
     _calculateRadiusMetersAndInRange();
   }
 
@@ -83,14 +78,6 @@ class GeoLocation {
 
   double distanceOuterFromCenter() {
     return centerlocation.distanceWith(outerlocation);
-  }
-
-  String getName() {
-    return name;
-  }
-
-  String getId() {
-    return idTree;
   }
 
   double distanceUserFromOuter() {

@@ -4,15 +4,15 @@ import 'package:latlong2/latlong.dart';
 import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/models/tree_model.dart';
-import 'package:mvvm_playground/functions/geolocation.dart';
 import 'package:mvvm_playground/widgets/input.dart';
 import 'package:provider/provider.dart';
 
 void showModalInputQty(BuildContext context,
-    {bool? isNear, required Tree data, required LatLng current}) {
-  void sendQty(qty) {
+    {bool? isNear, userloc, required Tree data, required LatLng current}) {
+  void sendQty(qty, idTree) {
     context.read<MapsCubit>().sendQty(
           qty: qty,
+          idTree: idTree,
           data: data,
         );
   }
@@ -26,7 +26,6 @@ void showModalInputQty(BuildContext context,
     backgroundColor: Colors.black,
     useSafeArea: true,
     builder: (context) {
-      var userloc = Provider.of<GeoLocation>(context);
       return Container(
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
@@ -45,7 +44,7 @@ void showModalInputQty(BuildContext context,
                 height: 8,
               ),
               Text(
-                'id: ${data.idTree.isEmpty ? 'Id Not found' : data.idTree}',
+                'id: ${userloc.idTree}',
               ),
               Text(
                 'Name: ${data.name.isEmpty ? 'No tree found' : data.name}',
@@ -61,7 +60,7 @@ void showModalInputQty(BuildContext context,
               ),
               InkWell(
                 onTap: () {
-                  sendQty(userloc.qty);
+                  sendQty(userloc.qty, userloc.idTree);
                   Navigator.pop(context);
                 },
                 child: Container(

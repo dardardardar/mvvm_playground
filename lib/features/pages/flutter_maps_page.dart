@@ -100,8 +100,11 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                 var userLocation = Provider.of<GeoLocation>(context);
                 userLocation.radiuscentermeters = 10;
                 for (var i = 0; i < pohon.length; i++) {
-                  userLocation.setPointCenter(pohon[i].position.latitude,
-                      pohon[i].position.longitude, pohon[i].name);
+                  userLocation.setPointCenter(
+                      pohon[i].position.latitude,
+                      pohon[i].position.longitude,
+                      pohon[i].name,
+                      pohon[i].idTree);
                 }
                 var userLocationCurrent = snapshot.data!;
                 return Column(
@@ -231,11 +234,12 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                             onTap: () {
                               showModalInputQty(context,
                                   isNear: userLocation.status.contains(true),
+                                  userloc: userLocation,
                                   current: latLng.LatLng(
-                                      userLocationCurrent.latitude,
-                                      userLocationCurrent.longitude),
+                                      userLocationCurrent.latitude ?? 0,
+                                      userLocationCurrent.longitude ?? 0),
                                   data: Tree(
-                                      idTree: userLocation.idTree,
+                                      idTree: userLocation.currentidTree.first,
                                       name: userLocation.currentTree.isEmpty
                                           ? 'No Tree found'
                                           : userLocation.currentTree.first,
