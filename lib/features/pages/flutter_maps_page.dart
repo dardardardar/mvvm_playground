@@ -13,6 +13,7 @@ import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
 import 'package:mvvm_playground/functions/geolocation.dart';
 import 'package:mvvm_playground/widgets/modal_sheets.dart';
+import 'package:mvvm_playground/widgets/states.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -31,7 +32,8 @@ class FlutterMapPage extends StatefulWidget {
 class _HomeViewPageState extends State<FlutterMapPage> {
   late MapController mapController = MapController();
   late Stream<latLng.LatLng> locationStream;
-
+  late GeoLocation userLocation;
+  late latLng.LatLng userLocationCurrent;
   Polyline firstPolyline = Polyline(
     points: [
       latLng.LatLng(-6.227787860077413, 106.83344878298254),
@@ -85,6 +87,30 @@ class _HomeViewPageState extends State<FlutterMapPage> {
     return Scaffold(
       key: _scaffoldKey,
       body: _buildInputDataBody(context),
+      bottomNavigationBar: InkWell(
+        onTap: () {
+          showModalInputQty(context,
+              isNear: userLocation.status.contains(true),
+              userloc: userLocation,
+              current: latLng.LatLng(
+                  userLocationCurrent.latitude, userLocationCurrent.longitude),
+              data: Tree(
+                  idTree: userLocation.currentidTree.first,
+                  name: userLocation.currentTree.isEmpty
+                      ? 'No Tree found'
+                      : userLocation.currentTree.first,
+                  position: latLng.LatLng(
+                      userLocation.centerlocation.latitude ?? 0,
+                      userLocation.centerlocation.longitude ?? 0)));
+        },
+        child: Container(
+          padding: EdgeInsets.all(12),
+          decoration: ShapeDecoration(
+              shape: CircleBorder(side: BorderSide(color: Colors.white)),
+              color: Colors.transparent),
+          child: Icon(Icons.add),
+        ),
+      ),
     );
   }
 
@@ -97,7 +123,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
             stream: locationStream,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                var userLocation = Provider.of<GeoLocation>(context);
+                userLocation = Provider.of<GeoLocation>(context);
                 userLocation.radiuscentermeters = 10;
                 for (var i = 0; i < pohon.length; i++) {
                   userLocation.setPointCenter(
@@ -106,7 +132,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                       pohon[i].name,
                       pohon[i].idTree);
                 }
-                var userLocationCurrent = snapshot.data!;
+                userLocationCurrent = snapshot.data!;
                 return Column(
                   children: [
                     Expanded(
@@ -230,36 +256,6 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                           SizedBox(
                             height: 12,
                           ),
-                          InkWell(
-                            onTap: () {
-                              showModalInputQty(context,
-                                  isNear: userLocation.status.contains(true),
-                                  userloc: userLocation,
-                                  current: latLng.LatLng(
-                                      userLocationCurrent.latitude ?? 0,
-                                      userLocationCurrent.longitude ?? 0),
-                                  data: Tree(
-                                      idTree: userLocation.currentidTree.first,
-                                      name: userLocation.currentTree.isEmpty
-                                          ? 'No Tree found'
-                                          : userLocation.currentTree.first,
-                                      position: latLng.LatLng(
-                                          userLocation
-                                                  .centerlocation.latitude ??
-                                              0,
-                                          userLocation
-                                                  .centerlocation.longitude ??
-                                              0)));
-                            },
-                            child: Container(
-                              padding: EdgeInsets.all(12),
-                              decoration: ShapeDecoration(
-                                  shape: CircleBorder(
-                                      side: BorderSide(color: Colors.white)),
-                                  color: Colors.transparent),
-                              child: Icon(Icons.add),
-                            ),
-                          )
                         ],
                       ),
                     ),
@@ -268,12 +264,14 @@ class _HomeViewPageState extends State<FlutterMapPage> {
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {
-                return CircularProgressIndicator(); // Loading indicator while waiting for data
+                return circularLoading(
+                    text:
+                        'Loading stream...'); // Loading indicator while waiting for data
               }
             },
           );
         }
-        return Center(child: CircularProgressIndicator());
+        return circularLoading(text: 'Loading state...');
       },
     );
   }
