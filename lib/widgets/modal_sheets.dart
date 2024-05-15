@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:mvvm_playground/const/theme.dart';
+import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/models/tree_model.dart';
 import 'package:mvvm_playground/widgets/input.dart';
 
 void showModalInputQty(BuildContext context,
-    {bool? isNear, required Tree data}) {
+    {bool? isNear, required Tree data, required LatLng current}) {
+  void sendQty() {
+    context.read<MapsCubit>().sendQty(
+          qty: 2,
+          data: data,
+        );
+  }
+
   showModalBottomSheet<void>(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(16.0),
@@ -32,13 +42,13 @@ void showModalInputQty(BuildContext context,
                 height: 8,
               ),
               Text(
+                'id: ${data.idTree.isEmpty ? 'Id Not found' : data.idTree}',
+              ),
+              Text(
                 'Name: ${data.name.isEmpty ? 'No tree found' : data.name}',
               ),
               const SizedBox(
-                height: 8,
-              ),
-              const SizedBox(
-                height: 8,
+                height: 16,
               ),
               InputQty(onQtyChanged: (value) {}),
               const SizedBox(
@@ -46,6 +56,7 @@ void showModalInputQty(BuildContext context,
               ),
               InkWell(
                 onTap: () {
+                  sendQty();
                   Navigator.pop(context);
                 },
                 child: Container(

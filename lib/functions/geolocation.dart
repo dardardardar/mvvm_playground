@@ -8,9 +8,11 @@ class GeoLocation {
   GeoPoint outerlocation = new GeoPoint.createNullPoint();
   double radiuscentermeters = 0.0;
   String name = '';
+  String idTree = '';
   bool isInRange = false;
   List<dynamic> status = [];
   List<dynamic> currentTree = [];
+  List<dynamic> currentidTree = [];
 
   //constructor
   GeoLocation({required this.userlocation});
@@ -32,6 +34,10 @@ class GeoLocation {
   }
   setCurrentTree(String tree) {
     name = tree;
+  }
+
+  setidTree(String idTree) {
+    idTree = idTree;
   }
 
   //setter
@@ -81,6 +87,10 @@ class GeoLocation {
     return name;
   }
 
+  String getId() {
+    return idTree;
+  }
+
   double distanceUserFromOuter() {
     double radius = distanceUserFromCenter() - distanceOuterFromCenter();
     return radius < 0 ? -radius : radius;
@@ -103,6 +113,7 @@ class GeoLocation {
     isInRange = radiuscentermeters >= distanceUserFromCenter();
     if (isInRange) {
       currentTree.add(name);
+      currentidTree.add(idTree);
     }
   }
 }
