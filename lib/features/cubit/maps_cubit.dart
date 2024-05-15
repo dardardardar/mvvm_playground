@@ -47,11 +47,7 @@ class MapsCubit extends Cubit<BaseState> {
     try {
       emit(LoadingState());
       final data = await _crudRepository.getTree();
-      if (data != null) {
-        emit(SuccessState<List<Tree>>(data: data));
-      } else {
-        emit(GeneralErrorState(e: Exception("Failed to load tree data")));
-      }
+      emit(SuccessState<List<Tree>>(data: data));
     } on Exception catch (e) {
       emit(GeneralErrorState(e: e));
     }
