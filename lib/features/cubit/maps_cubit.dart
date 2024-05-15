@@ -52,4 +52,12 @@ class MapsCubit extends Cubit<BaseState> {
       emit(GeneralErrorState(e: e));
     }
   }
+
+  Future<void> sendQty({required double qty, required Tree data}) async {
+    try {
+      await _crudRepository.sendQty(qty, data);
+    } on Exception catch (e) {
+      emit(GeneralErrorState(e: e));
+    }
+  }
 }

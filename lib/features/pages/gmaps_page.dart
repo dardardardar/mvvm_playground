@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -65,7 +64,11 @@ class _GmapsPageState extends State<GmapsPage> {
           child: InkWell(
             onTap: () {
               showModalInputQty(context,
-                  data: Tree(name: '', position: const latLng.LatLng(0, 0)));
+                  current: const latLng.LatLng(0, 0),
+                  data: Tree(
+                      name: '',
+                      idTree: '',
+                      position: const latLng.LatLng(0, 0)));
             },
             child: Container(
               padding: EdgeInsets.all(12),
