@@ -12,6 +12,7 @@ import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
 import 'package:mvvm_playground/functions/geolocation.dart';
+import 'package:mvvm_playground/widgets/buttons.dart';
 import 'package:mvvm_playground/widgets/modal_sheets.dart';
 import 'package:mvvm_playground/widgets/states.dart';
 import 'package:provider/provider.dart';
@@ -32,8 +33,9 @@ class FlutterMapPage extends StatefulWidget {
 class _HomeViewPageState extends State<FlutterMapPage> {
   late MapController mapController = MapController();
   late Stream<latLng.LatLng> locationStream;
-  late GeoLocation userLocation;
+  GeoLocation? userLocation;
   late latLng.LatLng userLocationCurrent;
+  bool isDebug = false;
   Polyline firstPolyline = Polyline(
     points: [
       latLng.LatLng(-6.227787860077413, 106.83344878298254),
@@ -84,34 +86,56 @@ class _HomeViewPageState extends State<FlutterMapPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      body: _buildInputDataBody(context),
-      bottomNavigationBar: InkWell(
-        onTap: () {
-          showModalInputQty(context,
-              isNear: userLocation.status.contains(true),
-              userloc: userLocation,
-              current: latLng.LatLng(
-                  userLocationCurrent.latitude, userLocationCurrent.longitude),
-              data: Tree(
-                  idTree: userLocation.currentidTree.first,
-                  name: userLocation.currentTree.isEmpty
-                      ? 'No Tree found'
-                      : userLocation.currentTree.first,
-                  position: latLng.LatLng(
-                      userLocation.centerlocation.latitude ?? 0,
-                      userLocation.centerlocation.longitude ?? 0)));
-        },
-        child: Container(
-          padding: EdgeInsets.all(12),
-          decoration: ShapeDecoration(
-              shape: CircleBorder(side: BorderSide(color: Colors.white)),
-              color: Colors.transparent),
-          child: Icon(Icons.add),
+    return Stack(children: [
+      Scaffold(
+        key: _scaffoldKey,
+        body: _buildInputDataBody(context),
+        bottomNavigationBar: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.all(16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                outlinedCircularIconButton(
+                    onPressed: userLocation == null
+                        ? null
+                        : () {
+                            showModalInputQty(context,
+                                isNear: userLocation!.status.contains(true),
+                                userloc: userLocation,
+                                current: latLng.LatLng(
+                                    userLocationCurrent.latitude,
+                                    userLocationCurrent.longitude),
+                                data: Tree(
+                                    idTree: userLocation!.currentidTree.first,
+                                    name: userLocation!.currentTree.isEmpty
+                                        ? 'No Tree found'
+                                        : userLocation!.currentTree.first,
+                                    position: latLng.LatLng(
+                                        userLocation!.centerlocation.latitude ??
+                                            0,
+                                        userLocation!
+                                                .centerlocation.longitude ??
+                                            0)));
+                          },
+                    icon: Icons.add,
+                    color: Colors.white)
+              ],
+            ),
+          ),
         ),
       ),
-    );
+      SafeArea(
+          child: outlinedCircularIconButton(
+              onPressed: () {
+                setState(() {
+                  isDebug = !isDebug;
+                });
+              },
+              icon: Icons.developer_mode,
+              color: Colors.black))
+    ]);
   }
 
   Widget _buildInputDataBody(BuildContext context) {
@@ -124,9 +148,9 @@ class _HomeViewPageState extends State<FlutterMapPage> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 userLocation = Provider.of<GeoLocation>(context);
-                userLocation.radiuscentermeters = 10;
+                userLocation!.radiuscentermeters = 10;
                 for (var i = 0; i < pohon.length; i++) {
-                  userLocation.setPointCenter(
+                  userLocation!.setPointCenter(
                       pohon[i].position.latitude,
                       pohon[i].position.longitude,
                       pohon[i].name,
@@ -235,28 +259,31 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          Wrap(
-                            children: [
-                              Text('Lat : ${userLocationCurrent.latitude}'),
-                              SizedBox(
-                                width: 8,
-                              ),
-                              Text('Long : ${userLocationCurrent.longitude}'),
-                              SizedBox(
-                                width: 8,
-                              ),
-                              Text(
-                                  'isInRange : ${userLocation.status.contains(true)}'),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 12,
-                          ),
-                        ],
+                    Visibility(
+                      visible: isDebug,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Wrap(
+                              children: [
+                                Text('Lat : ${userLocationCurrent.latitude}'),
+                                SizedBox(
+                                  width: 8,
+                                ),
+                                Text('Long : ${userLocationCurrent.longitude}'),
+                                SizedBox(
+                                  width: 8,
+                                ),
+                                Text(
+                                    'isInRange : ${userLocation!.status.contains(true)}'),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 12,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
