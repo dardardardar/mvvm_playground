@@ -133,7 +133,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                   isDebug = !isDebug;
                 });
               },
-              icon: Icons.developer_mode,
+              icon: Icons.code,
               color: Colors.black))
     ]);
   }
@@ -185,15 +185,13 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                             ),
                           ),
                           CircleLayer(
-                            circles: [
-                              CircleMarker(
-                                  point: latLng.LatLng(
-                                      userLocationCurrent.latitude,
-                                      userLocationCurrent.longitude),
+                            circles: List.generate(state.data.length, (index) {
+                              return CircleMarker(
+                                  point: state.data[index].position,
                                   color: Colors.blue.withOpacity(0.3),
-                                  radius: metersToPixels(
-                                      10, userLocationCurrent.latitude, 15.0)),
-                            ],
+                                  radius: isDebug ? 15 : 0,
+                                  useRadiusInMeter: true);
+                            }),
                           ),
                           MarkerLayer(
                             markers: [
@@ -235,15 +233,34 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                         child: Icon(
                                           size: 48,
                                           Icons.pin_drop,
-                                          color: primaryColor,
+                                          color: Colors.black,
+                                          shadows: [
+                                            BoxShadow(
+                                              color: Colors.black12,
+                                              spreadRadius: 5,
+                                              blurRadius: 7,
+                                              offset: Offset(0,
+                                                  3), // changes position of shadow
+                                            )
+                                          ],
                                         ),
                                       ),
                                       Container(
-                                        padding: EdgeInsets.all(4),
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 4),
                                         decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(6),
-                                            color: primaryColor),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black12,
+                                                spreadRadius: 5,
+                                                blurRadius: 7,
+                                                offset: Offset(0,
+                                                    3), // changes position of shadow
+                                              )
+                                            ],
+                                            color: Colors.black),
                                         child: Text(
                                           pohon[i].name,
                                           style: const TextStyle(
@@ -263,25 +280,18 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                       visible: isDebug,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Column(
+                        child: Wrap(
                           children: [
-                            Wrap(
-                              children: [
-                                Text('Lat : ${userLocationCurrent.latitude}'),
-                                SizedBox(
-                                  width: 8,
-                                ),
-                                Text('Long : ${userLocationCurrent.longitude}'),
-                                SizedBox(
-                                  width: 8,
-                                ),
-                                Text(
-                                    'isInRange : ${userLocation!.status.contains(true)}'),
-                              ],
-                            ),
+                            Text('Lat : ${userLocationCurrent.latitude}'),
                             SizedBox(
-                              height: 12,
+                              width: 8,
                             ),
+                            Text('Long : ${userLocationCurrent.longitude}'),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            Text(
+                                'isInRange : ${userLocation!.status.contains(true)}'),
                           ],
                         ),
                       ),

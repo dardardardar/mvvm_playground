@@ -10,7 +10,10 @@ Widget primaryButton({Function()? onPressed, required String title}) {
 }
 
 Widget outlinedCircularIconButton(
-    {Function()? onPressed, required IconData icon, Color? color}) {
+    {Function()? onPressed,
+    required IconData icon,
+    Color? color,
+    Color? backgroundColor}) {
   return MaterialButton(
     onPressed: onPressed,
     shape:
