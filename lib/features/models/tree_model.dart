@@ -16,13 +16,13 @@ class Tree {
   }
 }
 
-class Route {
+class Routes {
   final LatLng position;
 
-  Route({required this.position});
+  Routes({required this.position});
 
-  factory Route.fromJson(data) {
-    return Route(
+  factory Routes.fromJson(data) {
+    return Routes(
         position:
             LatLng(double.parse(data['lat']), double.parse(data['long'])));
   }

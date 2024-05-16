@@ -22,14 +22,14 @@ class CRUDRepository {
     }
   }
 
-  Future<List<Route>> getRoute() async {
+  Future<List<Routes>> getRoute() async {
     try {
       final result =
           await Api.get('wp-json/sinar/v1/bum/locations', data: {"type": '2'});
       final response = result.data;
       if (response != null) {
         final routeData =
-            (response as List<dynamic>).map((e) => Route.fromJson(e));
+            (response as List<dynamic>).map((e) => Routes.fromJson(e));
         return routeData.toList();
       } else {
         return [];

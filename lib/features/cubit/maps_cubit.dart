@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:injectable/injectable.dart';
+import 'package:mvvm_playground/features/cubit/maps_cubit_data.dart';
 import 'package:mvvm_playground/features/models/tree_model.dart';
 import 'package:mvvm_playground/features/repository/crud_repo.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
@@ -38,18 +39,29 @@ class GMapsCubit extends Cubit<BaseState> {
 }
 
 @injectable
-class MapsCubit extends Cubit<BaseState> {
+class MapsCubit extends Cubit<MapsData> {
   final CRUDRepository _crudRepository;
 
-  MapsCubit(this._crudRepository) : super(BaseState());
+  MapsCubit(this._crudRepository) : super(MapsData());
 
   Future<void> initMarker() async {
     try {
-      emit(LoadingState());
-      final data = await _crudRepository.getTree();
-      emit(SuccessState<List<Tree>>(data: data));
+      emit(state.copyWith(
+        listTree: LoadingState<List<Tree>>(),
+        listRoute: LoadingState<List<Routes>>(),
+      ));
+
+      final tree = await _crudRepository.getTree();
+      final route = await _crudRepository.getRoute();
+      emit(state.copyWith(
+        listTree: SuccessState<List<Tree>>(data: tree),
+        listRoute: SuccessState<List<Routes>>(data: route),
+      ));
     } on Exception catch (e) {
-      emit(GeneralErrorState(e: e));
+      emit(state.copyWith(
+        listTree: GeneralErrorState(e: e, error: e.toString()),
+        listRoute: GeneralErrorState(e: e, error: e.toString()),
+      ));
     }
   }
 
@@ -57,7 +69,8 @@ class MapsCubit extends Cubit<BaseState> {
     try {
       await _crudRepository.sendQty(qty, data);
     } on Exception catch (e) {
-      emit(GeneralErrorState(e: e));
+      emit(state.copyWith(
+          sendQty: GeneralErrorState(e: e, error: e.toString())));
     }
   }
 }

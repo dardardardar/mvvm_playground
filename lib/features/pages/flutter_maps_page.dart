@@ -10,6 +10,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart' as latLng;
 import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
+import 'package:mvvm_playground/features/cubit/maps_cubit_data.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
 import 'package:mvvm_playground/functions/geolocation.dart';
 import 'package:mvvm_playground/widgets/modal_sheets.dart';
@@ -18,7 +19,6 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../models/tree_model.dart';
 
-// add-- permisions
 class FlutterMapPage extends StatefulWidget {
   const FlutterMapPage({super.key});
 
@@ -31,27 +31,6 @@ class FlutterMapPage extends StatefulWidget {
 class _HomeViewPageState extends State<FlutterMapPage> {
   late MapController mapController = MapController();
   late Stream<latLng.LatLng> locationStream;
-
-  Polyline firstPolyline = Polyline(
-    points: [
-      latLng.LatLng(-6.227787860077413, 106.83344878298254),
-      latLng.LatLng(-6.228012025218627, 106.83346895355372),
-      latLng.LatLng(-6.228020460551202, 106.83333653209965),
-      latLng.LatLng(-6.228115365486504, 106.83334392789742),
-      latLng.LatLng(-6.228108380578882, 106.83341906947368),
-      latLng.LatLng(-6.228129120134003, 106.83344056435672),
-      latLng.LatLng(-6.228342800341565, 106.83344878298254),
-      latLng.LatLng(-6.228355998234495, 106.83337291865526),
-      latLng.LatLng(-6.228438956410974, 106.83338366611142),
-      latLng.LatLng(-6.22839752205345, 106.83409602806141),
-      latLng.LatLng(-6.228396265101803, 106.8340859128276),
-      latLng.LatLng(-6.228391865814138, 106.83453035136445),
-    ],
-    color: Colors.green,
-    strokeWidth: 3,
-    isDotted: false,
-    useStrokeWidthInMeter: true,
-  );
 
   @override
   void initState() {
@@ -89,19 +68,21 @@ class _HomeViewPageState extends State<FlutterMapPage> {
   }
 
   Widget _buildInputDataBody(BuildContext context) {
-    return BlocBuilder<MapsCubit, BaseState>(
+    return BlocBuilder<MapsCubit, MapsData>(
       builder: (context, state) {
-        if (state is SuccessState<List<Tree>>) {
-          final pohon = state.data;
+        if (state.listTree is SuccessState<List<Tree>> &&
+            state.listRoute is SuccessState<List<Routes>>) {
+          final trees = (state.listTree as SuccessState<List<Tree>>).data;
+          final routes = (state.listRoute as SuccessState<List<Routes>>).data;
           return StreamBuilder<latLng.LatLng>(
             stream: locationStream,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 var userLocation = Provider.of<GeoLocation>(context);
                 userLocation.radiuscentermeters = 10;
-                for (var i = 0; i < pohon.length; i++) {
-                  userLocation.setPointCenter(pohon[i].position.latitude,
-                      pohon[i].position.longitude, pohon[i].name);
+                for (var i = 0; i < trees.length; i++) {
+                  userLocation.setPointCenter(trees[i].position.latitude,
+                      trees[i].position.longitude, trees[i].name);
                 }
                 var userLocationCurrent = snapshot.data!;
                 return Column(
@@ -121,15 +102,35 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                         children: [
                           TileLayer(
                             urlTemplate:
-                                'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                'https://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
                             userAgentPackageName: 'com.example.app',
+                            errorTileCallback:
+                                (context, exception, stackTrace) {
+                              print('Error loading tile: $exception');
+                              Container(
+                                color: Colors.red,
+                                child: Center(
+                                  child: Text(
+                                    'Tile Load Error',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                          Visibility(
-                            visible: false,
-                            child: PolylineLayer(
-                              polylines: [firstPolyline],
-                              polylineCulling: true,
-                            ),
+                          PolylineLayer(
+                            polylines: [
+                              Polyline(
+                                points: routes
+                                    .map((route) => route.position)
+                                    .toList(),
+                                color: Colors.green,
+                                strokeWidth: 3,
+                                isDotted: false,
+                                useStrokeWidthInMeter: true,
+                              )
+                            ],
+                            polylineCulling: true,
                           ),
                           CircleLayer(
                             circles: [
@@ -166,11 +167,11 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                       color: primaryColor,
                                     ),
                                   )),
-                              for (var i = 0; i < pohon.length; i++)
+                              for (var i = 0; i < trees.length; i++)
                                 Marker(
                                   width: 300.0,
                                   height: 300.0,
-                                  point: pohon[i].position,
+                                  point: trees[i].position,
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
@@ -192,7 +193,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                 BorderRadius.circular(6),
                                             color: primaryColor),
                                         child: Text(
-                                          pohon[i].name,
+                                          trees[i].name,
                                           style: const TextStyle(
                                               fontWeight: FontWeight.bold,
                                               color: Colors.white),
