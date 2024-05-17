@@ -29,7 +29,7 @@ class GMapsCubit extends Cubit<BaseState> {
 
     final Marker marker = Marker(
       markerId: markerId,
-      position: LatLng(-6.2277937, 106.833333),
+      position: const LatLng(-6.2277937, 106.833333),
       infoWindow: InfoWindow(title: markerIdVal, snippet: '*'),
       onTap: () {},
     );

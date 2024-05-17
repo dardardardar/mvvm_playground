@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-const primaryColor = Color(0xFF0078d4);
-const secondaryColor = Color.fromARGB(255, 0, 212, 159);
+const secondaryColor = Color(0xFF0078d4);
+const primaryColor = Color.fromARGB(255, 74, 180, 98);
 const barBackgroundColor = Color(0xFF1F1F1F);
 const backgroundColor = Color(0xFF151515);
 const borderColor = Color(0x99ffffff);

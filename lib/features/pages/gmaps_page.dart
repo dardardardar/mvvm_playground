@@ -60,7 +60,7 @@ class _GmapsPageState extends State<GmapsPage> {
       }),
       bottomNavigationBar: SafeArea(
         child: Container(
-          padding: EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
           child: InkWell(
             onTap: () {
               showModalInputQty(context,
@@ -71,11 +71,11 @@ class _GmapsPageState extends State<GmapsPage> {
                       position: const latLng.LatLng(0, 0)));
             },
             child: Container(
-              padding: EdgeInsets.all(12),
-              decoration: ShapeDecoration(
+              padding: const EdgeInsets.all(12),
+              decoration: const ShapeDecoration(
                   shape: CircleBorder(side: BorderSide(color: Colors.white)),
                   color: Colors.transparent),
-              child: Icon(Icons.add),
+              child: const Icon(Icons.add),
             ),
           ),
         ),

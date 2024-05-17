@@ -48,7 +48,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
           desiredAccuracy: LocationAccuracy.bestForNavigation);
 
       yield latLng.LatLng(position.latitude, position.longitude);
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
     }
   }
 
@@ -111,7 +111,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                 print('Error loading tile: $exception');
                                 Container(
                                   color: Colors.red,
-                                  child: Center(
+                                  child: const Center(
                                     child: Text(
                                       'Tile Load Error',
                                       style: TextStyle(color: Colors.white),
@@ -157,14 +157,14 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                           shadows: [
                                             BoxShadow(
                                               color: Colors.black12,
-                                              spreadRadius: 5,
+                                              spreadRadius: 3,
                                               blurRadius: 7,
                                               offset: Offset(0,
                                                   3), // changes position of shadow
                                             ),
                                           ],
                                           color: Colors.white),
-                                      child: Icon(
+                                      child: const Icon(
                                         Icons.circle,
                                         color: primaryColor,
                                       ),
@@ -182,18 +182,40 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Container(
-                                          padding: EdgeInsets.all(8),
-                                          child: Icon(
-                                            size: 48,
-                                            Icons.pin_drop,
-                                            color: primaryColor,
+                                          padding: const EdgeInsets.all(8),
+                                          child: Container(
+                                            padding: const EdgeInsets.all(1),
+                                            decoration: const ShapeDecoration(
+                                                shape: CircleBorder(),
+                                                shadows: [
+                                                  BoxShadow(
+                                                    color: Colors.black12,
+                                                    spreadRadius: 3,
+                                                    blurRadius: 7,
+                                                    offset: Offset(0,
+                                                        3), // changes position of shadow
+                                                  ),
+                                                ],
+                                                color: Colors.white),
+                                            child: Image.asset(
+                                                'assets/icons/go-harvest-assets.png',
+                                                height: 30),
                                           ),
                                         ),
                                         Container(
-                                          padding: EdgeInsets.all(4),
+                                          padding: const EdgeInsets.all(4),
                                           decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(6),
+                                              boxShadow: const [
+                                                BoxShadow(
+                                                  color: Colors.black12,
+                                                  spreadRadius: 3,
+                                                  blurRadius: 7,
+                                                  offset: Offset(0,
+                                                      3), // changes position of shadow
+                                                ),
+                                              ],
                                               color: primaryColor),
                                           child: Text(
                                             trees[i].name,
@@ -210,58 +232,92 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                           ],
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            Wrap(
-                              children: [
-                                Text('Lat : ${userLocationCurrent.latitude}'),
-                                SizedBox(
-                                  width: 8,
-                                ),
-                                Text('Long : ${userLocationCurrent.longitude}'),
-                                SizedBox(
-                                  width: 8,
-                                ),
-                                Text(
-                                    'isInRange : ${userLocation.status.contains(true)}'),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 12,
-                            ),
-                            InkWell(
-                              onTap: () {
-                                showModalInputQty(context,
-                                    isNear: userLocation.status.contains(true),
-                                    current: latLng.LatLng(
-                                        userLocationCurrent.latitude,
-                                        userLocationCurrent.longitude),
-                                    data: Tree(
-                                        idTree: userLocation.idTree,
-                                        name: userLocation.currentTree.isEmpty
-                                            ? 'No Tree found'
-                                            : userLocation.currentTree.first,
-                                        position: latLng.LatLng(
-                                            userLocation
-                                                    .centerlocation.latitude ??
-                                                0,
-                                            userLocation
-                                                    .centerlocation.longitude ??
-                                                0)));
-                              },
-                              child: Container(
-                                padding: EdgeInsets.all(12),
-                                decoration: ShapeDecoration(
-                                    shape: CircleBorder(
-                                        side: BorderSide(color: Colors.white)),
-                                    color: Colors.transparent),
-                                child: Icon(Icons.add),
+                      Column(
+                        children: [
+                          Visibility(
+                            visible: false,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Wrap(
+                                children: [
+                                  Text('Lat : ${userLocationCurrent.latitude}'),
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
+                                  Text(
+                                      'Long : ${userLocationCurrent.longitude}'),
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
+                                  Text(
+                                      'isInRange : ${userLocation.status.contains(true)}'),
+                                ],
                               ),
-                            )
-                          ],
-                        ),
+                            ),
+                          ),
+                          Container(
+                            width: double.infinity,
+                            color: userLocation.currentTree.isEmpty
+                                ? null
+                                : primaryColor,
+                            padding: const EdgeInsets.all(8.0),
+                            child: Center(
+                              child: Text(
+                                userLocation.currentTree.isEmpty
+                                    ? 'Pohon tidak ditemukan pada area ini'
+                                    : 'Pohon ditemukan : ${userLocation.currentTree.first}',
+                                style: userLocation.currentTree.isEmpty
+                                    ? null
+                                    : const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          MaterialButton(
+                            color: primaryColor,
+                            shape: const StadiumBorder(),
+                            elevation: 0,
+                            onPressed: () {
+                              showModalInputQty(context,
+                                  isNear: userLocation.status.contains(true),
+                                  current: latLng.LatLng(
+                                      userLocationCurrent.latitude,
+                                      userLocationCurrent.longitude),
+                                  data: Tree(
+                                      idTree: userLocation.idTree,
+                                      name: userLocation.currentTree.isEmpty
+                                          ? 'No Tree found'
+                                          : userLocation.currentTree.first,
+                                      position: latLng.LatLng(
+                                          userLocation
+                                                  .centerlocation.latitude ??
+                                              0,
+                                          userLocation
+                                                  .centerlocation.longitude ??
+                                              0)));
+                            },
+                            child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Icon(
+                                    Icons.shopping_basket_rounded,
+                                    color: Colors.white,
+                                  ),
+                                  SizedBox(
+                                    width: 8,
+                                  ),
+                                  Text(
+                                    'HARVEST',
+                                    style: textBody,
+                                  )
+                                ]),
+                          )
+                        ],
                       ),
                     ],
                   ),

@@ -35,20 +35,13 @@ void showModalInputQty(BuildContext context,
         child: SafeArea(
           child: Container(
             width: double.infinity,
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Column(mainAxisSize: MainAxisSize.min, children: [
               Text(
-                'Input collected items'.toUpperCase(),
-                style: textHeadingAlt,
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              Text(
-                'id: ${data.idTree.isEmpty ? 'Id Not found' : data.idTree}',
-              ),
-              Text(
-                'Name: ${data.name.isEmpty ? 'No tree found' : data.name}',
+                data.idTree.isEmpty
+                    ? 'Masukkan jumlah sawit yang dipanen'
+                    : 'Masukkan jumlah sawit yang dipanen',
+                style: textHeading2Alt,
               ),
               const SizedBox(
                 height: 16,
@@ -59,20 +52,15 @@ void showModalInputQty(BuildContext context,
               const SizedBox(
                 height: 8,
               ),
-              InkWell(
-                onTap: () {
-                  sendQty(userloc.qty);
-                  Navigator.pop(context);
-                },
-                child: Container(
-                  width: MediaQuery.of(context).size.width / 3,
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: primaryColor),
-                  child: Center(child: Text('Submit'.toUpperCase())),
-                ),
-              )
+              MaterialButton(
+                  color: primaryColor,
+                  shape: const StadiumBorder(),
+                  elevation: 0,
+                  onPressed: () {
+                    sendQty(userloc.qty);
+                    Navigator.pop(context);
+                  },
+                  child: Text('Submit'.toUpperCase()))
             ]),
           ),
         ),

@@ -30,7 +30,7 @@ class Api {
       headers: headers,
       receiveDataWhenStatusError: true,
       followRedirects: false,
-      receiveTimeout: Duration(minutes: 1),
+      receiveTimeout: const Duration(minutes: 1),
       validateStatus: (status) {
         return status! < 500;
       },
