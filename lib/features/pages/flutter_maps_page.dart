@@ -367,21 +367,24 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                         .longitude),
                                                 data: Tree(
                                                     idTree: userLocation
-                                                        .currentidTree.first,
-                                                    name: userLocation
-                                                            .currentTree.isEmpty
-                                                        ? 'No Tree found'
+                                                            .currentidTree
+                                                            .isEmpty
+                                                        ? ''
                                                         : userLocation
-                                                            .currentTree.first,
+                                                            .currentidTree
+                                                            .first,
+                                                    name:
+                                                        userLocation.currentTree.isEmpty
+                                                            ? 'No Tree found'
+                                                            : userLocation
+                                                                .currentTree
+                                                                .first,
                                                     position: latLng.LatLng(
                                                         userLocation
                                                                 .centerlocation
                                                                 .latitude ??
                                                             0,
-                                                        userLocation
-                                                                .centerlocation
-                                                                .longitude ??
-                                                            0)));
+                                                        userLocation.centerlocation.longitude ?? 0)));
                                           },
                                           child: Container(
                                             padding: EdgeInsets.all(8),

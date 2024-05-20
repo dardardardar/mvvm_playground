@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mvvm_playground/const/theme.dart';
@@ -38,13 +40,37 @@ void showModalInputQty(BuildContext context,
             padding: const EdgeInsets.all(16),
             child: Column(mainAxisSize: MainAxisSize.min, children: [
               Text(
-                data.idTree.isEmpty
-                    ? 'Masukkan jumlah sawit yang dipanen'
-                    : 'Masukkan jumlah sawit yang dipanen',
-                style: textHeading2Alt,
+                'Panen',
+                style: textHeadingAlt,
               ),
               const SizedBox(
-                height: 16,
+                height: 8,
+              ),
+              Text('Masukkan jumlah sawit yang dipanen'),
+              Visibility(
+                visible: data.idTree.isEmpty,
+                child: Container(
+                  margin: EdgeInsets.all(8),
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                      color: Colors.white24,
+                      borderRadius: BorderRadius.circular(8)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.info_outline),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Flexible(
+                        child: Text(
+                          'Pohon tidak ditemukan, sistem akan mengasumsikan pohon ini sebagai pohon baru',
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
               InputQty(onQtyChanged: (value) {
                 userloc.setQty(value);
@@ -52,15 +78,17 @@ void showModalInputQty(BuildContext context,
               const SizedBox(
                 height: 8,
               ),
-              MaterialButton(
-                  color: primaryColor,
-                  shape: const StadiumBorder(),
-                  elevation: 0,
-                  onPressed: () {
+              InkWell(
+                  onTap: () {
                     sendQty(userloc.qty);
                     Navigator.pop(context);
                   },
-                  child: Text('Submit'.toUpperCase()))
+                  child: Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                          color: primaryColor,
+                          borderRadius: BorderRadius.circular(8)),
+                      child: Text('Panen Sekarang'.toUpperCase())))
             ]),
           ),
         ),
