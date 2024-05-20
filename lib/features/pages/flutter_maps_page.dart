@@ -101,7 +101,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                 onTap: (p, l) {
                                   print('${l.latitude}, ${l.longitude}');
                                 },
-                                initialZoom: 19.5,
+                                initialZoom: 20,
                                 initialCenter: latLng.LatLng(
                                     userLocationCurrent.latitude,
                                     userLocationCurrent.longitude)),

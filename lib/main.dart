@@ -16,12 +16,12 @@ void setup() {
   final _crudRepository = CRUDRepository();
   final mapsCubit = MapsCubit(_crudRepository);
   getIt.registerSingleton<MapsCubit>(mapsCubit);
+  determinePosition();
 }
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   setup();
-
   runApp(const MyApp());
 }
 
