@@ -44,7 +44,7 @@ class CRUDRepository {
       final result = await Api.post('wp-json/sinar/v1/bum/input', {
         "qty": qty,
         "id_user": '2',
-        "id_tree": tree.idTree,
+        "id_tree": tree.idTree.isEmpty ? null : tree.idTree,
         "lat": tree.position.latitude,
         "long": tree.position.longitude,
       });
