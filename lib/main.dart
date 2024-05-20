@@ -19,9 +19,9 @@ void setup() {
 }
 
 void main() {
-  setup();
   WidgetsFlutterBinding.ensureInitialized();
-  determinePosition();
+  setup();
+
   runApp(const MyApp());
 }
 
@@ -33,9 +33,6 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<HomeCubit>(
           create: (_) => HomeCubit(),
-        ),
-        BlocProvider<GMapsCubit>(
-          create: (_) => GMapsCubit(),
         ),
         BlocProvider(create: (_) => getIt.get<MapsCubit>()),
       ],
