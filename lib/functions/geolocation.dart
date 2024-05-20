@@ -1,5 +1,6 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart';
+import 'package:mvvm_playground/features/models/tree_model.dart';
 
 class GeoLocation {
   GeoPoint userlocation = new GeoPoint.createZeroPoint();
@@ -65,9 +66,10 @@ class GeoLocation {
     _calculateRadiusMetersAndInRange();
   }
 
-  void setPointCenter(double lat, double long, String tree) {
-    centerlocation.setPoint(lat, long);
-    name = tree;
+  void setPointCenter(Tree tree) {
+    centerlocation.setPoint(tree.position.latitude, tree.position.longitude);
+    name = tree.name;
+    idTree = tree.idTree;
     _calculateRadiusMetersAndInRange();
   }
 

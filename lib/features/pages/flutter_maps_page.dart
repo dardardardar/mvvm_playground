@@ -87,8 +87,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                   var userLocation = Provider.of<GeoLocation>(context);
                   userLocation.radiuscentermeters = 10;
                   for (var i = 0; i < trees.length; i++) {
-                    userLocation.setPointCenter(trees[i].position.latitude,
-                        trees[i].position.longitude, trees[i].name);
+                    userLocation.setPointCenter(trees[i]);
                   }
                   var userLocationCurrent = snapshot.data!;
                   return SafeArea(
@@ -328,7 +327,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                     userLocation
                                                             .currentTree.isEmpty
                                                         ? '-'
-                                                        : '${userLocation.idTree}',
+                                                        : '${userLocation.currentidTree.first}',
                                                     overflow:
                                                         TextOverflow.ellipsis,
                                                   ),
@@ -367,7 +366,8 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                     userLocationCurrent
                                                         .longitude),
                                                 data: Tree(
-                                                    idTree: userLocation.idTree,
+                                                    idTree: userLocation
+                                                        .currentidTree.first,
                                                     name: userLocation
                                                             .currentTree.isEmpty
                                                         ? 'No Tree found'

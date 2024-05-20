@@ -54,7 +54,7 @@ class CRUDRepository {
       } else {
         return GeneralErrorState(e: Exception(), error: response);
       }
-    } on Exception {
+    } on Exception catch (e) {
       rethrow;
     }
   }
