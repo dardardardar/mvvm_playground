@@ -34,6 +34,7 @@ class FlutterMapPage extends StatefulWidget {
 }
 
 class _HomeViewPageState extends State<FlutterMapPage> {
+  bool showhistory = false;
   late MapController mapController = MapController();
   late Stream<latLng.LatLng> locationStream;
   bool isDebug = false;

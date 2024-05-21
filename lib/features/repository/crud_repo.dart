@@ -25,7 +25,7 @@ class CRUDRepository {
 
   Future<List<Routes>> getRoute() async {
     try {
-      final result = await Api.get('wp-json/sinar/v1/bum/schedule');
+      final result = await Api.get('wp-json/sinar/v1/bum/history');
       final response = result.data;
       if (response != null) {
         final routeData =
