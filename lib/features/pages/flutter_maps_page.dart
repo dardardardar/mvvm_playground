@@ -24,7 +24,8 @@ import 'package:provider/provider.dart';
 import '../models/tree_model.dart';
 
 class FlutterMapPage extends StatefulWidget {
-  const FlutterMapPage({super.key});
+  final bool isHistory;
+  const FlutterMapPage({super.key, required this.isHistory});
 
   @override
   State<StatefulWidget> createState() {
@@ -113,7 +114,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                             children: [
                               mapTiles(context),
                               Visibility(
-                                visible: false,
+                                visible: widget.isHistory,
                                 child: PolylineLayer(
                                   polylines: mapPolyline(routes: routes),
                                   polylineCulling: true,
@@ -236,37 +237,40 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        boxButton(
-                                            context: context,
-                                            onTap: () {
-                                              showModalInputQty(context,
-                                                  isNear: userLocation.status
-                                                      .contains(true),
-                                                  current: position,
-                                                  data: Tree(
-                                                      idTree: userLocation
-                                                              .currentidTree
-                                                              .isEmpty
-                                                          ? ''
-                                                          : userLocation
-                                                              .currentidTree
-                                                              .first,
-                                                      name: userLocation
-                                                              .currentTree
-                                                              .isEmpty
-                                                          ? 'No Tree found'
-                                                          : userLocation
-                                                              .currentTree
-                                                              .first,
-                                                      position: latLng.LatLng(
-                                                          userLocation
-                                                                  .centerlocation
-                                                                  .latitude ??
-                                                              0,
-                                                          userLocation.centerlocation.longitude ?? 0)));
-                                            },
-                                            title: 'Collect',
-                                            icon: Icons.add_circle_outline)
+                                        Visibility(
+                                          visible: !widget.isHistory,
+                                          child: boxButton(
+                                              context: context,
+                                              onTap: () {
+                                                showModalInputQty(context,
+                                                    isNear: userLocation.status
+                                                        .contains(true),
+                                                    current: position,
+                                                    data: Tree(
+                                                        idTree: userLocation
+                                                                .currentidTree
+                                                                .isEmpty
+                                                            ? ''
+                                                            : userLocation
+                                                                .currentidTree
+                                                                .first,
+                                                        name: userLocation
+                                                                .currentTree
+                                                                .isEmpty
+                                                            ? 'No Tree found'
+                                                            : userLocation
+                                                                .currentTree
+                                                                .first,
+                                                        position: latLng.LatLng(
+                                                            userLocation
+                                                                    .centerlocation
+                                                                    .latitude ??
+                                                                0,
+                                                            userLocation.centerlocation.longitude ?? 0)));
+                                              },
+                                              title: 'Collect',
+                                              icon: Icons.add_circle_outline),
+                                        )
                                       ],
                                     ),
                                   ),

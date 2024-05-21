@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mvvm_playground/features/cubit/auth_cubit.dart';
 import 'package:mvvm_playground/features/cubit/auth_cubit_data.dart';
 import 'package:mvvm_playground/features/pages/flutter_maps_page.dart';
+import 'package:mvvm_playground/features/pages/main_menu_page.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
 
 class LoginPage extends StatefulWidget {
@@ -44,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
                 });
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => FlutterMapPage()),
+                  MaterialPageRoute(builder: (context) => const MainMenuPage()),
                 );
               } else {
                 setState(() {

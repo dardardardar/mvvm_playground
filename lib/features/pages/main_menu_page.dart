@@ -32,7 +32,9 @@ class MainMenuPage extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const FlutterMapPage()));
+                            builder: (context) => const FlutterMapPage(
+                                  isHistory: false,
+                                )));
                   },
                   context: context,
                   title: 'Harvest',
@@ -43,7 +45,15 @@ class MainMenuPage extends StatelessWidget {
               ),
               flatButton(
                   context: context,
-                  onTap: () {},
+                  onTap: () {
+                    print('sd');
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const FlutterMapPage(
+                                  isHistory: true,
+                                )));
+                  },
                   title: 'History',
                   backgroundColor: primaryColor,
                   icon: Icons.timer_outlined)
