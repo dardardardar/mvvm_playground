@@ -35,7 +35,7 @@ class MainMenuPage extends StatelessWidget {
                             builder: (context) => const FlutterMapPage()));
                   },
                   context: context,
-                  title: 'Harvesst',
+                  title: 'Harvest',
                   backgroundColor: primaryColor,
                   icon: Icons.shopping_cart_rounded),
               SizedBox(

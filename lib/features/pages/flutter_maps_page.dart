@@ -13,6 +13,8 @@ import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit_data.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
 import 'package:mvvm_playground/functions/geolocation.dart';
+import 'package:mvvm_playground/widgets/bottom_bar.dart';
+import 'package:mvvm_playground/widgets/buttons.dart';
 import 'package:mvvm_playground/widgets/map_components.dart';
 import 'package:mvvm_playground/widgets/modal_sheets.dart';
 import 'package:mvvm_playground/widgets/navigation_bar.dart';
@@ -142,28 +144,10 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                         ),
                         Column(
                           children: [
-                            Visibility(
-                              visible: isDebug,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Wrap(
-                                  children: [
-                                    Text(
-                                        'Lat : ${userLocationCurrent.latitude}'),
-                                    const SizedBox(
-                                      width: 8,
-                                    ),
-                                    Text(
-                                        'Long : ${userLocationCurrent.longitude}'),
-                                    const SizedBox(
-                                      width: 8,
-                                    ),
-                                    Text(
-                                        'isInRange : ${userLocation.status.contains(true)}'),
-                                  ],
-                                ),
-                              ),
-                            ),
+                            debugBar(
+                                geolocation: userLocation,
+                                pos: userLocationCurrent,
+                                visible: isDebug),
                             Padding(
                               padding: const EdgeInsets.all(12.0),
                               child: Row(
@@ -249,61 +233,37 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        InkWell(
-                                          onTap: () {
-                                            showModalInputQty(context,
-                                                isNear: userLocation.status
-                                                    .contains(true),
-                                                current: position,
-                                                data: Tree(
-                                                    idTree: userLocation
-                                                            .currentidTree
-                                                            .isEmpty
-                                                        ? ''
-                                                        : userLocation
-                                                            .currentidTree
-                                                            .first,
-                                                    name: userLocation.currentTree.isEmpty
-                                                        ? 'No Tree found'
-                                                        : userLocation
-                                                            .currentTree.first,
-                                                    position: latLng.LatLng(
-                                                        userLocation
-                                                                .centerlocation
-                                                                .latitude ??
-                                                            0,
-                                                        userLocation
-                                                                .centerlocation
-                                                                .longitude ??
-                                                            0)));
-                                          },
-                                          child: Container(
-                                            padding: const EdgeInsets.all(8),
-                                            decoration: BoxDecoration(
-                                                color: primaryColor,
-                                                borderRadius:
-                                                    BorderRadius.circular(10)),
-                                            child: const Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
-                                                children: [
-                                                  Icon(
-                                                    Icons
-                                                        .add_circle_outline_outlined,
-                                                    color: Colors.white,
-                                                  ),
-                                                  SizedBox(
-                                                    height: 2,
-                                                  ),
-                                                  Text(
-                                                    'Collect',
-                                                    style: subtitle3,
-                                                  )
-                                                ]),
-                                          ),
-                                        ),
+                                        boxButton(
+                                            context: context,
+                                            onTap: () {
+                                              showModalInputQty(context,
+                                                  isNear: userLocation.status
+                                                      .contains(true),
+                                                  current: position,
+                                                  data: Tree(
+                                                      idTree: userLocation
+                                                              .currentidTree
+                                                              .isEmpty
+                                                          ? ''
+                                                          : userLocation
+                                                              .currentidTree
+                                                              .first,
+                                                      name: userLocation
+                                                              .currentTree
+                                                              .isEmpty
+                                                          ? 'No Tree found'
+                                                          : userLocation
+                                                              .currentTree
+                                                              .first,
+                                                      position: latLng.LatLng(
+                                                          userLocation
+                                                                  .centerlocation
+                                                                  .latitude ??
+                                                              0,
+                                                          userLocation.centerlocation.longitude ?? 0)));
+                                            },
+                                            title: 'Collect',
+                                            icon: Icons.add_circle_outline)
                                       ],
                                     ),
                                   ),
