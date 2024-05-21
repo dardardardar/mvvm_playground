@@ -13,11 +13,11 @@ import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit_data.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
 import 'package:mvvm_playground/functions/geolocation.dart';
+import 'package:mvvm_playground/widgets/map_components.dart';
 import 'package:mvvm_playground/widgets/modal_sheets.dart';
 import 'package:mvvm_playground/widgets/navigation_bar.dart';
 import 'package:mvvm_playground/widgets/states.dart';
 import 'package:provider/provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import '../models/tree_model.dart';
 
@@ -33,7 +33,7 @@ class FlutterMapPage extends StatefulWidget {
 class _HomeViewPageState extends State<FlutterMapPage> {
   late MapController mapController = MapController();
   late Stream<latLng.LatLng> locationStream;
-
+  bool isDebug = false;
   @override
   void initState() {
     super.initState();
@@ -58,7 +58,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
     return meters / metersPerPixel;
   }
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +90,8 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                     userLocation.setPointCenter(trees[i]);
                   }
                   var userLocationCurrent = snapshot.data!;
+                  var position = latLng.LatLng(userLocationCurrent.latitude,
+                      userLocationCurrent.longitude);
                   return SafeArea(
                     child: Column(
                       children: [
@@ -102,138 +104,37 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                   print('${l.latitude}, ${l.longitude}');
                                 },
                                 initialZoom: 20,
-                                initialCenter: latLng.LatLng(
-                                    userLocationCurrent.latitude,
-                                    userLocationCurrent.longitude)),
+                                initialCenter: position),
                             children: [
-                              TileLayer(
-                                urlTemplate:
-                                    'https://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
-                                userAgentPackageName: 'com.example.app',
-                                errorTileCallback:
-                                    (context, exception, stackTrace) {
-                                  print('Error loading tile: $exception');
-                                  Container(
-                                    color: Colors.red,
-                                    child: const Center(
-                                      child: Text(
-                                        'Tile Load Error',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
+                              mapTiles(context),
                               Visibility(
                                 visible: false,
                                 child: PolylineLayer(
-                                  polylines: [
-                                    Polyline(
-                                      points: routes
-                                          .map((route) => route.position)
-                                          .toList(),
-                                      color: Colors.green,
-                                      strokeWidth: 3,
-                                      isDotted: false,
-                                      useStrokeWidthInMeter: true,
-                                    )
-                                  ],
+                                  polylines: mapPolyline(routes: routes),
                                   polylineCulling: true,
                                 ),
                               ),
-                              CircleLayer(
-                                circles: [
-                                  CircleMarker(
-                                      point: latLng.LatLng(
-                                          userLocationCurrent.latitude,
-                                          userLocationCurrent.longitude),
-                                      color: Colors.blue.withOpacity(0.3),
-                                      radius: metersToPixels(10,
-                                          userLocationCurrent.latitude, 15.0)),
-                                ],
+                              Visibility(
+                                visible: false,
+                                child: CircleLayer(
+                                  circles: [
+                                    circleMarkerOverlays(
+                                      position: position,
+                                      radius: 10,
+                                    ),
+                                    for (var i = 0; i < trees.length; i++)
+                                      circleMarkerOverlays(
+                                          position: trees[i].position,
+                                          radius: 10,
+                                          color: primaryColor.withOpacity(0.3)),
+                                  ],
+                                ),
                               ),
                               MarkerLayer(
                                 markers: [
-                                  Marker(
-                                      point: latLng.LatLng(
-                                          userLocationCurrent.latitude,
-                                          userLocationCurrent.longitude),
-                                      child: Container(
-                                        decoration: const ShapeDecoration(
-                                            shape: CircleBorder(),
-                                            shadows: [
-                                              BoxShadow(
-                                                color: Colors.black12,
-                                                spreadRadius: 3,
-                                                blurRadius: 7,
-                                                offset: Offset(0,
-                                                    3), // changes position of shadow
-                                              ),
-                                            ],
-                                            color: Colors.white),
-                                        child: const Icon(
-                                          Icons.circle,
-                                          color: secondaryColor,
-                                        ),
-                                      )),
+                                  userMarker(position: position),
                                   for (var i = 0; i < trees.length; i++)
-                                    Marker(
-                                      width: 300.0,
-                                      height: 300.0,
-                                      point: trees[i].position,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.all(8),
-                                            child: Container(
-                                              padding: const EdgeInsets.all(1),
-                                              decoration: const ShapeDecoration(
-                                                  shape: CircleBorder(),
-                                                  shadows: [
-                                                    BoxShadow(
-                                                      color: Colors.black12,
-                                                      spreadRadius: 3,
-                                                      blurRadius: 7,
-                                                      offset: Offset(0,
-                                                          3), // changes position of shadow
-                                                    ),
-                                                  ],
-                                                  color: Colors.white),
-                                              child: Image.asset(
-                                                  'assets/icons/go-harvest-assets.png',
-                                                  height: 30),
-                                            ),
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.all(4),
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(6),
-                                                boxShadow: const [
-                                                  BoxShadow(
-                                                    color: Colors.black12,
-                                                    spreadRadius: 3,
-                                                    blurRadius: 7,
-                                                    offset: Offset(0,
-                                                        3), // changes position of shadow
-                                                  ),
-                                                ],
-                                                color: primaryColor),
-                                            child: Text(
-                                              trees[i].name,
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
+                                    treeMarker(tree: trees[i])
                                 ],
                               ),
                             ],
@@ -242,7 +143,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                         Column(
                           children: [
                             Visibility(
-                              visible: false,
+                              visible: isDebug,
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Wrap(
@@ -317,7 +218,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                     CrossAxisAlignment.start,
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
-                                                  Text(
+                                                  const Text(
                                                     'No. reg',
                                                     style: subtitle3,
                                                     overflow:
@@ -336,13 +237,6 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                             )
                                           ],
                                         ),
-                                        SizedBox(
-                                          height: 8,
-                                        ),
-                                        Text(
-                                          'Detail information',
-                                          style: textButton,
-                                        )
                                       ],
                                     ),
                                   ),
@@ -387,12 +281,12 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                         userLocation.centerlocation.longitude ?? 0)));
                                           },
                                           child: Container(
-                                            padding: EdgeInsets.all(8),
+                                            padding: const EdgeInsets.all(8),
                                             decoration: BoxDecoration(
                                                 color: primaryColor,
                                                 borderRadius:
                                                     BorderRadius.circular(10)),
-                                            child: Column(
+                                            child: const Column(
                                                 mainAxisSize: MainAxisSize.min,
                                                 mainAxisAlignment:
                                                     MainAxisAlignment
