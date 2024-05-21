@@ -41,4 +41,13 @@ class MapsCubit extends Cubit<MapsData> {
           sendQty: GeneralErrorState(e: e, error: e.toString())));
     }
   }
+
+  Future<void> sendHistory({required String lat, required String long}) async {
+    try {
+      await _crudRepository.sendHistory(lat, long);
+    } on Exception catch (e) {
+      emit(state.copyWith(
+          sendQty: GeneralErrorState(e: e, error: e.toString())));
+    }
+  }
 }

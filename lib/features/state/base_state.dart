@@ -40,8 +40,8 @@ class NotRegisteredEmailSSOState<T> extends GeneralErrorState<T?> {
   NotRegisteredEmailSSOState({required super.e, super.error, super.data});
 }
 
-class SSOErrorState extends GeneralErrorState {
-  SSOErrorState({required super.e, super.error});
+class ErrorState extends GeneralErrorState {
+  ErrorState({required super.e, super.error});
 }
 
 class AccountPendingApprovalState extends GeneralErrorState {

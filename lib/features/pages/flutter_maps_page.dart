@@ -50,6 +50,9 @@ class _HomeViewPageState extends State<FlutterMapPage> {
           desiredAccuracy: LocationAccuracy.bestForNavigation);
 
       yield latLng.LatLng(position.latitude, position.longitude);
+      context.read<MapsCubit>().sendHistory(
+          lat: position.latitude.toString(),
+          long: position.longitude.toString());
       await Future.delayed(const Duration(seconds: 1));
     }
   }

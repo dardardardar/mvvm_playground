@@ -2,6 +2,7 @@ import 'package:injectable/injectable.dart';
 import 'package:mvvm_playground/features/models/tree_model.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
 import 'package:mvvm_playground/helper/api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 @injectable
 class CRUDRepository {
@@ -24,8 +25,7 @@ class CRUDRepository {
 
   Future<List<Routes>> getRoute() async {
     try {
-      final result =
-          await Api.get('wp-json/sinar/v1/bum/locations', data: {"type": '2'});
+      final result = await Api.get('wp-json/sinar/v1/bum/schedule');
       final response = result.data;
       if (response != null) {
         final routeData =
@@ -35,6 +35,23 @@ class CRUDRepository {
         return [];
       }
     } on Exception {
+      rethrow;
+    }
+  }
+
+  Future<BaseState> sendHistory(String lat, String long) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+
+      final result = await Api.post('wp-json/sinar/v1/bum/listen',
+          {"id_user": prefs.getString('id'), "lat": lat, "long": long});
+      final response = result.data;
+      if (response != null) {
+        return SuccessState(data: result);
+      } else {
+        return GeneralErrorState(e: Exception(), error: response);
+      }
+    } on Exception catch (e) {
       rethrow;
     }
   }
