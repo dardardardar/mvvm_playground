@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mvvm_playground/const/theme.dart';
+import 'package:mvvm_playground/features/pages/flutter_maps_page.dart';
 import 'package:mvvm_playground/widgets/buttons.dart';
 
 class MainMenuPage extends StatelessWidget {
@@ -26,8 +27,15 @@ class MainMenuPage extends StatelessWidget {
                 height: 16,
               ),
               flatButton(
+                  onTap: () {
+                    print('sd');
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const FlutterMapPage()));
+                  },
                   context: context,
-                  title: 'Harvest',
+                  title: 'Harvesst',
                   backgroundColor: primaryColor,
                   icon: Icons.shopping_cart_rounded),
               SizedBox(
