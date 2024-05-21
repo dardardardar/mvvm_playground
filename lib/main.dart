@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/features/cubit/home_cubit.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
-import 'package:mvvm_playground/features/pages/flutter_maps_page.dart';
+
+import 'package:mvvm_playground/features/pages/main_menu_page.dart';
 import 'package:mvvm_playground/features/repository/crud_repo.dart';
 import 'package:mvvm_playground/functions/geolocation.dart';
 import 'package:mvvm_playground/functions/location.dart';
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           title: 'Flutter Demo',
           theme: theme,
-          home: const FlutterMapPage(),
+          home: const MainMenuPage(),
         ),
       ),
     );
