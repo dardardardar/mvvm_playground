@@ -254,11 +254,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                             showModalInputQty(context,
                                                 isNear: userLocation.status
                                                     .contains(true),
-                                                current: latLng.LatLng(
-                                                    userLocationCurrent
-                                                        .latitude,
-                                                    userLocationCurrent
-                                                        .longitude),
+                                                current: position,
                                                 data: Tree(
                                                     idTree: userLocation
                                                             .currentidTree
@@ -267,18 +263,19 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                         : userLocation
                                                             .currentidTree
                                                             .first,
-                                                    name:
-                                                        userLocation.currentTree.isEmpty
-                                                            ? 'No Tree found'
-                                                            : userLocation
-                                                                .currentTree
-                                                                .first,
+                                                    name: userLocation.currentTree.isEmpty
+                                                        ? 'No Tree found'
+                                                        : userLocation
+                                                            .currentTree.first,
                                                     position: latLng.LatLng(
                                                         userLocation
                                                                 .centerlocation
                                                                 .latitude ??
                                                             0,
-                                                        userLocation.centerlocation.longitude ?? 0)));
+                                                        userLocation
+                                                                .centerlocation
+                                                                .longitude ??
+                                                            0)));
                                           },
                                           child: Container(
                                             padding: const EdgeInsets.all(8),

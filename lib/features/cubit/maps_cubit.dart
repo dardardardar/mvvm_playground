@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:injectable/injectable.dart';
@@ -7,7 +5,6 @@ import 'package:mvvm_playground/features/cubit/maps_cubit_data.dart';
 import 'package:mvvm_playground/features/models/tree_model.dart';
 import 'package:mvvm_playground/features/repository/crud_repo.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
-import 'package:mvvm_playground/functions/set_location.dart';
 
 @injectable
 class MapsCubit extends Cubit<MapsData> {

@@ -12,10 +12,14 @@ import 'package:provider/provider.dart';
 
 void showModalInputQty(BuildContext context,
     {bool? isNear, required Tree data, required LatLng current}) {
-  void sendQty(qty) {
+  void sendQty(qty, bool isNewTree) {
+    Tree tree = Tree(
+        name: data.name,
+        idTree: data.idTree,
+        position: isNewTree ? current : data.position);
     context.read<MapsCubit>().sendQty(
           qty: qty,
-          data: data,
+          data: tree,
         );
   }
 
@@ -80,7 +84,7 @@ void showModalInputQty(BuildContext context,
               ),
               InkWell(
                   onTap: () {
-                    sendQty(userloc.qty);
+                    sendQty(userloc.qty, data.idTree.isEmpty);
                     Navigator.pop(context);
                   },
                   child: Container(
