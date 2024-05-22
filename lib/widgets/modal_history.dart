@@ -25,6 +25,16 @@ void showModalHistory(BuildContext context, {required List<Tree> history}) {
             width: double.infinity,
             padding: const EdgeInsets.all(16),
             child: Column(mainAxisSize: MainAxisSize.min, children: [
+              Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Text('Waktu'),
+                  ),
+                  Expanded(flex: 3, child: Text('Tree')),
+                  Expanded(flex: 1, child: Text('Qty')),
+                ],
+              ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.6,
                 child: SingleChildScrollView(
@@ -34,11 +44,12 @@ void showModalHistory(BuildContext context, {required List<Tree> history}) {
                         Row(
                           children: [
                             Expanded(
+                              flex: 1,
                               child: Text(DateFormat('HH:mm').format(
                                   history[i].date ?? DateTime(1970, 1, 1))),
                             ),
-                            Expanded(child: Text(history[i].name)),
-                            Expanded(child: Text(history[i].qty)),
+                            Expanded(flex: 3, child: Text(history[i].name)),
+                            Expanded(flex: 1, child: Text(history[i].qty)),
                           ],
                         ),
                     ],
