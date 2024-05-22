@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -25,78 +27,93 @@ void showModalInputQty(BuildContext context,
   }
 
   showModalBottomSheet<void>(
+    clipBehavior: Clip.antiAlias,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(16.0),
     ),
     context: context,
     isScrollControlled: true,
-    backgroundColor: Colors.black,
+    backgroundColor: Colors.white10,
     useSafeArea: true,
     builder: (context) {
       var userloc = Provider.of<GeoLocation>(context);
-      return Container(
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-          color: Colors.black,
-        ),
-        child: SafeArea(
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              Text(
-                'Panen',
-                style: textHeadingAlt,
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              Text('Tree : ' + data.name),
-              Text('Masukkan jumlah sawit yang dipanen'),
-              Visibility(
-                visible: data.idTree.isEmpty,
-                child: Container(
-                  margin: EdgeInsets.all(8),
-                  padding: EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                      color: Colors.white24,
-                      borderRadius: BorderRadius.circular(8)),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.info_outline),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Flexible(
-                        child: Text(
-                          'Pohon tidak ditemukan, sistem akan mengasumsikan pohon ini sebagai pohon baru',
-                          style: TextStyle(fontSize: 12),
+      return BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+        child: Container(
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+            color: Colors.white10,
+          ),
+          child: SafeArea(
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+                Text(
+                  'Panen',
+                  style: textHeadingAlt,
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  'Masukkan jumlah sawit yang dipanen',
+                  style: textBody,
+                ),
+                Visibility(
+                  visible: data.idTree.isEmpty,
+                  child: Container(
+                    margin: EdgeInsets.all(8),
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                        color: Colors.green.shade200.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(8)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.info_outline,
+                          color: Colors.green.shade900,
                         ),
-                      ),
-                    ],
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Flexible(
+                          child: Text(
+                            'Pohon tidak ditemukan, sistem akan mengasumsikan pohon ini sebagai pohon baru',
+                            style: subtitle2.copyWith(
+                                color: Colors.green.shade900),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              InputQty(onQtyChanged: (value) {
-                userloc.setQty(value);
-              }),
-              const SizedBox(
-                height: 8,
-              ),
-              InkWell(
-                  onTap: () {
-                    sendQty(userloc.qty, data.idTree.isEmpty);
-                    Navigator.pop(context);
-                    showModalSuccess(context, name: data.name);
+                InputQty(
+                  onQtyChanged: (value) {
+                    userloc.setQty(value);
                   },
-                  child: Container(
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                          color: primaryColor,
-                          borderRadius: BorderRadius.circular(8)),
-                      child: Text('Panen Sekarang'.toUpperCase())))
-            ]),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                InkWell(
+                    onTap: () {
+                      sendQty(userloc.qty, data.idTree.isEmpty);
+                      Navigator.pop(context);
+                      showModalSuccess(context, name: data.name);
+                    },
+                    child: Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                            color: primaryColor,
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Text(
+                          'Panen Sekarang'.toUpperCase(),
+                          style: textButton2,
+                        )))
+              ]),
+            ),
           ),
         ),
       );

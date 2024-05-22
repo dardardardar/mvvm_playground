@@ -93,21 +93,23 @@ class _InputQty extends State<InputQty> {
             padding: const EdgeInsets.all(8.0),
             child: FilledButton(
               style: FilledButton.styleFrom(
-                backgroundColor:
-                    value <= 0 ? Colors.black : widget.btnColor ?? primaryColor,
+                backgroundColor: value <= 0
+                    ? Colors.black12
+                    : widget.btnColor ?? primaryColor,
                 shape: const CircleBorder(),
                 padding: EdgeInsets.zero,
                 fixedSize: const Size(30, 30),
                 minimumSize: const Size(20, 20),
               ),
               onPressed: value <= 0
-                  ? null
+                  ? () {}
                   : () {
                       _onDecrease();
                       widget.onQtyChanged(value);
                     },
-              child: const Icon(
+              child: Icon(
                 Icons.remove,
+                color: value > 0 ? null : Colors.black45,
               ),
             ),
           ),
@@ -119,6 +121,7 @@ class _InputQty extends State<InputQty> {
               },
               textAlign: TextAlign.center,
               controller: qtyController,
+              style: TextStyle(color: Colors.black),
               decoration: const InputDecoration(
                 border: InputBorder.none,
               ),

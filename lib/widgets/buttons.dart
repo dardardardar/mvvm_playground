@@ -66,7 +66,7 @@ Widget flatButton(
               width: double.infinity,
               child: Text(
                 title,
-                style: textHeading2Alt,
+                style: textHeading2Alt.copyWith(color: Colors.white),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -102,7 +102,7 @@ Widget boxButton(
             ),
             Text(
               title,
-              style: subtitle3,
+              style: subtitle3.copyWith(color: Colors.white),
             )
           ]),
     ),

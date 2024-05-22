@@ -81,7 +81,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
 
   Widget _buildInputDataBody(BuildContext context) {
     return Container(
-      color: backgroundColor,
+      color: Colors.green.shade50,
       child: BlocBuilder<MapsCubit, MapsData>(
         builder: (context, state) {
           if (state.listTree is SuccessState<List<Tree>> &&
@@ -200,6 +200,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                         : '${userLocation.currentTree.first}',
                                                     overflow:
                                                         TextOverflow.ellipsis,
+                                                    style: subtitle,
                                                   ),
                                                 ],
                                               ),
@@ -228,6 +229,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                         : '${userLocation.currentidTree.first}',
                                                     overflow:
                                                         TextOverflow.ellipsis,
+                                                    style: subtitle,
                                                   ),
                                                 ],
                                               ),

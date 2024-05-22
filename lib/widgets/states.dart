@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mvvm_playground/const/theme.dart';
 
 Widget circularLoading({String? text}) {
   return Center(
@@ -7,11 +8,16 @@ Widget circularLoading({String? text}) {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        text == null ? const Center() : Text(text),
+        text == null
+            ? const Center()
+            : Text(
+                text,
+                style: textBody,
+              ),
         const SizedBox(
           height: 16,
         ),
-        const CircularProgressIndicator(color: Colors.white, strokeWidth: 1.5),
+        const CircularProgressIndicator(color: Colors.black, strokeWidth: 1.5),
       ],
     ),
   );
