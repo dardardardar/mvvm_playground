@@ -29,6 +29,10 @@ void showModalHistory(BuildContext context, {required List<Tree> history}) {
                 children: [
                   Expanded(
                     flex: 1,
+                    child: Text('No'),
+                  ),
+                  Expanded(
+                    flex: 1,
                     child: Text('Waktu'),
                   ),
                   Expanded(flex: 3, child: Text('Tree')),
@@ -43,6 +47,10 @@ void showModalHistory(BuildContext context, {required List<Tree> history}) {
                       for (var i = 0; i < history.length; i++)
                         Row(
                           children: [
+                            Expanded(
+                              flex: 1,
+                              child: Text(i.toString()),
+                            ),
                             Expanded(
                               flex: 1,
                               child: Text(DateFormat('HH:mm').format(

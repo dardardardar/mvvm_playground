@@ -295,7 +295,8 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                 showModalHistory(context,
                                                     history: routes.isEmpty
                                                         ? []
-                                                        : routes);
+                                                        : routes.reversed
+                                                            .toList());
                                               },
                                               title: 'History',
                                               icon: Icons.history),
