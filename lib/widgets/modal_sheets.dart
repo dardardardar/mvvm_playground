@@ -104,6 +104,8 @@ void showModalInputQty(BuildContext context,
                       showModalSuccess(context, name: data.name);
                     },
                     child: Container(
+                        width: double.infinity,
+                        alignment: Alignment.center,
                         padding: EdgeInsets.all(8),
                         decoration: BoxDecoration(
                             color: primaryColor,
