@@ -151,11 +151,16 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                           userLocationCurrent.longitude)),
                                   for (var i = 0; i < trees.length; i++)
                                     treeMarker(context, tree: trees[i]),
+                                ],
+                              ),
+                              Visibility(
+                                visible: widget.isHistory,
+                                child: MarkerLayer(markers: [
                                   for (var i = 0; i < routes.length; i++)
                                     InputMarkers(context,
                                         tree: routes[i], no: i.toString()),
-                                ],
-                              ),
+                                ]),
+                              )
                             ],
                           ),
                         ),
