@@ -33,6 +33,7 @@ class MainMenuPage extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) => const FlutterMapPage(
+                                  title: 'Harvest',
                                   isHistory: false,
                                 )));
                   },
@@ -52,6 +53,7 @@ class MainMenuPage extends StatelessWidget {
                         MaterialPageRoute(
                             builder: (context) => const FlutterMapPage(
                                   isHistory: true,
+                                  title: 'History',
                                 )));
                   },
                   title: 'History',

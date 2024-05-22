@@ -25,7 +25,9 @@ import '../models/tree_model.dart';
 
 class FlutterMapPage extends StatefulWidget {
   final bool isHistory;
-  const FlutterMapPage({super.key, required this.isHistory});
+  final String title;
+  const FlutterMapPage(
+      {super.key, required this.isHistory, required this.title});
 
   @override
   State<StatefulWidget> createState() {
@@ -72,7 +74,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: appBar(
-        title: 'Go Harvest',
+        title: widget.title,
       ),
       body: _buildInputDataBody(context),
     );
@@ -117,7 +119,9 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                               Visibility(
                                 visible: widget.isHistory,
                                 child: PolylineLayer(
-                                  polylines: mapPolyline(routes: routes),
+                                  polylines: routes.isEmpty
+                                      ? []
+                                      : mapPolyline(routes: routes),
                                   polylineCulling: true,
                                 ),
                               ),
@@ -153,7 +157,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                 geolocation: userLocation,
                                 pos: userLocationCurrent,
                                 visible: isDebug),
-                            Padding(
+                            Container(
                               padding: const EdgeInsets.all(12.0),
                               child: Row(
                                 mainAxisAlignment:
@@ -179,7 +183,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                     CrossAxisAlignment.start,
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
-                                                  const Text(
+                                                  Text(
                                                     'Palm near',
                                                     style: subtitle3,
                                                     overflow:
@@ -207,7 +211,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                     CrossAxisAlignment.start,
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
-                                                  const Text(
+                                                  Text(
                                                     'No. reg',
                                                     style: subtitle3,
                                                     overflow:

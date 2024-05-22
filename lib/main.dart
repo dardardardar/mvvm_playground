@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           title: 'Flutter Demo',
           theme: theme,
-          home: LoginPage(),
+          home: MainMenuPage(),
         ),
       ),
     );
