@@ -23,7 +23,7 @@ class MapsCubit extends Cubit<MapsData> {
       final route = await _crudRepository.getRoute();
       emit(state.copyWith(
         listTree: SuccessState<List<Tree>>(data: tree),
-        listRoute: SuccessState<List<Routes>>(data: route),
+        listRoute: SuccessState<List<Tree>>(data: route),
       ));
     } on Exception catch (e) {
       emit(state.copyWith(

@@ -16,6 +16,7 @@ import 'package:mvvm_playground/functions/geolocation.dart';
 import 'package:mvvm_playground/widgets/bottom_bar.dart';
 import 'package:mvvm_playground/widgets/buttons.dart';
 import 'package:mvvm_playground/widgets/map_components.dart';
+import 'package:mvvm_playground/widgets/modal_history.dart';
 import 'package:mvvm_playground/widgets/modal_sheets.dart';
 import 'package:mvvm_playground/widgets/navigation_bar.dart';
 import 'package:mvvm_playground/widgets/states.dart';
@@ -85,9 +86,9 @@ class _HomeViewPageState extends State<FlutterMapPage> {
       child: BlocBuilder<MapsCubit, MapsData>(
         builder: (context, state) {
           if (state.listTree is SuccessState<List<Tree>> &&
-              state.listRoute is SuccessState<List<Routes>>) {
+              state.listRoute is SuccessState<List<Tree>>) {
             final trees = (state.listTree as SuccessState<List<Tree>>).data;
-            final routes = (state.listRoute as SuccessState<List<Routes>>).data;
+            final routes = (state.listRoute as SuccessState<List<Tree>>).data;
             return StreamBuilder<latLng.LatLng>(
               stream: locationStream,
               builder: (context, snapshot) {
@@ -282,6 +283,19 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                               },
                                               title: 'Collect',
                                               icon: Icons.add_circle_outline),
+                                        ),
+                                        Visibility(
+                                          visible: widget.isHistory,
+                                          child: boxButton(
+                                              context: context,
+                                              onTap: () {
+                                                showModalHistory(context,
+                                                    history: routes.isEmpty
+                                                        ? []
+                                                        : routes);
+                                              },
+                                              title: 'History',
+                                              icon: Icons.history),
                                         )
                                       ],
                                     ),

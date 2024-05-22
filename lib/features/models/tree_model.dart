@@ -1,16 +1,28 @@
+import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 
 class Tree {
   final String name;
   final String idTree;
   final LatLng position;
+  final String qty;
+  final DateTime? date;
 
-  Tree({required this.name, required this.idTree, required this.position});
+  Tree(
+      {required this.name,
+      required this.idTree,
+      required this.position,
+      this.qty = '0',
+      this.date});
 
   factory Tree.fromJson(data) {
     return Tree(
-        name: data['name'],
-        idTree: data['id'],
+        name: (data['name'] != null) ? data['name'] : '',
+        idTree: (data['id'] != null) ? data['id'] : '',
+        qty: (data['qty'] != null) ? data['qty'] : '',
+        date: data['date'] != null
+            ? DateFormat('yyyy-MM-dd HH:mm:ss').parse(data['date'])
+            : DateTime(1970, 1, 1),
         position:
             LatLng(double.parse(data['lat']), double.parse(data['long'])));
   }
