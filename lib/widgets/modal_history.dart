@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/features/models/tree_model.dart';
+import 'package:intl/intl.dart';
 
 void showModalHistory(BuildContext context, {required List<Tree> history}) {
   showModalBottomSheet<void>(
@@ -30,11 +31,16 @@ void showModalHistory(BuildContext context, {required List<Tree> history}) {
                   child: Column(
                     children: [
                       for (var i = 0; i < history.length; i++)
-                        Text(history[i].date +
-                            ' ' +
-                            history[i].name +
-                            ' ' +
-                            history[i].qty),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(DateFormat('HH:mm').format(
+                                  history[i].date ?? DateTime(1970, 1, 1))),
+                            ),
+                            Expanded(child: Text(history[i].name)),
+                            Expanded(child: Text(history[i].qty)),
+                          ],
+                        ),
                     ],
                   ),
                 ),
