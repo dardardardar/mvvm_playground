@@ -51,7 +51,6 @@ void showModalInputQty(BuildContext context,
               const SizedBox(
                 height: 8,
               ),
-              Text('Tree : ' + data.name),
               Text('Masukkan jumlah sawit yang dipanen'),
               Visibility(
                 visible: data.idTree.isEmpty,

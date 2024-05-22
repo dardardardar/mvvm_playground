@@ -4,13 +4,22 @@ class Tree {
   final String name;
   final String idTree;
   final LatLng position;
+  final String qty;
+  final String date;
 
-  Tree({required this.name, required this.idTree, required this.position});
+  Tree(
+      {required this.name,
+      required this.idTree,
+      required this.position,
+      this.qty = '0',
+      this.date = ''});
 
   factory Tree.fromJson(data) {
     return Tree(
-        name: data['name'],
-        idTree: data['id'],
+        name: (data['name'] != null) ? data['name'] : '',
+        idTree: (data['id'] != null) ? data['id'] : '',
+        qty: (data['qty'] != null) ? data['qty'] : '',
+        date: (data['date'] != null) ? data['date'] : '',
         position:
             LatLng(double.parse(data['lat']), double.parse(data['long'])));
   }

@@ -38,7 +38,6 @@ class MainMenuPage extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: flatButton(
                     onTap: () {
-                      print('sd');
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -57,7 +56,6 @@ class MainMenuPage extends StatelessWidget {
                 child: flatButton(
                     context: context,
                     onTap: () {
-                      print('sd');
                       Navigator.push(
                           context,
                           MaterialPageRoute(
