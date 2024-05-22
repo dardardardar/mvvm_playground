@@ -94,7 +94,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   var userLocation = Provider.of<GeoLocation>(context);
-                  userLocation.radiuscentermeters = 10;
+                  userLocation.radiuscentermeters = 5;
                   for (var i = 0; i < trees.length; i++) {
                     userLocation.setPointCenter(trees[i]);
                   }
@@ -126,17 +126,17 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                 ),
                               ),
                               Visibility(
-                                visible: false,
+                                visible: true,
                                 child: CircleLayer(
                                   circles: [
                                     circleMarkerOverlays(
                                       position: position,
-                                      radius: 10,
+                                      radius: 5,
                                     ),
                                     for (var i = 0; i < trees.length; i++)
                                       circleMarkerOverlays(
                                           position: trees[i].position,
-                                          radius: 10,
+                                          radius: 5,
                                           color: primaryColor.withOpacity(0.3)),
                                   ],
                                 ),
@@ -145,7 +145,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                 markers: [
                                   userMarker(position: position),
                                   for (var i = 0; i < trees.length; i++)
-                                    treeMarker(tree: trees[i])
+                                    treeMarker(context, tree: trees[i])
                                 ],
                               ),
                             ],
@@ -266,12 +266,8 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                             : userLocation
                                                                 .currentTree
                                                                 .first,
-                                                        position: latLng.LatLng(
-                                                            userLocation
-                                                                    .centerlocation
-                                                                    .latitude ??
-                                                                0,
-                                                            userLocation.centerlocation.longitude ?? 0)));
+                                                        position:
+                                                            userLocation.pos));
                                               },
                                               title: 'Collect',
                                               icon: Icons.add_circle_outline),

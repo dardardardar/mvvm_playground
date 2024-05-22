@@ -59,7 +59,7 @@ void showModalInputQty(BuildContext context,
                   decoration: BoxDecoration(
                       color: Colors.white24,
                       borderRadius: BorderRadius.circular(8)),
-                  child: Row(
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.info_outline),

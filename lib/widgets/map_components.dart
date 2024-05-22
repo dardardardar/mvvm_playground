@@ -1,9 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mvvm_playground/const/strings.dart';
 import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/features/models/tree_model.dart';
+import 'package:mvvm_playground/functions/functions.dart';
 
 Widget mapTiles(BuildContext context) {
   return TileLayer(
@@ -66,23 +68,41 @@ CircleMarker circleMarkerOverlays(
       useRadiusInMeter: true);
 }
 
-Marker treeMarker({required Tree tree}) {
+Marker treeMarker(BuildContext context, {required Tree tree}) {
   return Marker(
-    width: 300.0,
-    height: 300.0,
+    width: sizeByScreenWidth(context: context, sizePercent: 0.25),
+    height: sizeByScreenWidth(context: context, sizePercent: 0.21),
     point: tree.position,
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
+    child: Stack(
       children: [
-        Container(
-          padding: const EdgeInsets.all(8),
+        Center(
           child: Container(
-            padding: const EdgeInsets.all(1),
-            decoration: const ShapeDecoration(
-                shape: CircleBorder(),
-                shadows: [
+            padding: const EdgeInsets.all(8),
+            child: Container(
+              padding: const EdgeInsets.all(1),
+              decoration: const ShapeDecoration(
+                  shape: CircleBorder(),
+                  shadows: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      spreadRadius: 3,
+                      blurRadius: 7,
+                      offset: Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
+                  color: Colors.white),
+              child:
+                  Image.asset('assets/icons/go-harvest-assets.png', height: 30),
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6),
+                boxShadow: const [
                   BoxShadow(
                     color: Colors.black12,
                     spreadRadius: 3,
@@ -90,28 +110,17 @@ Marker treeMarker({required Tree tree}) {
                     offset: Offset(0, 3), // changes position of shadow
                   ),
                 ],
-                color: Colors.white),
-            child:
-                Image.asset('assets/icons/go-harvest-assets.png', height: 30),
-          ),
-        ),
-        Container(
-          padding: const EdgeInsets.all(4),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(6),
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black12,
-                  spreadRadius: 3,
-                  blurRadius: 7,
-                  offset: Offset(0, 3), // changes position of shadow
-                ),
-              ],
-              color: primaryColor),
-          child: Text(
-            tree.name,
-            style: const TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.white),
+                color: primaryColor),
+            child: Flexible(
+              child: Text(
+                tree.name,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontSize: 12),
+              ),
+            ),
           ),
         )
       ],

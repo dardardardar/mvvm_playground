@@ -1,4 +1,5 @@
 import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:mvvm_playground/features/models/tree_model.dart';
 
@@ -15,7 +16,7 @@ class GeoLocation {
   List<dynamic> status = [];
   List<dynamic> currentTree = [];
   List<dynamic> currentidTree = [];
-
+  LatLng pos = const LatLng(0, 0);
   //constructor
   GeoLocation({required this.userlocation});
 
@@ -70,6 +71,7 @@ class GeoLocation {
     centerlocation.setPoint(tree.position.latitude, tree.position.longitude);
     name = tree.name;
     idTree = tree.idTree;
+    pos = tree.position;
     _calculateRadiusMetersAndInRange();
   }
 
