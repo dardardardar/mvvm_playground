@@ -150,7 +150,10 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                           userLocationCurrent.latitude,
                                           userLocationCurrent.longitude)),
                                   for (var i = 0; i < trees.length; i++)
-                                    treeMarker(context, tree: trees[i])
+                                    treeMarker(context, tree: trees[i]),
+                                  for (var i = 0; i < routes.length; i++)
+                                    InputMarkers(context,
+                                        tree: routes[i], no: i.toString()),
                                 ],
                               ),
                             ],
@@ -292,7 +295,8 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                 showModalHistory(context,
                                                     history: routes.isEmpty
                                                         ? []
-                                                        : routes);
+                                                        : routes.reversed
+                                                            .toList());
                                               },
                                               title: 'History',
                                               icon: Icons.history),

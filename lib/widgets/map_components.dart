@@ -127,3 +127,25 @@ Marker treeMarker(BuildContext context, {required Tree tree}) {
     ),
   );
 }
+
+Marker InputMarkers(BuildContext context,
+    {required Tree tree, String no = ''}) {
+  return Marker(
+    point: tree.position,
+    child: Stack(
+      children: [
+        Container(
+          padding: EdgeInsets.all(3),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10), color: Colors.red),
+          child: Text(
+            no,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+                fontWeight: FontWeight.bold, color: Colors.white, fontSize: 12),
+          ),
+        ),
+      ],
+    ),
+  );
+}
