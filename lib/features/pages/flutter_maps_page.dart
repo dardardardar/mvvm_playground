@@ -52,7 +52,6 @@ class _HomeViewPageState extends State<FlutterMapPage> {
     while (true) {
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.bestForNavigation);
-
       yield latLng.LatLng(position.latitude, position.longitude);
       context.read<MapsCubit>().sendHistory(
           lat: position.latitude.toString(),
@@ -99,8 +98,6 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                     userLocation.setPointCenter(trees[i]);
                   }
                   var userLocationCurrent = snapshot.data!;
-                  var position = latLng.LatLng(userLocationCurrent.latitude,
-                      userLocationCurrent.longitude);
                   return SafeArea(
                     child: Column(
                       children: [
@@ -113,7 +110,9 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                   print('${l.latitude}, ${l.longitude}');
                                 },
                                 initialZoom: 20,
-                                initialCenter: position),
+                                initialCenter: latLng.LatLng(
+                                    userLocationCurrent.latitude,
+                                    userLocationCurrent.longitude)),
                             children: [
                               mapTiles(context),
                               Visibility(
@@ -130,8 +129,10 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                 child: CircleLayer(
                                   circles: [
                                     circleMarkerOverlays(
-                                      position: position,
-                                      radius: 5,
+                                      position: latLng.LatLng(
+                                          userLocationCurrent.latitude,
+                                          userLocationCurrent.longitude),
+                                      radius: 10,
                                     ),
                                     for (var i = 0; i < trees.length; i++)
                                       circleMarkerOverlays(
@@ -143,7 +144,10 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                               ),
                               MarkerLayer(
                                 markers: [
-                                  userMarker(position: position),
+                                  userMarker(
+                                      position: latLng.LatLng(
+                                          userLocationCurrent.latitude,
+                                          userLocationCurrent.longitude)),
                                   for (var i = 0; i < trees.length; i++)
                                     treeMarker(context, tree: trees[i])
                                 ],
@@ -250,7 +254,11 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                 showModalInputQty(context,
                                                     isNear: userLocation.status
                                                         .contains(true),
-                                                    current: position,
+                                                    current: latLng.LatLng(
+                                                        userLocationCurrent
+                                                            .latitude,
+                                                        userLocationCurrent
+                                                            .longitude),
                                                     data: Tree(
                                                         idTree: userLocation
                                                                 .currentidTree
@@ -266,8 +274,9 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                             : userLocation
                                                                 .currentTree
                                                                 .first,
-                                                        position:
-                                                            userLocation.pos));
+                                                        position: latLng.LatLng(
+                                                            userLocation.centerlocation.latitude ?? 0,
+                                                            userLocation.centerlocation.longitude ?? 0)));
                                               },
                                               title: 'Collect',
                                               icon: Icons.add_circle_outline),
