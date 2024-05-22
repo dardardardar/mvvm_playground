@@ -13,10 +13,11 @@ import 'package:provider/provider.dart';
 void showModalInputQty(BuildContext context,
     {bool? isNear, required Tree data, required LatLng current}) {
   void sendQty(qty, bool isNewTree) {
+    print(current);
     Tree tree = Tree(
         name: data.name,
         idTree: data.idTree,
-        position: isNewTree ? current : data.position);
+        position: isNewTree ? data.position : current);
     context.read<MapsCubit>().sendQty(
           qty: qty,
           data: tree,

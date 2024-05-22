@@ -99,8 +99,6 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                     userLocation.setPointCenter(trees[i]);
                   }
                   var userLocationCurrent = snapshot.data!;
-                  var position = latLng.LatLng(userLocationCurrent.latitude,
-                      userLocationCurrent.longitude);
                   return SafeArea(
                     child: Column(
                       children: [
@@ -113,7 +111,9 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                   print('${l.latitude}, ${l.longitude}');
                                 },
                                 initialZoom: 20,
-                                initialCenter: position),
+                                initialCenter: latLng.LatLng(
+                                    userLocationCurrent.latitude,
+                                    userLocationCurrent.longitude)),
                             children: [
                               mapTiles(context),
                               Visibility(
@@ -130,7 +130,9 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                 child: CircleLayer(
                                   circles: [
                                     circleMarkerOverlays(
-                                      position: position,
+                                      position: latLng.LatLng(
+                                          userLocationCurrent.latitude,
+                                          userLocationCurrent.longitude),
                                       radius: 10,
                                     ),
                                     for (var i = 0; i < trees.length; i++)
@@ -143,7 +145,10 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                               ),
                               MarkerLayer(
                                 markers: [
-                                  userMarker(position: position),
+                                  userMarker(
+                                      position: latLng.LatLng(
+                                          userLocationCurrent.latitude,
+                                          userLocationCurrent.longitude)),
                                   for (var i = 0; i < trees.length; i++)
                                     treeMarker(tree: trees[i])
                                 ],
@@ -250,7 +255,11 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                 showModalInputQty(context,
                                                     isNear: userLocation.status
                                                         .contains(true),
-                                                    current: position,
+                                                    current: latLng.LatLng(
+                                                        userLocationCurrent
+                                                            .latitude,
+                                                        userLocationCurrent
+                                                            .longitude),
                                                     data: Tree(
                                                         idTree: userLocation
                                                                 .currentidTree
@@ -267,10 +276,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                                 .currentTree
                                                                 .first,
                                                         position: latLng.LatLng(
-                                                            userLocation
-                                                                    .centerlocation
-                                                                    .latitude ??
-                                                                0,
+                                                            userLocation.centerlocation.latitude ?? 0,
                                                             userLocation.centerlocation.longitude ?? 0)));
                                               },
                                               title: 'Collect',
