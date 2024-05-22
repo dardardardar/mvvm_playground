@@ -28,7 +28,6 @@ class MainMenuPage extends StatelessWidget {
               ),
               flatButton(
                   onTap: () {
-                    print('sd');
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -47,7 +46,6 @@ class MainMenuPage extends StatelessWidget {
               flatButton(
                   context: context,
                   onTap: () {
-                    print('sd');
                     Navigator.push(
                         context,
                         MaterialPageRoute(

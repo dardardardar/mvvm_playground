@@ -8,12 +8,12 @@ import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/models/tree_model.dart';
 import 'package:mvvm_playground/functions/geolocation.dart';
 import 'package:mvvm_playground/widgets/input.dart';
+import 'package:mvvm_playground/widgets/modal_success.dart';
 import 'package:provider/provider.dart';
 
 void showModalInputQty(BuildContext context,
     {bool? isNear, required Tree data, required LatLng current}) {
   void sendQty(qty, bool isNewTree) {
-    print(current);
     Tree tree = Tree(
         name: data.name,
         idTree: data.idTree,
@@ -51,6 +51,7 @@ void showModalInputQty(BuildContext context,
               const SizedBox(
                 height: 8,
               ),
+              Text('Tree : ' + data.name),
               Text('Masukkan jumlah sawit yang dipanen'),
               Visibility(
                 visible: data.idTree.isEmpty,
@@ -87,6 +88,7 @@ void showModalInputQty(BuildContext context,
                   onTap: () {
                     sendQty(userloc.qty, data.idTree.isEmpty);
                     Navigator.pop(context);
+                    showModalSuccess(context, name: data.name);
                   },
                   child: Container(
                       padding: EdgeInsets.all(8),
