@@ -129,12 +129,6 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                 visible: true,
                                 child: CircleLayer(
                                   circles: [
-                                    circleMarkerOverlays(
-                                      position: latLng.LatLng(
-                                          userLocationCurrent.latitude,
-                                          userLocationCurrent.longitude),
-                                      radius: 10,
-                                    ),
                                     for (var i = 0; i < trees.length; i++)
                                       circleMarkerOverlays(
                                           position: trees[i].position,
