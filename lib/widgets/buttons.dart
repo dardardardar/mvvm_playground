@@ -55,13 +55,6 @@ Widget flatButton(
             borderRadius: BorderRadius.circular(8), color: backgroundColor),
         child: Stack(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: Icon(
-                icon,
-                color: color,
-              ),
-            ),
             Container(
               width: double.infinity,
               child: Text(

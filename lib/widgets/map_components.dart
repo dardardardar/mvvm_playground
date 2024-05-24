@@ -11,7 +11,6 @@ Widget mapTiles(BuildContext context) {
   return TileLayer(
     urlTemplate: mapUrl,
     errorTileCallback: (context, exception, stackTrace) {
-      print('Error loading tile: $exception');
       Container(
         color: Colors.red,
         child: const Center(
@@ -111,15 +110,13 @@ Marker treeMarker(BuildContext context, {required Tree tree}) {
                   ),
                 ],
                 color: primaryColor),
-            child: Flexible(
-              child: Text(
-                tree.name,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    fontSize: 12),
-              ),
+            child: Text(
+              tree.name,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  fontSize: 12),
             ),
           ),
         )
