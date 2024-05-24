@@ -177,76 +177,81 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Flexible(
-                                    flex: 4,
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Flexible(
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Text(
-                                                    'Palm near',
-                                                    style: subtitle3,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                  ),
-                                                  Text(
-                                                    userLocation
-                                                            .currentTree.isEmpty
-                                                        ? '-'
-                                                        : '${userLocation.currentTree.first}',
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: subtitle,
-                                                  ),
-                                                ],
+                                  Visibility(
+                                    visible: !widget.isHistory,
+                                    child: Flexible(
+                                      flex: 4,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Flexible(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Text(
+                                                      'Palm near',
+                                                      style: subtitle3,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                    Text(
+                                                      userLocation.currentTree
+                                                              .isEmpty
+                                                          ? '-'
+                                                          : '${userLocation.currentTree.first}',
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: subtitle,
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                            const SizedBox(
-                                              width: 24,
-                                            ),
-                                            Flexible(
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Text(
-                                                    'No. reg',
-                                                    style: subtitle3,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                  ),
-                                                  Text(
-                                                    userLocation
-                                                            .currentTree.isEmpty
-                                                        ? '-'
-                                                        : '${userLocation.currentidTree.first}',
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: subtitle,
-                                                  ),
-                                                ],
+                                              const SizedBox(
+                                                width: 24,
                                               ),
-                                            )
-                                          ],
-                                        ),
-                                      ],
+                                              Flexible(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Text(
+                                                      'No. reg',
+                                                      style: subtitle3,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                    Text(
+                                                      userLocation.currentTree
+                                                              .isEmpty
+                                                          ? '-'
+                                                          : '${userLocation.currentidTree.first}',
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: subtitle,
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   const Expanded(
