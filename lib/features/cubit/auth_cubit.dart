@@ -24,7 +24,6 @@ class AuthCubit extends Cubit<authData> {
         emit(state.copyWith(
           sendAuth: SuccessState<bool>(data: true),
         ));
-
         emit(state.copyWith(
           sendAuth: InitialState<bool>(),
         ));
