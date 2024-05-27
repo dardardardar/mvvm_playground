@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/features/cubit/auth_cubit.dart';
 import 'package:mvvm_playground/features/cubit/auth_cubit_data.dart';
-import 'package:mvvm_playground/features/pages/flutter_maps_page.dart';
 import 'package:mvvm_playground/features/pages/main_menu_page.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
 
@@ -39,10 +39,21 @@ class _LoginPageState extends State<LoginPage> {
                 setState(() {
                   buttontext = 'Loading..';
                 });
+                FocusScope.of(context).unfocus();
               } else if (state.sendAuth is SuccessState) {
                 setState(() {
                   buttontext = 'Berhasil..';
                 });
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Berhasil Login',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: primaryColor,
+                  ),
+                );
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const MainMenuPage()),
@@ -51,6 +62,17 @@ class _LoginPageState extends State<LoginPage> {
                 setState(() {
                   buttontext = 'Login';
                 });
+                if (state.sendAuth is GeneralErrorState) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Username Salah',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
               }
             },
             builder: (context, state) {
@@ -58,6 +80,9 @@ class _LoginPageState extends State<LoginPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextFormField(
+                    style: TextStyle(
+                      color: primaryColor, // Change this to your desired color
+                    ),
                     controller: _usernameController,
                     decoration: InputDecoration(labelText: 'Username'),
                     validator: (value) {

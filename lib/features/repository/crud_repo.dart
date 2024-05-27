@@ -41,10 +41,9 @@ class CRUDRepository {
 
   Future<BaseState> sendHistory(String lat, String long) async {
     try {
-      //final prefs = await SharedPreferences.getInstance();
-
+      final prefs = await SharedPreferences.getInstance();
       final result = await Api.post('wp-json/sinar/v1/bum/listen',
-          {"id_user": '1', "lat": lat, "long": long});
+          {"id_user": prefs.getString("id_user"), "lat": lat, "long": long});
       final response = result.data;
       if (response != null) {
         return SuccessState(data: result);
@@ -58,9 +57,10 @@ class CRUDRepository {
 
   Future<BaseState> sendQty(double? qty, Tree tree) async {
     try {
+      final prefs = await SharedPreferences.getInstance();
       final result = await Api.post('wp-json/sinar/v1/bum/input', {
         "qty": qty,
-        "id_user": '2',
+        "id_user": prefs.getString("id_user"),
         "id_tree": tree.idTree.isEmpty ? null : tree.idTree,
         "lat": tree.position.latitude,
         "long": tree.position.longitude,

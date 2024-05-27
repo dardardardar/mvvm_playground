@@ -5,7 +5,6 @@ import 'package:mvvm_playground/features/cubit/auth_cubit.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/pages/login_page.dart';
 
-import 'package:mvvm_playground/features/pages/main_menu_page.dart';
 import 'package:mvvm_playground/features/repository/auth_repo.dart';
 import 'package:mvvm_playground/features/repository/crud_repo.dart';
 import 'package:mvvm_playground/functions/geolocation.dart';
@@ -47,7 +46,7 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           title: 'Flutter Demo',
           theme: theme,
-          home: MainMenuPage(),
+          home: LoginPage(),
         ),
       ),
     );
