@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart' as latLng;
 import 'package:mvvm_playground/const/theme.dart';
@@ -125,26 +126,48 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                   polylineCulling: true,
                                 ),
                               ),
-                              Visibility(
-                                visible: true,
-                                child: CircleLayer(
-                                  circles: [
+                              MarkerClusterLayerWidget(
+                                options: MarkerClusterLayerOptions(
+                                  maxClusterRadius: 100,
+                                  size: Size(40, 40),
+                                  markers: [
                                     for (var i = 0; i < trees.length; i++)
-                                      circleMarkerOverlays(
-                                          position: trees[i].position,
-                                          radius: 5,
-                                          color: primaryColor.withOpacity(0.3)),
+                                      treeMarker(context, tree: trees[i])
                                   ],
+                                  builder: (context, markers) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: primaryColor,
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          markers.length.toString(),
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
+                              // Visibility(
+                              //   visible: true,
+                              //   child: CircleLayer(
+                              //     circles: [
+                              //       for (var i = 0; i < trees.length; i++)
+                              //         circleMarkerOverlays(
+                              //             position: trees[i].position,
+                              //             radius: 5,
+                              //             color: primaryColor.withOpacity(0.3)),
+                              //     ],
+                              //   ),
+                              // ),
                               MarkerLayer(
                                 markers: [
                                   userMarker(
                                       position: latLng.LatLng(
                                           userLocationCurrent.latitude,
                                           userLocationCurrent.longitude)),
-                                  for (var i = 0; i < trees.length; i++)
-                                    treeMarker(context, tree: trees[i]),
                                 ],
                               ),
                               Visibility(
@@ -319,9 +342,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else {
-                  return circularLoading(
-                      text:
-                          'Loading Stream...'); // Loading indicator while waiting for data
+                  return circularLoading(text: 'Loading Stream...');
                 }
               },
             );

@@ -10,10 +10,10 @@ class AuthRepository {
       final result =
           await Api.post('wp-json/sinar/v1/bum/login', {"username": username});
       final response = result.data;
-      if (response['status'] == 'success') {
+      if (response['message'] != 'No user') {
         final rss = response['user'];
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('id', rss['id']);
+        await prefs.setString('id_user', rss['id']);
         await prefs.setString('name', rss['name']);
         await prefs.setString('username', rss['username']);
         return SuccessState(data: result);
