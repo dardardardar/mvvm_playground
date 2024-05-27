@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:mvvm_playground/const/enums.dart';
 import 'package:mvvm_playground/const/theme.dart';
@@ -15,19 +17,21 @@ void showSnackbar(BuildContext context,
             const SizedBox(
               width: 4,
             ),
-            displayText(text: message, style: Styles.bodyAlt),
+            displayText(
+                text: message,
+                style: status.index == 1 ? Styles.body : Styles.bodyAlt),
           ],
         ),
         elevation: 0,
         behavior: SnackBarBehavior.floating,
-        shape: StadiumBorder(),
+        shape: const StadiumBorder(),
         backgroundColor: _bgColor(index: status.index)),
   );
 }
 
 Color _bgColor({required int index}) {
   if (index == 0) return primaryColor;
-  if (index == 1) return Colors.grey.shade100;
+  if (index == 1) return Colors.grey;
   return dangerColor;
 }
 

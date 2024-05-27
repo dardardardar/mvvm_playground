@@ -50,15 +50,7 @@ class _LoginPageState extends State<LoginPage> {
                   buttontext = 'Berhasil..';
                 });
 
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Berhasil Login',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    backgroundColor: primaryColor,
-                  ),
-                );
+                showSnackbar(context, message: 'Berhasil Login');
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const MainMenuPage()),
