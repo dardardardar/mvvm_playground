@@ -50,7 +50,8 @@ class _LoginPageState extends State<LoginPage> {
                   buttontext = 'Berhasil..';
                 });
 
-                showSnackbar(context, message: 'Berhasil Login');
+                showSnackbar(context,
+                    message: 'Berhasil Login', status: Status.Success);
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const MainMenuPage()),
