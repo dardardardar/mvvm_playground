@@ -1,15 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mvvm_playground/const/enums.dart';
 import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/features/cubit/auth_cubit.dart';
 import 'package:mvvm_playground/features/cubit/auth_cubit_data.dart';
 import 'package:mvvm_playground/features/pages/main_menu_page.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
+import 'package:mvvm_playground/widgets/navigation_bar.dart';
+import 'package:mvvm_playground/widgets/snackbar.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
-  _LoginPageState createState() => _LoginPageState();
+  State<StatefulWidget> createState() {
+    return _LoginPageState();
+  }
 }
 
 class _LoginPageState extends State<LoginPage> {
@@ -26,9 +33,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Login'),
-      ),
+      appBar: appBar(title: 'Login', isCenter: true),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -63,15 +68,8 @@ class _LoginPageState extends State<LoginPage> {
                   buttontext = 'Login';
                 });
                 if (state.sendAuth is GeneralErrorState) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'Username Salah',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
+                  showSnackbar(context,
+                      message: 'Username Salah', status: Status.Error);
                 }
               }
             },
