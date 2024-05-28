@@ -84,7 +84,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
 
   Widget _buildInputDataBody(BuildContext context) {
     return Container(
-      color: Colors.green.shade50,
+      color: secondaryColor,
       child: BlocBuilder<MapsCubit, MapsData>(
         builder: (context, state) {
           if (state.listTree is SuccessState<List<Tree>> &&

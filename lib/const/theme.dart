@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const secondaryColor = Color(0xFF0078d4);
+const secondaryColor = Color.fromARGB(255, 226, 248, 231);
 const primaryColor = Color.fromARGB(255, 74, 180, 98);
 const barBackgroundColor = Color(0xFF1F1F1F);
 const backgroundColor = Color(0xFF151515);
@@ -9,10 +9,10 @@ const dangerColor = Color.fromARGB(255, 216, 69, 61);
 
 var theme = ThemeData(
     brightness: Brightness.light,
-    bottomSheetTheme: const BottomSheetThemeData(
+    bottomSheetTheme: BottomSheetThemeData(
         surfaceTintColor: Colors.transparent,
         shadowColor: Colors.transparent,
-        modalBarrierColor: Colors.black12),
+        modalBarrierColor: Colors.black.withOpacity(0.1)),
     colorScheme: const ColorScheme(
         brightness: Brightness.light,
         primary: primaryColor,

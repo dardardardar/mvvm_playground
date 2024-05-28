@@ -33,32 +33,31 @@ void showModalInputQty(BuildContext context,
     ),
     context: context,
     isScrollControlled: true,
-    backgroundColor: Colors.white10,
+    backgroundColor: Colors.grey.shade300.withOpacity(0.2),
     useSafeArea: true,
     builder: (context) {
       var userloc = Provider.of<GeoLocation>(context);
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
         child: Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-            color: Colors.white10,
+            color: Colors.grey.shade300.withOpacity(0.2),
           ),
           child: SafeArea(
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Text(
+                displayText(
                   'Panen',
-                  style: textHeadingAlt,
+                  style: Styles.Display1,
                 ),
                 const SizedBox(
                   height: 8,
                 ),
-                Text(
+                displayText(
                   'Masukkan jumlah sawit yang dipanen',
-                  style: textBody,
                 ),
                 Visibility(
                   visible: data.idTree.isEmpty,
@@ -149,23 +148,26 @@ void showModalSuccess(BuildContext context, {name}) {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Column(
-                    children: [
-                      displayText(
-                        'Panen berhasil diinput',
-                        style: Styles.Display1,
-                      ),
-                      SizedBox(
-                        height: 12,
-                      ),
-                      Image.asset('assets/icons/check-circle.png',
-                          color: Colors.green.shade800,
-                          width: sizeByScreenWidth(
-                              context: context, sizePercent: 0.4)),
-                      SizedBox(
-                        height: 12,
-                      ),
-                    ],
+                  Flexible(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        displayText(
+                          'Panen berhasil diinput',
+                          style: Styles.Display1,
+                        ),
+                        SizedBox(
+                          height: 12,
+                        ),
+                        Image.asset('assets/icons/check-circle.png',
+                            color: Colors.green.shade800,
+                            width: sizeByScreenWidth(
+                                context: context, sizePercent: 0.4)),
+                        SizedBox(
+                          height: 12,
+                        ),
+                      ],
+                    ),
                   ),
                   InkWell(
                       onTap: () {

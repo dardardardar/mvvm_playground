@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mvvm_playground/const/enums.dart';
 import 'package:mvvm_playground/const/theme.dart';
+import 'package:mvvm_playground/widgets/typography.dart';
 
 Widget primaryButton({Function()? onPressed, required String title}) {
   return MaterialButton(
@@ -32,9 +34,7 @@ Widget bigButton(
             SizedBox(
               height: 8,
             ),
-            Text(
-              title,
-            ),
+            displayText(title, style: Styles.Button),
           ],
         )),
   );
@@ -57,10 +57,10 @@ Widget flatButton(
           children: [
             Container(
               width: double.infinity,
-              child: Text(
+              alignment: Alignment.center,
+              child: displayText(
                 title,
-                style: textHeading2Alt.copyWith(color: Colors.white),
-                textAlign: TextAlign.center,
+                style: Styles.Button,
               ),
             ),
           ],
@@ -93,9 +93,9 @@ Widget boxButton(
             const SizedBox(
               height: 2,
             ),
-            Text(
+            displayText(
               title,
-              style: subtitle3.copyWith(color: Colors.white),
+              style: Styles.CaptionsAlt,
             )
           ]),
     ),

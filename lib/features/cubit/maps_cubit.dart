@@ -5,6 +5,7 @@ import 'package:mvvm_playground/features/cubit/maps_cubit_data.dart';
 import 'package:mvvm_playground/features/models/tree_model.dart';
 import 'package:mvvm_playground/features/repository/crud_repo.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
+import 'package:mvvm_playground/functions/connection.dart';
 
 @injectable
 class MapsCubit extends Cubit<MapsData> {
@@ -18,9 +19,11 @@ class MapsCubit extends Cubit<MapsData> {
         listTree: LoadingState<List<Tree>>(),
         listRoute: LoadingState<List<Routes>>(),
       ));
-
+      final network = await NetworkHelper.checkNetwork();
+      print(network);
       final tree = await _crudRepository.getTree();
       final route = await _crudRepository.getRoute();
+
       emit(state.copyWith(
         listTree: SuccessState<List<Tree>>(data: tree),
         listRoute: SuccessState<List<Tree>>(data: route),

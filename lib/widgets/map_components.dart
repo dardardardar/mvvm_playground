@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mvvm_playground/const/enums.dart';
@@ -14,7 +15,7 @@ Widget mapTiles(BuildContext context) {
     urlTemplate: mapUrl,
     errorTileCallback: (context, exception, stackTrace) {
       Container(
-        color: Colors.red,
+        color: dangerColor,
         child: Center(
           child: displayText(
             'Tile Load Error',
@@ -30,7 +31,7 @@ List<Polyline> mapPolyline({required List<dynamic> routes}) {
   return [
     Polyline(
       points: routes.map((route) => route.position as LatLng).toList(),
-      color: Colors.green,
+      color: Colors.blue,
       strokeWidth: 3,
       isDotted: false,
       useStrokeWidthInMeter: true,
@@ -55,7 +56,7 @@ Marker userMarker({required LatLng position}) {
             color: Colors.white),
         child: const Icon(
           Icons.circle,
-          color: secondaryColor,
+          color: Colors.blue,
         ),
       ));
 }
@@ -124,18 +125,21 @@ Marker treeMarker(BuildContext context, {required Tree tree}) {
 Marker InputMarkers(BuildContext context,
     {required Tree tree, String no = ''}) {
   return Marker(
+    width: 100,
+    height: 100,
     point: tree.position,
     child: Stack(
+      alignment: Alignment.center,
+      fit: StackFit.loose,
       children: [
-        Container(
-          padding: EdgeInsets.all(3),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10), color: Colors.red),
-          child: Text(
-            no,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.white, fontSize: 12),
+        Positioned(
+          top: 16,
+          child: Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.all(6),
+            decoration:
+                ShapeDecoration(shape: CircleBorder(), color: dangerColor),
+            child: displayText(no, style: Styles.BodyAlt),
           ),
         ),
       ],

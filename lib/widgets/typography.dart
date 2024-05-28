@@ -5,12 +5,10 @@ import 'package:mvvm_playground/const/theme.dart';
 
 ///  Custom Text widget with overflow implementation. jd gaakan overlow lagi.
 Widget displayText(String text, {Styles? style, TextOverflow? overflow}) {
-  return Flexible(
-    child: Text(
-      text,
-      overflow: overflow ?? TextOverflow.ellipsis,
-      style: _styles(style ?? Styles.Body),
-    ),
+  return Text(
+    text,
+    overflow: overflow ?? TextOverflow.ellipsis,
+    style: _styles(style ?? Styles.Body),
   );
 }
 
@@ -48,7 +46,7 @@ class TStyles {
   static const captions = TextStyle(color: Colors.black, fontSize: 11);
   static const captionsAlt = TextStyle(color: Colors.white, fontSize: 11);
   static const button =
-      TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500);
+      TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600);
   static const placeholder = TextStyle(color: borderColor, fontSize: 14);
 }
 
