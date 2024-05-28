@@ -17,9 +17,8 @@ void showSnackbar(BuildContext context,
             const SizedBox(
               width: 4,
             ),
-            displayText(
-                text: message,
-                style: status.index == 1 ? Styles.body : Styles.bodyAlt),
+            displayText(message,
+                style: status.index == 1 ? Styles.Body : Styles.BodyAlt),
           ],
         ),
         elevation: 0,

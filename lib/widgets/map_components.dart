@@ -2,10 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:mvvm_playground/const/enums.dart';
 import 'package:mvvm_playground/const/strings.dart';
 import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/features/models/tree_model.dart';
 import 'package:mvvm_playground/functions/functions.dart';
+import 'package:mvvm_playground/widgets/typography.dart';
 
 Widget mapTiles(BuildContext context) {
   return TileLayer(
@@ -13,10 +15,10 @@ Widget mapTiles(BuildContext context) {
     errorTileCallback: (context, exception, stackTrace) {
       Container(
         color: Colors.red,
-        child: const Center(
-          child: Text(
+        child: Center(
+          child: displayText(
             'Tile Load Error',
-            style: TextStyle(color: Colors.white),
+            style: Styles.BodyAlt,
           ),
         ),
       );
@@ -110,14 +112,8 @@ Marker treeMarker(BuildContext context, {required Tree tree}) {
                   ),
                 ],
                 color: primaryColor),
-            child: Text(
-              tree.name,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontSize: 12),
-            ),
+            child: displayText(tree.name,
+                overflow: TextOverflow.ellipsis, style: Styles.SubtitleAlt),
           ),
         )
       ],

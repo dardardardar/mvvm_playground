@@ -9,6 +9,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart' as latLng;
+import 'package:mvvm_playground/const/enums.dart';
 import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit_data.dart';
@@ -17,10 +18,10 @@ import 'package:mvvm_playground/functions/geolocation.dart';
 import 'package:mvvm_playground/widgets/bottom_bar.dart';
 import 'package:mvvm_playground/widgets/buttons.dart';
 import 'package:mvvm_playground/widgets/map_components.dart';
-import 'package:mvvm_playground/widgets/modal_history.dart';
 import 'package:mvvm_playground/widgets/modal_sheets.dart';
 import 'package:mvvm_playground/widgets/navigation_bar.dart';
 import 'package:mvvm_playground/widgets/states.dart';
+import 'package:mvvm_playground/widgets/typography.dart';
 import 'package:provider/provider.dart';
 
 import '../models/tree_model.dart';
@@ -129,7 +130,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                               MarkerClusterLayerWidget(
                                 options: MarkerClusterLayerOptions(
                                   maxClusterRadius: 100,
-                                  size: Size(40, 40),
+                                  size: const Size(40, 40),
                                   markers: [
                                     for (var i = 0; i < trees.length; i++)
                                       treeMarker(context, tree: trees[i])
@@ -141,10 +142,9 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                         color: primaryColor,
                                       ),
                                       child: Center(
-                                        child: Text(
-                                          markers.length.toString(),
-                                          style: TextStyle(color: Colors.white),
-                                        ),
+                                        child: displayText(
+                                            markers.length.toString(),
+                                            style: Styles.BodyAlt),
                                       ),
                                     );
                                   },
@@ -216,21 +216,14 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                   mainAxisSize:
                                                       MainAxisSize.min,
                                                   children: [
-                                                    Text(
-                                                      'Palm near',
-                                                      style: subtitle3,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                    ),
-                                                    Text(
-                                                      userLocation.currentTree
-                                                              .isEmpty
-                                                          ? '-'
-                                                          : '${userLocation.currentTree.first}',
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: subtitle,
-                                                    ),
+                                                    displayText('Palm near',
+                                                        style: Styles.Captions),
+                                                    displayText(
+                                                        userLocation.currentTree
+                                                                .isEmpty
+                                                            ? '-'
+                                                            : '${userLocation.currentTree.first}',
+                                                        style: Styles.Body),
                                                   ],
                                                 ),
                                               ),
@@ -246,20 +239,14 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                   mainAxisSize:
                                                       MainAxisSize.min,
                                                   children: [
-                                                    Text(
-                                                      'No. reg',
-                                                      style: subtitle3,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                    ),
-                                                    Text(
+                                                    displayText('No. reg',
+                                                        style: Styles.Captions),
+                                                    displayText(
                                                       userLocation.currentTree
                                                               .isEmpty
                                                           ? '-'
                                                           : '${userLocation.currentidTree.first}',
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: subtitle,
+                                                      style: Styles.Body,
                                                     ),
                                                   ],
                                                 ),
@@ -340,7 +327,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                     ),
                   );
                 } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
+                  return errorAlert(text: snapshot.error.toString());
                 } else {
                   return circularLoading(text: 'Loading Stream...');
                 }

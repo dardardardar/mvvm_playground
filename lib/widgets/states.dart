@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mvvm_playground/const/enums.dart';
 import 'package:mvvm_playground/const/theme.dart';
+import 'package:mvvm_playground/widgets/typography.dart';
 
 Widget circularLoading({String? text}) {
   return Center(
@@ -10,9 +12,8 @@ Widget circularLoading({String? text}) {
       children: [
         text == null
             ? const Center()
-            : Text(
+            : displayText(
                 text,
-                style: textBody,
               ),
         const SizedBox(
           height: 16,
@@ -29,11 +30,11 @@ Widget errorAlert({required String text}) {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Text('Exception occurred'),
+        displayText('Exception occurred'),
         const SizedBox(
           height: 16,
         ),
-        Text(text),
+        displayText(text),
       ],
     ),
   );
