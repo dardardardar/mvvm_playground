@@ -19,8 +19,6 @@ class MapsCubit extends Cubit<MapsData> {
         listTree: LoadingState<List<Tree>>(),
         listRoute: LoadingState<List<Routes>>(),
       ));
-      final network = await NetworkHelper.checkNetwork();
-      print(network);
       final tree = await _crudRepository.getTree();
       final route = await _crudRepository.getRoute();
 

@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mvvm_playground/const/theme.dart';
+import 'package:mvvm_playground/features/cubit/auth_cubit.dart';
 import 'package:mvvm_playground/features/pages/flutter_maps_page.dart';
+import 'package:mvvm_playground/features/pages/login_page.dart';
+import 'package:mvvm_playground/functions/connection.dart';
 import 'package:mvvm_playground/widgets/buttons.dart';
 
 class MainMenuPage extends StatelessWidget {
@@ -40,7 +44,6 @@ class MainMenuPage extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: flatButton(
                   onTap: () {
-                    print('sd');
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -60,7 +63,6 @@ class MainMenuPage extends StatelessWidget {
               child: flatButton(
                   context: context,
                   onTap: () {
-                    print('sd');
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -70,6 +72,22 @@ class MainMenuPage extends StatelessWidget {
                                 )));
                   },
                   title: 'History',
+                  backgroundColor: primaryColor,
+                  icon: Icons.timer_outlined,
+                  color: Colors.white),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: flatButton(
+                  context: context,
+                  onTap: () {
+                    context.read<AuthCubit>().logout();
+                    Navigator.of(context, rootNavigator: true).push(
+                      MaterialPageRoute(
+                          builder: (context) => const LoginPage()),
+                    );
+                  },
+                  title: 'Logout',
                   backgroundColor: primaryColor,
                   icon: Icons.timer_outlined,
                   color: Colors.white),

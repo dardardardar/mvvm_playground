@@ -24,4 +24,16 @@ class AuthRepository {
       rethrow;
     }
   }
+
+  Future<BaseState> logout() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      prefs.remove('id_user');
+      prefs.remove('name');
+      prefs.remove('username');
+      return SuccessState<bool>(data: true);
+    } on Exception {
+      rethrow;
+    }
+  }
 }

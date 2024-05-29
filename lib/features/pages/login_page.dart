@@ -49,13 +49,15 @@ class _LoginPageState extends State<LoginPage> {
                 setState(() {
                   buttontext = 'Berhasil..';
                 });
-
                 showSnackbar(context,
                     message: 'Berhasil Login', status: Status.Success);
-                Navigator.push(
-                  context,
+
+                Navigator.of(context, rootNavigator: true).push(
                   MaterialPageRoute(builder: (context) => const MainMenuPage()),
                 );
+                setState(() {
+                  buttontext = 'Login';
+                });
               } else {
                 setState(() {
                   buttontext = 'Login';
