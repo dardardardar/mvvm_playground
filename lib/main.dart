@@ -34,7 +34,7 @@ void initialLoading() {
   getIt.get<AuthCubit>().initialLogin();
 }
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setup();
   initialLoading();
@@ -64,7 +64,7 @@ class _MyAppState extends State<MyApp> {
           _isOnline = false;
         });
       }
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(Duration(seconds: 4));
     }
   }
 
