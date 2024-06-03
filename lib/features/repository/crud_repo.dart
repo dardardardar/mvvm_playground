@@ -125,6 +125,26 @@ class CRUDRepository {
     }
   }
 
+  Future<List<Tree>> getHistory() async {
+    try {
+      final response = await DatabaseService.instance.queryRow('harvest');
+      if (response is List<dynamic> && response.isNotEmpty) {
+        final harvestData = response.map((e) => Tree.fromJson(e));
+        return harvestData.toList();
+      } else {
+        return [];
+      }
+    } on Exception catch (e, s) {
+      Logger.log(
+          status: LogStatus.Error,
+          className: CRUDRepository().toString(),
+          function: '$this',
+          exception: e,
+          stackTrace: s);
+      rethrow;
+    }
+  }
+
   Future<BaseState> sendHistory(String lat, String long) async {
     final prefs = await SharedPreferences.getInstance();
     final id_user = prefs.getString("id_user").toString();
