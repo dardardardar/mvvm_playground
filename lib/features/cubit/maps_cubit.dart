@@ -5,7 +5,6 @@ import 'package:mvvm_playground/features/cubit/maps_cubit_data.dart';
 import 'package:mvvm_playground/features/models/tree_model.dart';
 import 'package:mvvm_playground/features/repository/crud_repo.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
-import 'package:mvvm_playground/functions/connection.dart';
 
 @injectable
 class MapsCubit extends Cubit<MapsData> {
@@ -13,23 +12,46 @@ class MapsCubit extends Cubit<MapsData> {
 
   MapsCubit(this._crudRepository) : super(MapsData());
 
+  Future<void> instalation() async {
+    try {
+      emit(state.copyWith(
+        sendSync: LoadingState(),
+      ));
+      await _crudRepository.Installation();
+      emit(state.copyWith(
+        sendSync: SuccessState<bool>(data: true),
+      ));
+      emit(state.copyWith(
+        sendSync: InitialState(),
+      ));
+      print('oke');
+    } on Exception catch (e) {
+      emit(state.copyWith(
+          sendQty: GeneralErrorState(e: e, error: e.toString())));
+    }
+  }
+
   Future<void> initMarker() async {
     try {
       emit(state.copyWith(
         listTree: LoadingState<List<Tree>>(),
-        listRoute: LoadingState<List<Routes>>(),
+        listRoute: LoadingState<List<Tree>>(),
+        listHistory: LoadingState<List<Tree>>(),
       ));
       final tree = await _crudRepository.getTree();
       final route = await _crudRepository.getRoute();
+      final history = await _crudRepository.getHistory();
 
       emit(state.copyWith(
         listTree: SuccessState<List<Tree>>(data: tree),
         listRoute: SuccessState<List<Tree>>(data: route),
+        listHistory: SuccessState<List<Tree>>(data: history),
       ));
     } on Exception catch (e) {
       emit(state.copyWith(
         listTree: GeneralErrorState(e: e, error: e.toString()),
         listRoute: GeneralErrorState(e: e, error: e.toString()),
+        listHistory: GeneralErrorState(e: e, error: e.toString()),
       ));
     }
   }

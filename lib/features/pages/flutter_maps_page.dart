@@ -88,9 +88,12 @@ class _HomeViewPageState extends State<FlutterMapPage> {
       child: BlocBuilder<MapsCubit, MapsData>(
         builder: (context, state) {
           if (state.listTree is SuccessState<List<Tree>> &&
-              state.listRoute is SuccessState<List<Tree>>) {
+              state.listRoute is SuccessState<List<Tree>> &&
+              state.listHistory is SuccessState<List<Tree>>) {
             final trees = (state.listTree as SuccessState<List<Tree>>).data;
             final routes = (state.listRoute as SuccessState<List<Tree>>).data;
+            final histories =
+                (state.listHistory as SuccessState<List<Tree>>).data;
             return StreamBuilder<latLng.LatLng>(
               stream: locationStream,
               builder: (context, snapshot) {
@@ -119,7 +122,8 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                             children: [
                               mapTiles(context),
                               Visibility(
-                                visible: widget.isHistory,
+                                visible: true,
+                                // visible: widget.isHistory,
                                 child: PolylineLayer(
                                   polylines: routes.isEmpty
                                       ? []
@@ -150,18 +154,6 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                   },
                                 ),
                               ),
-                              // Visibility(
-                              //   visible: true,
-                              //   child: CircleLayer(
-                              //     circles: [
-                              //       for (var i = 0; i < trees.length; i++)
-                              //         circleMarkerOverlays(
-                              //             position: trees[i].position,
-                              //             radius: 5,
-                              //             color: primaryColor.withOpacity(0.3)),
-                              //     ],
-                              //   ),
-                              // ),
                               MarkerLayer(
                                 markers: [
                                   userMarker(
@@ -173,9 +165,9 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                               Visibility(
                                 visible: widget.isHistory,
                                 child: MarkerLayer(markers: [
-                                  for (var i = 0; i < routes.length; i++)
+                                  for (var i = 0; i < histories.length; i++)
                                     InputMarkers(context,
-                                        tree: routes[i], no: i.toString()),
+                                        tree: histories[i], no: i.toString()),
                                 ]),
                               )
                             ],
@@ -307,9 +299,9 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                               context: context,
                                               onTap: () {
                                                 showModalHistory(context,
-                                                    history: routes.isEmpty
+                                                    history: histories.isEmpty
                                                         ? []
-                                                        : routes.reversed
+                                                        : histories.reversed
                                                             .toList());
                                               },
                                               title: 'History',

@@ -17,9 +17,9 @@ class Tree {
 
   factory Tree.fromJson(data) {
     return Tree(
-        name: (data['name'] != null) ? data['name'] : '',
-        idTree: (data['id'] != null) ? data['id'] : '',
-        qty: (data['qty'] != null) ? data['qty'] : '',
+        name: (data['name'].toString() != null) ? data['name'].toString() : '',
+        idTree: (data['id'].toString() != null) ? data['id'].toString() : '',
+        qty: (data['qty'].toString() != null) ? data['qty'].toString() : '',
         date: data['date'] != null
             ? DateFormat('yyyy-MM-dd HH:mm:ss').parse(data['date'])
             : DateTime(1970, 1, 1),
@@ -40,23 +40,3 @@ class Routes {
   }
 }
 
-class ApprovalData {
-  String idTree;
-  String lat;
-  String long;
-  double qty;
-
-  ApprovalData({
-    this.idTree = '0',
-    this.lat = '',
-    this.long = '',
-    this.qty = 0.0,
-  });
-
-  factory ApprovalData.fromJson(Map<String, dynamic> data) => ApprovalData(
-        idTree: data['idTree'],
-        lat: data['lat'],
-        long: data['long'],
-        qty: data['qty'],
-      );
-}
