@@ -16,7 +16,7 @@ class AuthRepository {
       if (response != null && response.isNotEmpty && response[0] != null) {
         final rss = response[0];
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('id_user', rss['id'].toString());
+        await prefs.setString('id_user', rss['id_user'].toString());
         await prefs.setString('name', rss['username']);
         await prefs.setString('username', rss['username']);
         return SuccessState(data: response);

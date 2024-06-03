@@ -47,11 +47,15 @@ class sendRoute {
   String lat;
   String long;
   String id_user;
+  String tipe;
+  String date;
 
   sendRoute({
     required this.lat,
     required this.long,
     required this.id_user,
+    this.tipe = '2',
+    this.date = '',
   });
 
   Map<String, dynamic> toMap() {
@@ -59,6 +63,8 @@ class sendRoute {
       'lat': lat,
       'long': long,
       'id_user': id_user,
+      'tipe': tipe,
+      'date': date
     };
   }
 }

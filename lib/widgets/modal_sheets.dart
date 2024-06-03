@@ -262,23 +262,23 @@ void showModalHistory(BuildContext context, {required List<Tree> history}) {
                                   Expanded(
                                     flex: 1,
                                     child: Text(
-                                      i.toString(),
+                                      (i + 1).toString(),
                                       style: subtitle2,
                                     ),
                                   ),
                                   Expanded(
                                     flex: 1,
                                     child: Text(
-                                      DateFormat('HH:mm').format(
-                                          history[i].date ??
-                                              DateTime(1970, 1, 1)),
+                                      'test',
                                       style: subtitle2,
                                     ),
                                   ),
                                   Expanded(
                                       flex: 3,
                                       child: Text(
-                                        history[i].name,
+                                        (history[i].name == 'null')
+                                            ? ''
+                                            : history[i].name,
                                         style: subtitle2,
                                       )),
                                   Expanded(

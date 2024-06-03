@@ -17,17 +17,22 @@ class MapsCubit extends Cubit<MapsData> {
       emit(state.copyWith(
         sendSync: LoadingState(),
       ));
-      await _crudRepository.Installation();
+
+      final ress = await _crudRepository.Installation();
+      if (ress is SuccessState<bool>) {
+        emit(state.copyWith(
+          sendSync: SuccessState<bool>(data: true),
+        ));
+      } else {
+        emit(state.copyWith(
+            sendSync: GeneralErrorState(e: Exception(), error: 'Error Sync')));
+      }
       emit(state.copyWith(
-        sendSync: SuccessState<bool>(data: true),
+        sendSync: InitialState<bool>(),
       ));
-      emit(state.copyWith(
-        sendSync: InitialState(),
-      ));
-      print('oke');
     } on Exception catch (e) {
       emit(state.copyWith(
-          sendQty: GeneralErrorState(e: e, error: e.toString())));
+          sendSync: GeneralErrorState(e: e, error: e.toString())));
     }
   }
 

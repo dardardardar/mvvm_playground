@@ -54,16 +54,18 @@ class DatabaseService {
     await db.execute('''
       CREATE TABLE routes(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        id_user INTEGER NOT NULL,
+        id_user VARCHAR(5) NOT NULL,
         lat VARCHAR(30) NOT NULL,
-        long VARCHAR(30) NOT NULL
+        long VARCHAR(30) NOT NULL,
+        tipe VARCHAR(5) NULL,
+        date TEXT NULL
       )
     ''');
 
     await db.execute('''
       CREATE TABLE harvest(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        id_user INTEGER NOT NULL,
+        id_user VARCHAR(5) NOT NULL,
         qty INTEGER NOT NULL,
         id_tree INTEGER NOT NULL,
         lat VARCHAR(30) NOT NULL,

@@ -11,74 +11,72 @@ import 'package:shared_preferences/shared_preferences.dart';
 @injectable
 class CRUDRepository {
   // insert data local
-  Future Installation() async {
+  Future<BaseState> Installation() async {
     try {
-      LoadingState();
-
-      final resultUsers = await Api.get('wp-json/sinar/v1/bum/users');
-      final responseUsers = resultUsers.data['data'];
-
       final prefs = await SharedPreferences.getInstance();
       final id_user = prefs.getString("id_user").toString();
 
-      await DatabaseService.instance.truncate('users');
-      await DatabaseService.instance.truncate('trees');
-      await DatabaseService.instance.truncate('routes');
-      await DatabaseService.instance.truncate('schedules');
+      final resultAll =
+          await Api.get('wp-json/sinar/v1/bum/all', data: {"id_user": id_user});
 
-      for (var i = 0; responseUsers.length > i; i++) {
-        await DatabaseService.instance.insert(
-            Users(
-                    id_user: responseUsers[i]['id_user'].toString(),
-                    name: responseUsers[i]['name'].toString(),
-                    username: responseUsers[i]['username'].toString())
-                .toMap(),
-            'users');
-      }
+      if (resultAll.data['status'] != 'failed') {
+        final responseUsers = resultAll.data['user'];
+        final responseSchedule = resultAll.data['schedule'];
+        final responseLocation = resultAll.data['location'];
+        final responseRoute = resultAll.data['route'];
 
-      final resultTree =
-          await Api.get('wp-json/sinar/v1/bum/locations', data: {"type": '1'});
-      final responseTree = resultTree.data;
+        await DatabaseService.instance.truncate('users');
+        await DatabaseService.instance.truncate('trees');
+        await DatabaseService.instance.truncate('routes');
+        await DatabaseService.instance.truncate('schedules');
 
-      for (var i = 0; responseTree.length > i; i++) {
-        await DatabaseService.instance.insert(
-            sendTree(
-              id_tree: responseTree[i]['id'].toString(),
-              name: responseTree[i]['name'].toString(),
-              lat: responseTree[i]['lat'].toString(),
-              long: responseTree[i]['long'].toString(),
-            ).toMap(),
-            'trees');
-      }
+        for (var i = 0; responseUsers.length > i; i++) {
+          await DatabaseService.instance.insert(
+              Users(
+                      id_user: responseUsers[i]['id'].toString(),
+                      name: responseUsers[i]['name'].toString(),
+                      username: responseUsers[i]['username'].toString())
+                  .toMap(),
+              'users');
+        }
 
-      final resultRoute = await Api.get('wp-json/sinar/v1/bum/route',
-          data: {"id_user": id_user.toString()});
-      final responseRoute = resultRoute.data['data'];
+        for (var i = 0; responseLocation.length > i; i++) {
+          await DatabaseService.instance.insert(
+              sendTree(
+                id_tree: responseLocation[i]['id'].toString(),
+                name: responseLocation[i]['name'].toString(),
+                lat: responseLocation[i]['lat'].toString(),
+                long: responseLocation[i]['long'].toString(),
+              ).toMap(),
+              'trees');
+        }
 
-      for (var i = 0; responseRoute.length > i; i++) {
-        await DatabaseService.instance.insert(
-            sendRoute(
-              id_user: responseRoute[i]['id_user'].toString(),
-              lat: responseRoute[i]['lat'].toString(),
-              long: responseRoute[i]['long'].toString(),
-            ).toMap(),
-            'routes');
-      }
+        for (var i = 0; responseRoute.length > i; i++) {
+          await DatabaseService.instance.insert(
+              sendRoute(
+                      id_user: id_user,
+                      lat: responseRoute[i]['lat'].toString(),
+                      long: responseRoute[i]['long'].toString(),
+                      tipe: '2',
+                      date: DateTime.now().toIso8601String())
+                  .toMap(),
+              'routes');
+        }
 
-      final resultSchedule = await Api.get('wp-json/sinar/v1/bum/schedule',
-          data: {"id_user": id_user.toString()});
-      final responseSchedule = resultSchedule.data;
-
-      for (var i = 0; responseSchedule.length > i; i++) {
-        await DatabaseService.instance.insert(
-            sendSchedule(
-              id_user: responseSchedule[i]['id_user'].toString(),
-              id_tree: responseSchedule[i]['id_tree'].toString(),
-              lat: responseSchedule[i]['lat'].toString(),
-              long: responseSchedule[i]['long'].toString(),
-              name: responseSchedule[i]['name'].toString(),
-            ).toMap(),
-            'schedules');
+        for (var i = 0; responseSchedule.length > i; i++) {
+          await DatabaseService.instance.insert(
+              sendSchedule(
+                id_user: id_user,
+                id_tree: responseSchedule[i]['id_tree'].toString(),
+                lat: responseSchedule[i]['lat'].toString(),
+                long: responseSchedule[i]['long'].toString(),
+                name: responseSchedule[i]['name'].toString(),
+              ).toMap(),
+              'schedules');
+        }
+        return SuccessState<bool>(data: true);
+      } else {
+        return GeneralErrorState(e: Exception('error'));
       }
     } on Exception catch (e) {
       rethrow;
@@ -88,6 +86,8 @@ class CRUDRepository {
   Future<List<Tree>> getTree() async {
     try {
       final response = await DatabaseService.instance.queryRow('trees');
+      print(response);
+
       if (response is List<dynamic> && response.isNotEmpty) {
         final treeData = response.map((e) => Tree.fromJson(e));
         return treeData.toList();
@@ -126,23 +126,32 @@ class CRUDRepository {
   }
 
   Future<BaseState> sendHistory(String lat, String long) async {
+    final prefs = await SharedPreferences.getInstance();
+    final id_user = prefs.getString("id_user").toString();
+
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final result = await Api.post('wp-json/sinar/v1/bum/listen',
-          {"id_user": prefs.getString("id_user"), "lat": lat, "long": long});
+      final result = await Api.post('wp-json/sinar/v1/bum/listen', {
+        "id_user": prefs.getString("id_user"),
+        "lat": lat,
+        "long": long,
+      });
       final response = result.data;
       if (response != null) {
         return SuccessState(data: result);
       } else {
         return GeneralErrorState(e: Exception(), error: response);
       }
-    } on Exception catch (e, s) {
-      Logger.log(
-          status: LogStatus.Error,
-          function: '$this',
-          exception: e,
-          stackTrace: s);
-      rethrow;
+    } on Exception catch (e) {
+      await DatabaseService.instance.insert(
+          sendRoute(
+                  id_user: id_user,
+                  lat: lat,
+                  long: long,
+                  tipe: '1',
+                  date: DateTime.now().toIso8601String())
+              .toMap(),
+          'routes');
+      return InitialState();
     }
   }
 

@@ -59,7 +59,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
       context.read<MapsCubit>().sendHistory(
           lat: position.latitude.toString(),
           long: position.longitude.toString());
-      await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 5));
     }
   }
 
@@ -167,7 +167,8 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                 child: MarkerLayer(markers: [
                                   for (var i = 0; i < histories.length; i++)
                                     InputMarkers(context,
-                                        tree: histories[i], no: i.toString()),
+                                        tree: histories[i],
+                                        no: (i + 1).toString()),
                                 ]),
                               )
                             ],

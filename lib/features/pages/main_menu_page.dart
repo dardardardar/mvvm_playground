@@ -12,6 +12,8 @@ import 'package:mvvm_playground/features/state/base_state.dart';
 import 'package:mvvm_playground/widgets/buttons.dart';
 import 'package:mvvm_playground/widgets/snackbar.dart';
 
+int count = 1;
+
 class MainMenuPage extends StatefulWidget {
   const MainMenuPage({super.key});
 
@@ -40,17 +42,12 @@ class _MainMenuPageState extends State<MainMenuPage> {
               setState(() {
                 buttontext = 'Loading..';
               });
-              FocusScope.of(context).unfocus();
-            } else if (state.sendSync is SuccessState) {
+            } else if (state.sendSync is SuccessState<bool>) {
               setState(() {
                 buttontext = 'Berhasil..';
               });
               showSnackbar(context,
                   message: 'Berhasil Sync', status: Status.Success);
-
-              setState(() {
-                buttontext = 'Sync';
-              });
             } else if (state.sendSync is InitialState) {
               setState(() {
                 buttontext = 'Sync';
