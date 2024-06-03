@@ -24,3 +24,5 @@ enum Styles {
   Button,
   Placeholder
 }
+
+enum LogStatus { Info, Warning, Error }

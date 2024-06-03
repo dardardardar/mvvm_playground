@@ -1,6 +1,8 @@
 import 'package:injectable/injectable.dart';
+import 'package:mvvm_playground/const/enums.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
 import 'package:mvvm_playground/helper/api.dart';
+import 'package:mvvm_playground/helper/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 @injectable
@@ -20,7 +22,13 @@ class AuthRepository {
       } else {
         throw Exception('Data tidak valid');
       }
-    } on Exception {
+    } on Exception catch (e, s) {
+      Logger.log(
+          status: LogStatus.Error,
+          className: AuthRepository().toString(),
+          function: '$this',
+          exception: e,
+          stackTrace: s);
       rethrow;
     }
   }
@@ -32,7 +40,13 @@ class AuthRepository {
       prefs.remove('name');
       prefs.remove('username');
       return SuccessState<bool>(data: true);
-    } on Exception {
+    } on Exception catch (e, s) {
+      Logger.log(
+          status: LogStatus.Error,
+          className: AuthRepository().toString(),
+          function: '$this',
+          exception: e,
+          stackTrace: s);
       rethrow;
     }
   }
