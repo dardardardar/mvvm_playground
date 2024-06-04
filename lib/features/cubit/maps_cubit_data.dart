@@ -5,6 +5,7 @@ class MapsData {
   final BaseState listTree;
   final BaseState listRoute;
   final BaseState listHistory;
+  final BaseState listUsers;
   final BaseState sendQty;
   final BaseState sendSync;
 
@@ -12,11 +13,13 @@ class MapsData {
       {BaseState? listTree,
       BaseState? listRoute,
       BaseState? listHistory,
+      BaseState? listUsers,
       BaseState? sendSync,
       BaseState? sendQty})
       : listTree = listTree ?? InitialState<Tree>(),
         listRoute = listRoute ?? InitialState<Tree>(),
         listHistory = listHistory ?? InitialState<Tree>(),
+        listUsers = listUsers ?? InitialState<User>(),
         sendSync = sendSync ?? InitialState<bool>(),
         sendQty = sendQty ?? InitialState<bool>();
 
@@ -24,6 +27,7 @@ class MapsData {
     BaseState? listTree,
     BaseState? listRoute,
     BaseState? listHistory,
+    BaseState? listUsers,
     BaseState? sendSync,
     BaseState? sendQty,
   }) {
@@ -31,6 +35,7 @@ class MapsData {
         listTree: listTree ?? this.listTree,
         listRoute: listRoute ?? this.listRoute,
         listHistory: listHistory ?? this.listHistory,
+        listUsers: listUsers ?? this.listUsers,
         sendSync: sendSync ?? this.sendSync,
         sendQty: sendQty ?? this.sendQty);
   }

@@ -6,6 +6,7 @@ import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/features/cubit/auth_cubit.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit_data.dart';
+import 'package:mvvm_playground/features/pages/dataset_page.dart';
 import 'package:mvvm_playground/features/pages/flutter_maps_page.dart';
 import 'package:mvvm_playground/features/pages/login_page.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
@@ -123,6 +124,21 @@ class _MainMenuPageState extends State<MainMenuPage> {
                         context.read<MapsCubit>().instalation();
                       },
                       title: buttontext,
+                      backgroundColor: primaryColor,
+                      icon: Icons.timer_outlined,
+                      color: Colors.white),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: flatButton(
+                      context: context,
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const DataSetPage()));
+                      },
+                      title: 'Data',
                       backgroundColor: primaryColor,
                       icon: Icons.timer_outlined,
                       color: Colors.white),

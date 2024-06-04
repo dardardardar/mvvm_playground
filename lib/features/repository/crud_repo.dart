@@ -16,8 +16,7 @@ class CRUDRepository {
       final prefs = await SharedPreferences.getInstance();
       final id_user = prefs.getString("id_user").toString();
 
-      final resultAll =
-          await Api.get('wp-json/sinar/v1/bum/all', data: {"id_user": id_user});
+      final resultAll = await Api.get('wp-json/sinar/v1/bum/all');
 
       if (resultAll.data['status'] != 'failed') {
         final responseUsers = resultAll.data['user'];
@@ -54,7 +53,7 @@ class CRUDRepository {
         for (var i = 0; responseRoute.length > i; i++) {
           await DatabaseService.instance.insert(
               sendRoute(
-                      id_user: id_user,
+                      id_user: responseRoute[i]['id_user'].toString(),
                       lat: responseRoute[i]['lat'].toString(),
                       long: responseRoute[i]['long'].toString(),
                       tipe: '2',
@@ -86,7 +85,6 @@ class CRUDRepository {
   Future<List<Tree>> getTree() async {
     try {
       final response = await DatabaseService.instance.queryRow('trees');
-      print(response);
 
       if (response is List<dynamic> && response.isNotEmpty) {
         final treeData = response.map((e) => Tree.fromJson(e));
@@ -131,6 +129,26 @@ class CRUDRepository {
       if (response is List<dynamic> && response.isNotEmpty) {
         final harvestData = response.map((e) => Tree.fromJson(e));
         return harvestData.toList();
+      } else {
+        return [];
+      }
+    } on Exception catch (e, s) {
+      Logger.log(
+          status: LogStatus.Error,
+          className: CRUDRepository().toString(),
+          function: '$this',
+          exception: e,
+          stackTrace: s);
+      rethrow;
+    }
+  }
+
+  Future<List<User>> getUsers() async {
+    try {
+      final response = await DatabaseService.instance.queryRow('users');
+      if (response is List<dynamic> && response.isNotEmpty) {
+        final usersData = response.map((e) => User.fromJson(e));
+        return usersData.toList();
       } else {
         return [];
       }

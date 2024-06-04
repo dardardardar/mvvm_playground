@@ -23,6 +23,30 @@ class Tree {
   }
 }
 
+class User {
+  final String id_user;
+  final String name;
+  final String username;
+
+  User({
+    required this.id_user,
+    required this.name,
+    required this.username,
+  });
+
+  factory User.fromJson(data) {
+    return User(
+      id_user: (data['id_user'].toString() != null)
+          ? data['id_user'].toString()
+          : '',
+      name: (data['name'].toString() != null) ? data['name'].toString() : '',
+      username: (data['username'].toString() != null)
+          ? data['username'].toString()
+          : '',
+    );
+  }
+}
+
 class Routes {
   final LatLng position;
 

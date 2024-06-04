@@ -42,6 +42,35 @@ class MapsCubit extends Cubit<MapsData> {
         listTree: LoadingState<List<Tree>>(),
         listRoute: LoadingState<List<Tree>>(),
         listHistory: LoadingState<List<Tree>>(),
+        listUsers: LoadingState<List<User>>(),
+      ));
+      final tree = await _crudRepository.getTree();
+      final route = await _crudRepository.getRoute();
+      final history = await _crudRepository.getHistory();
+      final users = await _crudRepository.getUsers();
+
+      emit(state.copyWith(
+        listTree: SuccessState<List<Tree>>(data: tree),
+        listRoute: SuccessState<List<Tree>>(data: route),
+        listHistory: SuccessState<List<Tree>>(data: history),
+        listUsers: SuccessState<List<User>>(data: users),
+      ));
+    } on Exception catch (e) {
+      emit(state.copyWith(
+        listTree: GeneralErrorState(e: e, error: e.toString()),
+        listRoute: GeneralErrorState(e: e, error: e.toString()),
+        listHistory: GeneralErrorState(e: e, error: e.toString()),
+        listUsers: GeneralErrorState(e: e, error: e.toString()),
+      ));
+    }
+  }
+
+  Future<void> getUsers() async {
+    try {
+      emit(state.copyWith(
+        listTree: LoadingState<List<Tree>>(),
+        listRoute: LoadingState<List<Tree>>(),
+        listHistory: LoadingState<List<Tree>>(),
       ));
       final tree = await _crudRepository.getTree();
       final route = await _crudRepository.getRoute();
