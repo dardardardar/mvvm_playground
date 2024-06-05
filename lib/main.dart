@@ -1,4 +1,3 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mvvm_playground/const/theme.dart';
@@ -49,29 +48,23 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool _isOnline = false;
-
-  Future<void> _startConnectivityCheck() async {
-    while (true) {
-      var connectivityResult = await Connectivity().checkConnectivity();
-      if (connectivityResult[0] == ConnectivityResult.mobile ||
-          connectivityResult[0] == ConnectivityResult.wifi) {
-        setState(() {
-          _isOnline = true;
-        });
-      } else {
-        setState(() {
-          _isOnline = false;
-        });
-      }
-      await Future.delayed(Duration(seconds: 4));
-    }
-  }
+  // Future<void> _startConnectivityCheck() async {
+  //   while (true) {
+  //     var connectivityResult = await Connectivity().checkConnectivity();
+  //     if (connectivityResult[0] == ConnectivityResult.mobile ||
+  //         connectivityResult[0] == ConnectivityResult.wifi) {
+  //       setState(() {});
+  //     } else {
+  //       setState(() {});
+  //     }
+  //     await Future.delayed(Duration(seconds: 4));
+  //   }
+  // }
 
   @override
   void initState() {
     super.initState();
-    _startConnectivityCheck();
+    //_startConnectivityCheck();
   }
 
   Widget currentPage = const LoginPage();

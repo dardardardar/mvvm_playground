@@ -13,7 +13,7 @@ class AuthRepository {
       //Offline
       final response = await DatabaseService.instance
           .queryAllRows('users', 'username', username);
-      if (response != null && response.isNotEmpty && response[0] != null) {
+      if (response.isNotEmpty) {
         final rss = response[0];
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('id_user', rss['id_user'].toString());

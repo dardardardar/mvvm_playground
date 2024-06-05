@@ -77,7 +77,13 @@ class CRUDRepository {
       } else {
         return GeneralErrorState(e: Exception('error'));
       }
-    } on Exception catch (e) {
+    } on Exception catch (e, s) {
+      Logger.log(
+          status: LogStatus.Error,
+          className: CRUDRepository().toString(),
+          function: '$this',
+          exception: e,
+          stackTrace: s);
       rethrow;
     }
   }
@@ -86,7 +92,7 @@ class CRUDRepository {
     try {
       final response = await DatabaseService.instance.queryRow('trees');
 
-      if (response is List<dynamic> && response.isNotEmpty) {
+      if (response.isNotEmpty) {
         final treeData = response.map((e) => Tree.fromJson(e));
         return treeData.toList();
       } else {
@@ -106,7 +112,7 @@ class CRUDRepository {
   Future<List<Tree>> getRoute() async {
     try {
       final response = await DatabaseService.instance.queryRow('routes');
-      if (response is List<dynamic> && response.isNotEmpty) {
+      if (response.isNotEmpty) {
         final routeData = response.map((e) => Tree.fromJson(e));
         return routeData.toList();
       } else {
@@ -126,7 +132,7 @@ class CRUDRepository {
   Future<List<Tree>> getHistory() async {
     try {
       final response = await DatabaseService.instance.queryRow('harvest');
-      if (response is List<dynamic> && response.isNotEmpty) {
+      if (response.isNotEmpty) {
         final harvestData = response.map((e) => Tree.fromJson(e));
         return harvestData.toList();
       } else {
@@ -146,7 +152,7 @@ class CRUDRepository {
   Future<List<User>> getUsers() async {
     try {
       final response = await DatabaseService.instance.queryRow('users');
-      if (response is List<dynamic> && response.isNotEmpty) {
+      if (response.isNotEmpty) {
         final usersData = response.map((e) => User.fromJson(e));
         return usersData.toList();
       } else {
@@ -179,7 +185,7 @@ class CRUDRepository {
       } else {
         return GeneralErrorState(e: Exception(), error: response);
       }
-    } on Exception catch (e) {
+    } on Exception {
       await DatabaseService.instance.insert(
           sendRoute(
                   id_user: id_user,
@@ -207,11 +213,7 @@ class CRUDRepository {
           ).toMap(),
           'harvest');
 
-      if (response != null) {
-        return SuccessState(data: response);
-      } else {
-        return GeneralErrorState(e: Exception(), error: response.toString());
-      }
+      return SuccessState(data: response);
     } on Exception catch (e, s) {
       Logger.log(
           status: LogStatus.Error,

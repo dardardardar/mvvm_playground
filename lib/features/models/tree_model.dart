@@ -1,4 +1,3 @@
-import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 
 class Tree {
@@ -15,9 +14,9 @@ class Tree {
 
   factory Tree.fromJson(data) {
     return Tree(
-        name: (data['name'].toString() != null) ? data['name'].toString() : '',
-        idTree: (data['id'].toString() != null) ? data['id'].toString() : '',
-        qty: (data['qty'].toString() != null) ? data['qty'].toString() : '',
+        name: data['name'].toString(),
+        idTree: data['id'].toString(),
+        qty: data['qty'].toString(),
         position:
             LatLng(double.parse(data['lat']), double.parse(data['long'])));
   }
@@ -36,13 +35,9 @@ class User {
 
   factory User.fromJson(data) {
     return User(
-      id_user: (data['id_user'].toString() != null)
-          ? data['id_user'].toString()
-          : '',
-      name: (data['name'].toString() != null) ? data['name'].toString() : '',
-      username: (data['username'].toString() != null)
-          ? data['username'].toString()
-          : '',
+      id_user: data['id_user'].toString(),
+      name: data['name'].toString(),
+      username: data['username'].toString(),
     );
   }
 }
