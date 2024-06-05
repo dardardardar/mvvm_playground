@@ -57,7 +57,7 @@ class DatabaseService {
         id_user VARCHAR(5) NOT NULL,
         lat VARCHAR(30) NOT NULL,
         long VARCHAR(30) NOT NULL,
-        tipe VARCHAR(5) NULL,
+        tipe VARCHAR(5) NOT NULL,
         date TEXT NULL
       )
     ''');
@@ -70,6 +70,7 @@ class DatabaseService {
         id_tree INTEGER NOT NULL,
         lat VARCHAR(30) NOT NULL,
         long VARCHAR(30) NOT NULL,
+        tipe VARCHAR(2) NOT NULL,
         created_at TEXT
       )
     ''');
@@ -87,15 +88,22 @@ class DatabaseService {
     return await db.query(table, where: "$filter = ?", whereArgs: [id]);
   }
 
+  Future<List<Map<String, dynamic>>> queryAllRowsDobule(String table,
+      String filter1, String filter2, String where1, String where2) async {
+    Database db = await database;
+    String whereClause = "$filter1 = ? AND $filter2 = ?";
+    List<String> whereArgs = [where1, where2];
+    return await db.query(table, where: whereClause, whereArgs: whereArgs);
+  }
+
   Future<List<Map<String, dynamic>>> queryRow(String table) async {
     Database db = await database;
     return await db.query(table);
   }
 
   Future<int> update(
-      Map<String, dynamic> row, String table, String filter) async {
+      Map<String, dynamic> row, String table, String filter, String id) async {
     Database db = await database;
-    int id = row['id'];
     return await db.update(table, row, where: filter + ' = ?', whereArgs: [id]);
   }
 

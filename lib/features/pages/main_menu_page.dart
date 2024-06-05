@@ -47,8 +47,8 @@ class _MainMenuPageState extends State<MainMenuPage> {
               setState(() {
                 buttontext = 'Berhasil..';
               });
-              showSnackbar(context,
-                  message: 'Berhasil Sync', status: Status.Success);
+              // showSnackbar(context,
+              //     message: 'Berhasil Sync', status: Status.Success);
             } else if (state.sendSync is InitialState) {
               setState(() {
                 buttontext = 'Sync';

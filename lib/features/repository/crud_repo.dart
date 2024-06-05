@@ -179,6 +179,16 @@ class CRUDRepository {
         "lat": lat,
         "long": long,
       });
+
+      await DatabaseService.instance.insert(
+          sendRoute(
+                  id_user: id_user,
+                  lat: lat,
+                  long: long,
+                  tipe: '2',
+                  date: DateTime.now().toIso8601String())
+              .toMap(),
+          'routes');
       final response = result.data;
       if (response != null) {
         return SuccessState(data: result);
@@ -210,10 +220,73 @@ class CRUDRepository {
             lat: tree.position.latitude.toString(),
             long: tree.position.longitude.toString(),
             qty: qty ?? 0.0,
+            tipe: '1',
           ).toMap(),
           'harvest');
 
       return SuccessState(data: response);
+    } on Exception catch (e, s) {
+      Logger.log(
+          status: LogStatus.Error,
+          className: CRUDRepository().toString(),
+          exception: e,
+          stackTrace: s);
+      rethrow;
+    }
+  }
+
+  Future<BaseState> sendSyncAll() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final id_user = prefs.getString("id_user").toString();
+
+      final getDataRoutes = await DatabaseService.instance
+          .queryAllRowsDobule('routes', 'tipe', 'id_user', '1', id_user);
+      if (getDataRoutes.length > 0) {
+        var arrRoutes = [];
+        for (var i = 0; getDataRoutes.length > i; i++) {
+          arrRoutes.add({
+            "lat": getDataRoutes[i]['lat'],
+            "long": getDataRoutes[i]['long']
+          });
+        }
+
+        var sendArrayRoute = {
+          "id_user": id_user,
+          "data": arrRoutes,
+        };
+
+        await Api.post('wp-json/sinar/v1/bum/manual_history', sendArrayRoute);
+
+        await DatabaseService.instance
+            .update({'tipe': '2'}, 'routes', 'id_user', id_user);
+      }
+      final getDataHarvest = await DatabaseService.instance
+          .queryAllRowsDobule('harvest', 'tipe', 'id_user', '1', id_user);
+      if (getDataHarvest.length > 0) {
+        var arrHarvest = [];
+        for (var i = 0; getDataHarvest.length > i; i++) {
+          arrHarvest.add({
+            "qty": getDataHarvest[i]['qty'],
+            "id_tree": getDataHarvest[i]['id_tree'],
+            "lat": getDataHarvest[i]['lat'],
+            "long": getDataHarvest[i]['long'],
+            "date": getDataHarvest[i]['created_at']
+          });
+        }
+        var sendArrayHarvest = {
+          "id_user": id_user,
+          "data": arrHarvest,
+        };
+
+        await Api.post('wp-json/sinar/v1/bum/manual-input', sendArrayHarvest);
+        await DatabaseService.instance
+            .queryAllRowsDobule('harvest', 'tipe', 'id_user', '1', id_user);
+
+        await DatabaseService.instance
+            .update({'tipe': '2'}, 'harvest', 'id_user', id_user);
+      }
+      return SuccessState<bool>(data: true);
     } on Exception catch (e, s) {
       Logger.log(
           status: LogStatus.Error,

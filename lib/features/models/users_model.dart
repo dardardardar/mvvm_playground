@@ -101,6 +101,7 @@ class sendHistoryQty {
   String lat;
   String long;
   double qty;
+  String tipe;
   String created_at;
 
   sendHistoryQty(
@@ -109,6 +110,7 @@ class sendHistoryQty {
       required this.lat,
       required this.long,
       required this.qty,
+      required this.tipe,
       this.created_at = ''});
 
   Map<String, dynamic> toMap() {
@@ -118,6 +120,7 @@ class sendHistoryQty {
       'lat': lat,
       'long': long,
       'qty': qty,
+      'tipe': tipe,
       'created_at': getCurrentDateTime(),
     };
   }
