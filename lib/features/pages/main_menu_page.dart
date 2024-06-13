@@ -87,9 +87,9 @@ class _MainMenuPageState extends State<MainMenuPage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const FlutterMapPage(
-                                      title: 'Harvest',
+                                builder: (context) => FlutterMapPage(
                                       isHistory: false,
+                                      title: 'Harvest',
                                     )));
                       },
                       context: context,

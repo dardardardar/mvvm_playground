@@ -23,7 +23,6 @@ import 'package:mvvm_playground/widgets/navigation_bar.dart';
 import 'package:mvvm_playground/widgets/states.dart';
 import 'package:mvvm_playground/widgets/typography.dart';
 import 'package:provider/provider.dart';
-
 import '../models/tree_model.dart';
 
 class FlutterMapPage extends StatefulWidget {
@@ -43,6 +42,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
   late MapController mapController = MapController();
   late Stream<latLng.LatLng> locationStream;
   bool isDebug = false;
+
   @override
   void initState() {
     super.initState();
@@ -99,7 +99,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   var userLocation = Provider.of<GeoLocation>(context);
-                  userLocation.radiuscentermeters = 5;
+                  userLocation.radiuscentermeters = 4;
                   for (var i = 0; i < trees.length; i++) {
                     userLocation.setPointCenter(trees[i]);
                   }
@@ -122,12 +122,20 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                             children: [
                               mapTiles(context),
                               Visibility(
-                                visible: true,
-                                // visible: widget.isHistory,
+                                visible: (widget.isHistory == false),
                                 child: PolylineLayer(
                                   polylines: routes.isEmpty
                                       ? []
                                       : mapPolyline(routes: routes),
+                                  polylineCulling: true,
+                                ),
+                              ),
+                              Visibility(
+                                visible: (widget.isHistory),
+                                child: PolylineLayer(
+                                  polylines: histories.isEmpty
+                                      ? []
+                                      : mapPolylineHistories(routes: histories),
                                   polylineCulling: true,
                                 ),
                               ),
@@ -215,7 +223,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                         userLocation.currentTree
                                                                 .isEmpty
                                                             ? '-'
-                                                            : '${userLocation.currentTree.first}',
+                                                            : '${userLocation.currentTree}',
                                                         style: Styles.Body),
                                                   ],
                                                 ),
@@ -238,7 +246,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                       userLocation.currentTree
                                                               .isEmpty
                                                           ? '-'
-                                                          : '${userLocation.currentidTree.first}',
+                                                          : '${userLocation.currentidTree}',
                                                       style: Styles.Body,
                                                     ),
                                                   ],
@@ -278,18 +286,20 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                                 .isEmpty
                                                             ? ''
                                                             : userLocation
-                                                                .currentidTree
-                                                                .first,
+                                                                .currentidTree,
                                                         name: userLocation
-                                                                .currentTree
-                                                                .isEmpty
+                                                                .name.isEmpty
                                                             ? 'No Tree found'
-                                                            : userLocation
-                                                                .currentTree
-                                                                .first,
+                                                            : userLocation.name,
                                                         position: latLng.LatLng(
-                                                            userLocation.centerlocation.latitude ?? 0,
-                                                            userLocation.centerlocation.longitude ?? 0)));
+                                                            userLocation
+                                                                    .centerlocation
+                                                                    .latitude ??
+                                                                0,
+                                                            userLocation
+                                                                    .centerlocation
+                                                                    .longitude ??
+                                                                0)));
                                               },
                                               title: 'Collect',
                                               icon: Icons.add_circle_outline),

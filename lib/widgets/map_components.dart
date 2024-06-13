@@ -39,6 +39,18 @@ List<Polyline> mapPolyline({required List<dynamic> routes}) {
   ];
 }
 
+List<Polyline> mapPolylineHistories({required List<dynamic> routes}) {
+  return [
+    Polyline(
+      points: routes.map((route) => route.position as LatLng).toList(),
+      color: Colors.green,
+      strokeWidth: 1,
+      isDotted: true,
+      useStrokeWidthInMeter: true,
+    )
+  ];
+}
+
 Marker userMarker({required LatLng position}) {
   return Marker(
       point: position,

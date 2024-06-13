@@ -40,12 +40,16 @@ class CRUDRepository {
         }
 
         for (var i = 0; responseLocation.length > i; i++) {
+          var id_trees = responseLocation[i]['id'].toString();
+          var names = responseLocation[i]['name'].toString();
+          var lats = responseLocation[i]['lat'].toString();
+          var longs = responseLocation[i]['long'].toString();
           await DatabaseService.instance.insert(
               sendTree(
-                id_tree: responseLocation[i]['id'].toString(),
-                name: responseLocation[i]['name'].toString(),
-                lat: responseLocation[i]['lat'].toString(),
-                long: responseLocation[i]['long'].toString(),
+                id_tree: id_trees,
+                name: names,
+                lat: lats,
+                long: longs,
               ).toMap(),
               'trees');
         }
@@ -212,7 +216,6 @@ class CRUDRepository {
   Future<BaseState> sendQty(double? qty, Tree tree) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-
       final response = await DatabaseService.instance.insert(
           sendHistoryQty(
             id_user: prefs.getString('id_user').toString(),
@@ -224,6 +227,18 @@ class CRUDRepository {
           ).toMap(),
           'harvest');
 
+      await Api.post('wp-json/sinar/v1/bum/manual-input', {
+        "id_user": prefs.getString('id_user').toString(),
+        "data": [
+          {
+            "qty": qty ?? '0',
+            "id_tree": tree.idTree.isEmpty ? '' : tree.idTree,
+            "lat": tree.position.latitude.toString(),
+            "long": tree.position.longitude.toString(),
+            "date": DateTime.now().toIso8601String()
+          },
+        ],
+      });
       return SuccessState(data: response);
     } on Exception catch (e, s) {
       Logger.log(
