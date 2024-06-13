@@ -49,23 +49,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool _isOnline = false;
-
   Future<void> _startConnectivityCheck() async {
     while (true) {
       var connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult[0] == ConnectivityResult.mobile ||
-          connectivityResult[0] == ConnectivityResult.wifi) {
-        setState(() {
-          _isOnline = true;
-        });
-        getIt.get<MapsCubit>().instalation();
-      } else {
-        setState(() {
-          _isOnline = false;
-        });
-      }
-      await Future.delayed(Duration(seconds: 300));
+          connectivityResult[0] == ConnectivityResult.wifi) {}
+      await Future.delayed(Duration(seconds: 60));
     }
   }
 
