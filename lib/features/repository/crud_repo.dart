@@ -221,6 +221,7 @@ class CRUDRepository {
             id_user: prefs.getString('id_user').toString(),
             id_tree: tree.idTree.isEmpty ? '' : tree.idTree,
             lat: tree.position.latitude.toString(),
+            name: tree.name,
             long: tree.position.longitude.toString(),
             qty: qty ?? 0.0,
             tipe: '1',

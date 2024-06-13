@@ -185,7 +185,7 @@ class _HomeViewPageState extends State<DataPage> {
                           Expanded(
                             flex: 1,
                             child: Text(
-                              item.created_at,
+                              item.date,
                               style: subtitle2,
                             ),
                           ),
