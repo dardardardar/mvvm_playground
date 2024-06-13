@@ -35,7 +35,6 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
   flutter_map: ^6.1.0
-  latlong2: ^0.9.1
   flutter_map_cancellable_tile_provider: ^2.0.0
   google_maps_flutter: ^2.5.3
   flutter_bloc: ^8.1.5
@@ -55,6 +54,9 @@ dependencies:
   sqflite: ^2.3.2
   path: ^1.9.0
   connectivity: ^3.0.6
+  vector_map_tiles_mbtiles: ^1.1.0
+  mbtiles: ^0.4.2
+  vector_map_tiles: ^7.3.1
 
 dev_dependencies:
   flutter_test:
@@ -85,6 +87,8 @@ flutter:
   assets:
     - assets/json/
     - assets/icons/
+    - assets/tiles/osm-2020-02-10-v3.11_indonesia_jakarta.mbtiles
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

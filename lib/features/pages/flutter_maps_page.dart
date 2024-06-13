@@ -23,7 +23,6 @@ import 'package:mvvm_playground/widgets/navigation_bar.dart';
 import 'package:mvvm_playground/widgets/states.dart';
 import 'package:mvvm_playground/widgets/typography.dart';
 import 'package:provider/provider.dart';
-
 import '../models/tree_model.dart';
 
 class FlutterMapPage extends StatefulWidget {
@@ -43,6 +42,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
   late MapController mapController = MapController();
   late Stream<latLng.LatLng> locationStream;
   bool isDebug = false;
+
   @override
   void initState() {
     super.initState();
@@ -122,12 +122,20 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                             children: [
                               mapTiles(context),
                               Visibility(
-                                visible: true,
-                                // visible: widget.isHistory,
+                                visible: (widget.isHistory == false),
                                 child: PolylineLayer(
                                   polylines: routes.isEmpty
                                       ? []
                                       : mapPolyline(routes: routes),
+                                  polylineCulling: true,
+                                ),
+                              ),
+                              Visibility(
+                                visible: (widget.isHistory),
+                                child: PolylineLayer(
+                                  polylines: histories.isEmpty
+                                      ? []
+                                      : mapPolylineHistories(routes: histories),
                                   polylineCulling: true,
                                 ),
                               ),

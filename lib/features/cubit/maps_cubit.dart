@@ -41,7 +41,7 @@ class MapsCubit extends Cubit<MapsData> {
       emit(state.copyWith(
         sendSync: LoadingState(),
       ));
-      final ress1 = await _crudRepository.sendSyncAll();
+      await _crudRepository.sendSyncAll();
       final ress2 = await _crudRepository.Installation();
       if (ress2 is SuccessState<bool>) {
         emit(state.copyWith(
