@@ -152,24 +152,6 @@ class _MainMenuPageState extends State<MainMenuPage> {
                         child: flatButton(
                           context: context,
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const DataSetPage(),
-                              ),
-                            );
-                          },
-                          title: 'Data',
-                          backgroundColor: primaryColor,
-                          icon: Icons.timer_outlined,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: flatButton(
-                          context: context,
-                          onTap: () {
                             context.read<AuthCubit>().logout();
                             Navigator.of(context, rootNavigator: true).pop();
                           },

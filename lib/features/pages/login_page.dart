@@ -110,10 +110,11 @@ class _LoginPageState extends State<LoginPage> {
                       SizedBox(height: 32),
                       flatButton(
                           context: context,
-                          title: 'Login',
+                          title: buttontext,
                           backgroundColor: primaryColor,
                           onTap: () {
-                            if (_formKey.currentState?.validate() ?? false) {
+                            if (_formKey.currentState?.validate() ??
+                                false || state.sendAuth is! LoadingState) {
                               sendAuth();
                             }
                           },
