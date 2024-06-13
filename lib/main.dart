@@ -65,7 +65,7 @@ class _MyAppState extends State<MyApp> {
           _isOnline = false;
         });
       }
-      await Future.delayed(Duration(seconds: 60));
+      await Future.delayed(Duration(seconds: 300));
     }
   }
 

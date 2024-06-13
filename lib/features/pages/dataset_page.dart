@@ -14,7 +14,6 @@ class DataSetPage extends StatefulWidget {
 }
 
 class _DataSetPageState extends State<DataSetPage> {
-  String buttontext = 'Sync';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
