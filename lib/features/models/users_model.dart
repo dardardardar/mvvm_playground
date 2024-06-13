@@ -100,28 +100,31 @@ class sendHistoryQty {
   String id_user;
   String lat;
   String long;
+  String name;
   double qty;
   String tipe;
-  String created_at;
+  String date;
 
   sendHistoryQty(
       {required this.id_tree,
       required this.id_user,
+      required this.name,
       required this.lat,
       required this.long,
       required this.qty,
       required this.tipe,
-      this.created_at = ''});
+      this.date = ''});
 
   Map<String, dynamic> toMap() {
     return {
       'id_tree': id_tree,
       'id_user': id_user,
+      'name': name,
       'lat': lat,
       'long': long,
       'qty': qty,
       'tipe': tipe,
-      'created_at': getCurrentDateTime(),
+      'date': getCurrentDateTime(),
     };
   }
 }

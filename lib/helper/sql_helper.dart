@@ -66,12 +66,13 @@ class DatabaseService {
       CREATE TABLE harvest(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         id_user VARCHAR(5) NOT NULL,
+        name VARCHAR(100) NOT NULL,
         qty INTEGER NOT NULL,
         id_tree INTEGER NOT NULL,
         lat VARCHAR(30) NOT NULL,
         long VARCHAR(30) NOT NULL,
         tipe VARCHAR(2) NOT NULL,
-        created_at TEXT
+        date TEXT
       )
     ''');
   }
