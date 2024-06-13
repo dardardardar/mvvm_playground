@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mvvm_playground/const/enums.dart';
 import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/widgets/typography.dart';
 
@@ -127,6 +128,55 @@ class _InputQty extends State<InputQty> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class InputFormField extends StatefulWidget {
+  final TextEditingController? controller;
+  final String? Function(String?)? validator;
+  final String label;
+  final bool? isDark;
+  const InputFormField(
+      {super.key,
+      this.controller,
+      this.validator,
+      required this.label,
+      this.isDark});
+
+  @override
+  State<InputFormField> createState() => _InputFormFieldState();
+}
+
+class _InputFormFieldState extends State<InputFormField> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        displayText(widget.label,
+            style:
+                widget.isDark != null || false ? Styles.BodyAlt : Styles.Body),
+        TextFormField(
+          onTapOutside: (event) {
+            FocusManager.instance.primaryFocus?.unfocus();
+          },
+          decoration: const InputDecoration(
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.white),
+              ),
+              //When the TextFormField is ON focus
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.white),
+              )),
+          style: TextStyle(
+            color: Colors.white, // Change this to your desired color
+          ),
+          controller: widget.controller,
+          validator: widget.validator,
+        ),
+      ],
     );
   }
 }

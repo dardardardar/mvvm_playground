@@ -46,7 +46,7 @@ Widget flatButton(
     required String title,
     Color? backgroundColor,
     Color? color,
-    required IconData icon}) {
+    IconData? icon}) {
   return InkWell(
     onTap: onTap,
     child: Container(

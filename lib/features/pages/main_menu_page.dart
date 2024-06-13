@@ -149,10 +149,7 @@ class _MainMenuPageState extends State<MainMenuPage> {
                       context: context,
                       onTap: () {
                         context.read<AuthCubit>().logout();
-                        Navigator.of(context, rootNavigator: true).push(
-                          MaterialPageRoute(
-                              builder: (context) => const LoginPage()),
-                        );
+                        Navigator.of(context, rootNavigator: true).pop();
                       },
                       title: 'Logout',
                       backgroundColor: primaryColor,
