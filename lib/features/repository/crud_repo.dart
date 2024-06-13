@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:injectable/injectable.dart';
 import 'package:mvvm_playground/const/enums.dart';
 import 'package:mvvm_playground/features/models/tree_model.dart';
@@ -17,7 +19,7 @@ class CRUDRepository {
       final id_user = prefs.getString("id_user").toString();
 
       final resultAll = await Api.get('wp-json/sinar/v1/bum/all');
-
+      log(resultAll.toString());
       if (resultAll.data['status'] != 'failed') {
         final responseUsers = resultAll.data['user'];
         final responseSchedule = resultAll.data['schedule'];
