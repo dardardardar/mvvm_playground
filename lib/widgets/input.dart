@@ -14,9 +14,9 @@ class InputQty extends StatefulWidget {
 
   const InputQty({
     super.key,
-    this.minVal = 1,
+    this.minVal = 0,
     this.maxVal = 999999999999,
-    this.initVal = 1,
+    this.initVal = 0,
     this.width = 32,
     required this.onQtyChanged,
     this.btnColor,
