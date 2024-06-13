@@ -76,9 +76,6 @@ class _MainMenuPageState extends State<MainMenuPage> {
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(
-                          alignment: Alignment.topRight,
-                          child: Text('Hi $name')),
                       const SizedBox(height: 100),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
