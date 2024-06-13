@@ -268,7 +268,7 @@ void showModalHistory(BuildContext context, {required List<Tree> history}) {
                                   Expanded(
                                     flex: 1,
                                     child: Text(
-                                      'test',
+                                      history[i].created_at,
                                       style: subtitle2,
                                     ),
                                   ),

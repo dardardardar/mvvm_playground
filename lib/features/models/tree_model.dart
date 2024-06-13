@@ -5,18 +5,21 @@ class Tree {
   final String idTree;
   final LatLng position;
   final String qty;
+  final String created_at;
 
   Tree(
       {required this.name,
       required this.idTree,
       required this.position,
-      this.qty = '0'});
+      this.qty = '0',
+      this.created_at = ''});
 
   factory Tree.fromJson(data) {
     return Tree(
         name: data['name'].toString(),
         idTree: data['id_tree'].toString(),
         qty: data['qty'].toString(),
+        created_at: (data['date'] == null) ? '' : data['date'],
         position:
             LatLng(double.parse(data['lat']), double.parse(data['long'])));
   }
