@@ -99,7 +99,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   var userLocation = Provider.of<GeoLocation>(context);
-                  userLocation.radiuscentermeters = 5;
+                  userLocation.radiuscentermeters = 4;
                   for (var i = 0; i < trees.length; i++) {
                     userLocation.setPointCenter(trees[i]);
                   }
@@ -223,7 +223,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                         userLocation.currentTree
                                                                 .isEmpty
                                                             ? '-'
-                                                            : '${userLocation.currentTree.first}',
+                                                            : '${userLocation.currentTree}',
                                                         style: Styles.Body),
                                                   ],
                                                 ),
@@ -246,7 +246,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                       userLocation.currentTree
                                                               .isEmpty
                                                           ? '-'
-                                                          : '${userLocation.currentidTree.first}',
+                                                          : '${userLocation.currentidTree}',
                                                       style: Styles.Body,
                                                     ),
                                                   ],
@@ -286,18 +286,20 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                                 .isEmpty
                                                             ? ''
                                                             : userLocation
-                                                                .currentidTree
-                                                                .first,
+                                                                .currentidTree,
                                                         name: userLocation
-                                                                .currentTree
-                                                                .isEmpty
+                                                                .name.isEmpty
                                                             ? 'No Tree found'
-                                                            : userLocation
-                                                                .currentTree
-                                                                .first,
+                                                            : userLocation.name,
                                                         position: latLng.LatLng(
-                                                            userLocation.centerlocation.latitude ?? 0,
-                                                            userLocation.centerlocation.longitude ?? 0)));
+                                                            userLocation
+                                                                    .centerlocation
+                                                                    .latitude ??
+                                                                0,
+                                                            userLocation
+                                                                    .centerlocation
+                                                                    .longitude ??
+                                                                0)));
                                               },
                                               title: 'Collect',
                                               icon: Icons.add_circle_outline),

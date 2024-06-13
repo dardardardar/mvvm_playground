@@ -14,8 +14,8 @@ class GeoLocation {
   double qty = 0.0;
   bool isInRange = false;
   List<dynamic> status = [];
-  List<dynamic> currentTree = [];
-  List<dynamic> currentidTree = [];
+  String currentTree = '';
+  String currentidTree = '';
   LatLng pos = const LatLng(0, 0);
   //constructor
   GeoLocation({required this.userlocation});
@@ -118,8 +118,8 @@ class GeoLocation {
     if (radiuscentermeters >= distanceUserFromCenter()) {}
     isInRange = radiuscentermeters >= distanceUserFromCenter();
     if (isInRange) {
-      currentTree.add(name);
-      currentidTree.add(idTree);
+      currentTree = name;
+      currentidTree = idTree;
     }
   }
 }
