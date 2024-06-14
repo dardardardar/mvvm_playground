@@ -83,18 +83,18 @@ class CRUDRepository {
         }
 
         for (var i = 0; responseHarvest.length > i; i++) {
-          final response = await DatabaseService.instance.insert(
+          await DatabaseService.instance.insert(
               sendHistoryQty(
                 id_user: id_user,
                 id_tree: (responseHarvest[i]['id_tree'] == null)
                     ? ''
                     : responseHarvest[i]['id_tree'],
                 lat: responseHarvest[i]['lat'].toString(),
-                name: (responseHarvest[i]['id_tree'] == null)
+                name: (responseHarvest[i]['name'] == null)
                     ? ''
                     : responseHarvest[i]['id_tree'].toString(),
                 long: responseHarvest[i]['long'].toString(),
-                qty: responseHarvest[i]['qty'],
+                qty: double.parse(responseHarvest[i]['qty']),
                 tipe: '1',
               ).toMap(),
               'harvest');
@@ -160,11 +160,15 @@ class CRUDRepository {
     try {
       final prefs = await SharedPreferences.getInstance();
       final id_user = prefs.getString("id_user").toString();
-      final response = await DatabaseService.instance
-          .queryAllRows('harvest', 'id_user', id_user);
-      if (response.isNotEmpty) {
-        final harvestData = response.map((e) => Tree.fromJson(e));
-        return harvestData.toList();
+
+      final result = await Api.get('wp-json/sinar/v1/bum/history',
+          data: {"id_user": id_user});
+      final responseHarvest = result.data;
+      final status = responseHarvest['status'];
+      if (status == 'ok') {
+        final data = responseHarvest['data'] as List<dynamic>;
+        final categoryList = data.map((e) => Tree.fromJson(e));
+        return categoryList.toList();
       } else {
         return [];
       }
