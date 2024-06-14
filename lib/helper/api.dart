@@ -16,7 +16,7 @@ class DioExceptionCubit extends Cubit<bool> {
 }
 
 class Api {
-  static String BASE_URL = 'sinarmas.tvindo.net';
+  static String BASE_URL = 'testing.tvindo.net';
   static String URL(endpoint, {data}) {
     return Uri.https(BASE_URL, endpoint, data).toString();
   }

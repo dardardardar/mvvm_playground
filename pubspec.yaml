@@ -87,7 +87,6 @@ flutter:
   assets:
     - assets/json/
     - assets/icons/
-    - assets/tiles/osm-2020-02-10-v3.11_indonesia_jakarta.mbtiles
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
