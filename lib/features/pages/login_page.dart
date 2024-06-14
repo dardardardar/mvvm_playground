@@ -7,7 +7,6 @@ import 'package:mvvm_playground/const/enums.dart';
 import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/features/cubit/auth_cubit.dart';
 import 'package:mvvm_playground/features/cubit/auth_cubit_data.dart';
-import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/pages/main_menu_page.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
 import 'package:mvvm_playground/helper/api.dart';
@@ -31,7 +30,6 @@ class _LoginPageState extends State<LoginPage> {
   String buttontext = 'Login';
 
   void sendAuth() async {
-    await getIt.get<MapsCubit>().instalation();
     context.read<AuthCubit>().sendAuth(
           _usernameController.text,
         );

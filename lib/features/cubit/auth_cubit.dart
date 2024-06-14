@@ -4,8 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:injectable/injectable.dart';
 import 'package:mvvm_playground/features/cubit/auth_cubit_data.dart';
+import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/repository/auth_repo.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
+import 'package:mvvm_playground/helper/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 @injectable
@@ -19,6 +21,7 @@ class AuthCubit extends Cubit<authData> {
       emit(state.copyWith(
         sendAuth: LoadingState<bool>(),
       ));
+      await getIt.get<MapsCubit>().instalation();
 
       final authResponse = await _authRepository.Login(username);
       if (authResponse is SuccessState<dynamic>) {
