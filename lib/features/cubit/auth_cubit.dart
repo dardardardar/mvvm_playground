@@ -21,10 +21,10 @@ class AuthCubit extends Cubit<authData> {
       emit(state.copyWith(
         sendAuth: LoadingState<bool>(),
       ));
-      await getIt.get<MapsCubit>().instalation();
 
       final authResponse = await _authRepository.Login(username);
       if (authResponse is SuccessState<dynamic>) {
+        await getIt.get<MapsCubit>().instalation();
         emit(state.copyWith(
           sendAuth: SuccessState<bool>(data: true),
         ));

@@ -122,7 +122,8 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                             children: [
                               mapTiles(context),
                               Visibility(
-                                visible: (widget.isHistory == false),
+                                // visible: (widget.isHistory == false),
+                                visible: false,
                                 child: PolylineLayer(
                                   polylines: routes.isEmpty
                                       ? []
@@ -132,6 +133,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                               ),
                               Visibility(
                                 visible: (widget.isHistory),
+                                // visible: false,
                                 child: PolylineLayer(
                                   polylines: histories.isEmpty
                                       ? []
@@ -287,10 +289,10 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                             ? ''
                                                             : userLocation
                                                                 .currentidTree,
-                                                        name: userLocation
-                                                                .name.isEmpty
+                                                        name: userLocation.currentTree.isEmpty
                                                             ? 'No Tree found'
-                                                            : userLocation.name,
+                                                            : userLocation
+                                                                .currentTree,
                                                         position: latLng.LatLng(
                                                             userLocation
                                                                     .centerlocation

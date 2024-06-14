@@ -30,6 +30,9 @@ class _LoginPageState extends State<LoginPage> {
   String buttontext = 'Login';
 
   void sendAuth() async {
+    setState(() {
+      buttontext = 'Loading..';
+    });
     context.read<AuthCubit>().sendAuth(
           _usernameController.text,
         );
@@ -111,9 +114,10 @@ class _LoginPageState extends State<LoginPage> {
                           title: buttontext,
                           backgroundColor: primaryColor,
                           onTap: () {
-                            if (_formKey.currentState?.validate() ??
-                                false || state.sendAuth is! LoadingState) {
-                              sendAuth();
+                            if (_formKey.currentState?.validate() ?? false) {
+                              if (buttontext == 'Login') {
+                                sendAuth();
+                              }
                             }
                           },
                           icon: null)

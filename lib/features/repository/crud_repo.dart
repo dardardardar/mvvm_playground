@@ -25,11 +25,13 @@ class CRUDRepository {
         final responseSchedule = resultAll.data['schedule'];
         final responseLocation = resultAll.data['location'];
         final responseRoute = resultAll.data['route'];
+        final responseHarvest = resultAll.data['forage_result'];
 
         await DatabaseService.instance.truncate('users');
         await DatabaseService.instance.truncate('trees');
         await DatabaseService.instance.truncate('routes');
         await DatabaseService.instance.truncate('schedules');
+        await DatabaseService.instance.delete(1, 'harvest', 'tipe');
 
         for (var i = 0; responseUsers.length > i; i++) {
           await DatabaseService.instance.insert(
@@ -79,6 +81,25 @@ class CRUDRepository {
               ).toMap(),
               'schedules');
         }
+
+        for (var i = 0; responseHarvest.length > i; i++) {
+          final response = await DatabaseService.instance.insert(
+              sendHistoryQty(
+                id_user: id_user,
+                id_tree: (responseHarvest[i]['id_tree'] == null)
+                    ? ''
+                    : responseHarvest[i]['id_tree'],
+                lat: responseHarvest[i]['lat'].toString(),
+                name: (responseHarvest[i]['id_tree'] == null)
+                    ? ''
+                    : responseHarvest[i]['id_tree'].toString(),
+                long: responseHarvest[i]['long'].toString(),
+                qty: responseHarvest[i]['qty'],
+                tipe: '1',
+              ).toMap(),
+              'harvest');
+        }
+
         return SuccessState<bool>(data: true);
       } else {
         return GeneralErrorState(e: Exception('error'));
@@ -137,7 +158,10 @@ class CRUDRepository {
 
   Future<List<Tree>> getHistory() async {
     try {
-      final response = await DatabaseService.instance.queryRow('harvest');
+      final prefs = await SharedPreferences.getInstance();
+      final id_user = prefs.getString("id_user").toString();
+      final response = await DatabaseService.instance
+          .queryAllRows('harvest', 'id_user', id_user);
       if (response.isNotEmpty) {
         final harvestData = response.map((e) => Tree.fromJson(e));
         return harvestData.toList();
@@ -223,7 +247,7 @@ class CRUDRepository {
             id_user: prefs.getString('id_user').toString(),
             id_tree: tree.idTree.isEmpty ? '' : tree.idTree,
             lat: tree.position.latitude.toString(),
-            name: tree.name,
+            name: tree.idTree.isEmpty ? '' : tree.name,
             long: tree.position.longitude.toString(),
             qty: qty ?? 0.0,
             tipe: '1',

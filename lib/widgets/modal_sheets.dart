@@ -17,14 +17,6 @@ import 'package:provider/provider.dart';
 
 void showModalInputQty(BuildContext context,
     {bool? isNear, required Tree data, required LatLng current}) {
-  void sendQty(qty, bool isNewTree) {
-    Tree tree = Tree(name: data.name, idTree: data.idTree, position: current);
-    context.read<MapsCubit>().sendQty(
-          qty: qty,
-          data: tree,
-        );
-  }
-
   showModalBottomSheet<void>(
     clipBehavior: Clip.antiAlias,
     shape: RoundedRectangleBorder(
@@ -88,6 +80,7 @@ void showModalInputQty(BuildContext context,
                   ),
                 ),
                 InputQty(
+                  minVal: 1,
                   onQtyChanged: (value) {
                     userloc.setQty(value);
                   },
@@ -97,7 +90,14 @@ void showModalInputQty(BuildContext context,
                 ),
                 InkWell(
                     onTap: () {
-                      sendQty(userloc.qty, data.idTree.isEmpty);
+                      Tree tree = Tree(
+                          name: data.name,
+                          idTree: data.idTree,
+                          position: current);
+                      context.read<MapsCubit>().sendQty(
+                            qty: userloc.qty,
+                            data: tree,
+                          );
                       Navigator.pop(context);
                       showModalSuccess(context, name: data.name);
                     },
@@ -275,10 +275,14 @@ void showModalHistory(BuildContext context, {required List<Tree> history}) {
                                   Expanded(
                                       flex: 3,
                                       child: Text(
-                                        (history[i].name == 'null')
-                                            ? ''
+                                        (history[i].name == '')
+                                            ? 'Pohon tidak ditemukan'
                                             : history[i].name,
-                                        style: subtitle2,
+                                        style: subtitle2.copyWith(
+                                          color: (history[i].name == '')
+                                              ? Colors.red
+                                              : Colors.black,
+                                        ),
                                       )),
                                   Expanded(
                                       flex: 1,

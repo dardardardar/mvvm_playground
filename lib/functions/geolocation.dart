@@ -9,7 +9,7 @@ class GeoLocation {
   GeoPoint centerlocation = new GeoPoint.createZeroPoint();
   GeoPoint outerlocation = new GeoPoint.createNullPoint();
   double radiuscentermeters = 0.0;
-  String name = '';
+  String nameTree = '';
   String idTree = '';
   double qty = 0.0;
   bool isInRange = false;
@@ -36,7 +36,7 @@ class GeoLocation {
     setPointUser(json['latitude'], json['longitude']);
   }
   setCurrentTree(String tree) {
-    name = tree;
+    nameTree = tree;
   }
 
   setidTree(String idTree) {
@@ -69,7 +69,7 @@ class GeoLocation {
 
   void setPointCenter(Tree tree) {
     centerlocation.setPoint(tree.position.latitude, tree.position.longitude);
-    name = tree.name;
+    nameTree = tree.name;
     idTree = tree.idTree;
     pos = tree.position;
     _calculateRadiusMetersAndInRange();
@@ -90,7 +90,7 @@ class GeoLocation {
   }
 
   String getName() {
-    return name;
+    return nameTree;
   }
 
   String getId() {
@@ -118,7 +118,7 @@ class GeoLocation {
     if (radiuscentermeters >= distanceUserFromCenter()) {}
     isInRange = radiuscentermeters >= distanceUserFromCenter();
     if (isInRange) {
-      currentTree = name;
+      currentTree = nameTree;
       currentidTree = idTree;
     }
   }

@@ -14,9 +14,9 @@ class InputQty extends StatefulWidget {
 
   const InputQty({
     super.key,
-    this.minVal = 0,
+    this.minVal = 1,
     this.maxVal = 999999999999,
-    this.initVal = 0,
+    this.initVal = 1,
     this.width = 32,
     required this.onQtyChanged,
     this.btnColor,
@@ -27,7 +27,7 @@ class InputQty extends StatefulWidget {
 
 class _InputQty extends State<InputQty> {
   TextEditingController qtyController = TextEditingController();
-  int value = 0;
+  int value = 1;
   @override
   void initState() {
     super.initState();

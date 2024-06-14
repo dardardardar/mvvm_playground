@@ -110,7 +110,8 @@ class DatabaseService {
 
   Future<int> delete(int id, String table, String filter) async {
     Database db = await database;
-    return await db.delete(table, where: filter + ' = ?', whereArgs: [id]);
+    return await db
+        .delete(table, where: filter + ' = ?', whereArgs: [id.toString()]);
   }
 
   Future<void> truncate(String table) async {
