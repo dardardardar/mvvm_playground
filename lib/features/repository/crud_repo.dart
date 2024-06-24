@@ -184,29 +184,37 @@ class CRUDRepository {
   }
 
   Future<List<Tree>> getHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    final id_user = prefs.getString("id_user").toString();
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final id_user = prefs.getString("id_user").toString();
-
       final result = await Api.get('wp-json/sinar/v1/bum/history',
           data: {"id_user": id_user});
       final responseHarvestData = result.data;
       final status = responseHarvestData['status'];
       if (status == 'ok') {
         final data = responseHarvestData['data'] as List<dynamic>;
-        final categoryList = data.map((e) => Tree.fromJson(e));
-        return categoryList.toList();
+        final historyList = data.map((e) => Tree.fromJson(e));
+        return historyList.toList();
       } else {
         return [];
       }
     } on Exception catch (e, s) {
-      Logger.log(
-          status: LogStatus.Error,
-          className: CRUDRepository().toString(),
-          function: '$this',
-          exception: e,
-          stackTrace: s);
-      rethrow;
+      final response = await DatabaseService.instance
+          .queryAllRows('harvest', 'id_user', id_user);
+      if (response.isNotEmpty) {
+        final historyList = response.map((e) => Tree.fromJson(e));
+        return historyList.toList();
+      } else {
+        return [];
+      }
+
+      // Logger.log(
+      //     status: LogStatus.Error,
+      //     className: CRUDRepository().toString(),
+      //     function: '$this',
+      //     exception: e,
+      //     stackTrace: s);
+      // rethrow;
     }
   }
 

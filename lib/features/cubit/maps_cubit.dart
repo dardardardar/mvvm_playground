@@ -23,9 +23,6 @@ class MapsCubit extends Cubit<MapsData> {
         emit(state.copyWith(
           sendSync: SuccessState<bool>(data: true),
         ));
-      } else {
-        emit(state.copyWith(
-            sendSync: GeneralErrorState(e: Exception(), error: 'Error Sync')));
       }
       emit(state.copyWith(
         sendSync: InitialState<bool>(),
@@ -47,9 +44,6 @@ class MapsCubit extends Cubit<MapsData> {
         emit(state.copyWith(
           sendSync: SuccessState<bool>(data: true),
         ));
-      } else {
-        emit(state.copyWith(
-            sendSync: GeneralErrorState(e: Exception(), error: 'Error Sync')));
       }
       emit(state.copyWith(
         sendSync: InitialState<bool>(),
