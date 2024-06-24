@@ -190,10 +190,10 @@ class CRUDRepository {
 
       final result = await Api.get('wp-json/sinar/v1/bum/history',
           data: {"id_user": id_user});
-      final responseHarvest = result.data;
-      final status = responseHarvest['status'];
+      final responseHarvestData = result.data;
+      final status = responseHarvestData['status'];
       if (status == 'ok') {
-        final data = responseHarvest['data'] as List<dynamic>;
+        final data = responseHarvestData['data'] as List<dynamic>;
         final categoryList = data.map((e) => Tree.fromJson(e));
         return categoryList.toList();
       } else {
