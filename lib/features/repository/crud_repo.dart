@@ -1,9 +1,8 @@
-import 'dart:developer';
-
 import 'package:injectable/injectable.dart';
 import 'package:mvvm_playground/const/enums.dart';
 import 'package:mvvm_playground/features/models/tree_model.dart';
 import 'package:mvvm_playground/features/models/users_model.dart';
+import 'package:mvvm_playground/features/response/constants.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
 import 'package:mvvm_playground/helper/api.dart';
 import 'package:mvvm_playground/helper/logger.dart';
@@ -13,19 +12,47 @@ import 'package:shared_preferences/shared_preferences.dart';
 @injectable
 class CRUDRepository {
   // insert data local
-  Future<BaseState> Installation() async {
+  Future<BaseState> Installation(status) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final id_user = prefs.getString("id_user").toString();
+      var resultAll;
+      if (status == 'online') {
+        resultAll = await Api.get('wp-json/sinar/v1/bum/all');
+        resultAll = resultAll.data;
+      } else {
+        resultAll = responseStatic;
+      }
 
-      final resultAll = await Api.get('wp-json/sinar/v1/bum/all');
-      log(resultAll.toString());
-      if (resultAll.data['status'] != 'failed') {
-        final responseUsers = resultAll.data['user'];
-        final responseSchedule = resultAll.data['schedule'];
-        final responseLocation = resultAll.data['location'];
-        final responseRoute = resultAll.data['route'];
-        final responseHarvest = resultAll.data['forage_result'];
+      final List<dynamic> responseUsers;
+      final List<dynamic> responseSchedule;
+      final List<dynamic> responseLocation;
+      final List<dynamic> responseRoute;
+      final List<dynamic> responseHarvest;
+      if (resultAll['status'] != 'failed') {
+        if (status == 'offline') {
+          responseUsers = resultAll['user'] as List<dynamic>;
+          ;
+          responseSchedule = resultAll['schedule'] as List<dynamic>;
+          ;
+          responseLocation = resultAll['location'] as List<dynamic>;
+          ;
+          responseRoute = resultAll['route'] as List<dynamic>;
+          ;
+          responseHarvest = resultAll['forage_result'] as List<dynamic>;
+          ;
+        } else {
+          responseUsers = resultAll['user'];
+          ;
+          responseSchedule = resultAll['schedule'];
+          ;
+          responseLocation = resultAll['location'];
+          ;
+          responseRoute = resultAll['route'];
+          ;
+          responseHarvest = resultAll['forage_result'];
+          ;
+        }
 
         await DatabaseService.instance.truncate('users');
         await DatabaseService.instance.truncate('trees');
@@ -253,7 +280,7 @@ class CRUDRepository {
             lat: tree.position.latitude.toString(),
             name: tree.idTree.isEmpty ? '' : tree.name,
             long: tree.position.longitude.toString(),
-            qty: qty ?? 0.0,
+            qty: (qty! < 1) ? 1 : qty,
             tipe: '1',
           ).toMap(),
           'harvest');
@@ -262,7 +289,7 @@ class CRUDRepository {
         "id_user": prefs.getString('id_user').toString(),
         "data": [
           {
-            "qty": qty ?? '0',
+            "qty": (qty < 1) ? 1 : qty,
             "id_tree": tree.idTree.isEmpty ? '' : tree.idTree,
             "lat": tree.position.latitude.toString(),
             "long": tree.position.longitude.toString(),

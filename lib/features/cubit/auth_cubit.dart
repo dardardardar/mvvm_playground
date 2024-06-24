@@ -24,7 +24,7 @@ class AuthCubit extends Cubit<authData> {
 
       final authResponse = await _authRepository.Login(username);
       if (authResponse is SuccessState<dynamic>) {
-        await getIt.get<MapsCubit>().instalation();
+        await getIt.get<MapsCubit>().instalation('offline');
         emit(state.copyWith(
           sendAuth: SuccessState<bool>(data: true),
         ));
