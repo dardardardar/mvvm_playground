@@ -36,7 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.6
   flutter_map: ^6.1.0
   flutter_map_cancellable_tile_provider: ^2.0.0
-  google_maps_flutter: ^2.5.3
+  google_maps_flutter: ^2.5.3 
   flutter_bloc: ^8.1.5
   geolocator: ^11.0.0
   injectable: ^2.3.2
