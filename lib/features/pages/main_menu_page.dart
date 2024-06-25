@@ -132,13 +132,13 @@ class _MainMenuPageState extends State<MainMenuPage> {
                         ),
                       ),
                       Visibility(
-                        visible: false,
+                        visible: true,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: flatButton(
                             context: context,
                             onTap: () {
-                              context.read<MapsCubit>().instalation();
+                              context.read<MapsCubit>().instalation('online');
                             },
                             title: buttontext,
                             backgroundColor: primaryColor,
