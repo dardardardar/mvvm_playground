@@ -32,26 +32,16 @@ class CRUDRepository {
       if (resultAll['status'] != 'failed') {
         if (status == 'offline') {
           responseUsers = resultAll['user'] as List<dynamic>;
-          ;
           responseSchedule = resultAll['schedule'] as List<dynamic>;
-          ;
           responseLocation = resultAll['location'] as List<dynamic>;
-          ;
           responseRoute = resultAll['route'] as List<dynamic>;
-          ;
-          responseHarvest = resultAll['forage_result'] as List<dynamic>;
-          ;
+          responseHarvest = [];
         } else {
           responseUsers = resultAll['user'];
-          ;
           responseSchedule = resultAll['schedule'];
-          ;
           responseLocation = resultAll['location'];
-          ;
           responseRoute = resultAll['route'];
-          ;
           responseHarvest = resultAll['forage_result'];
-          ;
         }
 
         await DatabaseService.instance.truncate('users');
@@ -108,25 +98,26 @@ class CRUDRepository {
               ).toMap(),
               'schedules');
         }
-
-        for (var i = 0; responseHarvest.length > i; i++) {
-          await DatabaseService.instance.insert(
-              sendHistoryQty(
-                id_user: id_user,
-                id_tree: (responseHarvest[i]['id_tree'] == null)
-                    ? ''
-                    : responseHarvest[i]['id_tree'],
-                lat: responseHarvest[i]['lat'].toString(),
-                name: (responseHarvest[i]['name'] == null)
-                    ? ''
-                    : responseHarvest[i]['id_tree'].toString(),
-                long: responseHarvest[i]['long'].toString(),
-                qty: double.parse(responseHarvest[i]['qty']),
-                tipe: '1',
-              ).toMap(),
-              'harvest');
+        if (status == 'online') {
+          for (var i = 0; responseHarvest.length > i; i++) {
+            await DatabaseService.instance.insert(
+                sendHistoryQty(
+                  id_user: responseHarvest[i]['id_user'].toString(),
+                  id_tree: (responseHarvest[i]['id_tree'] == null)
+                      ? ''
+                      : responseHarvest[i]['id_tree'],
+                  lat: responseHarvest[i]['lat'].toString(),
+                  name: (responseHarvest[i]['name'] == null)
+                      ? ''
+                      : responseHarvest[i]['id_tree'].toString(),
+                  long: responseHarvest[i]['long'].toString(),
+                  qty: double.parse(responseHarvest[i]['qty']),
+                  id_harvest: responseHarvest[i]['id'].toString(),
+                  tipe: '1',
+                ).toMap(),
+                'harvest');
+          }
         }
-
         return SuccessState<bool>(data: true);
       } else {
         return GeneralErrorState(e: Exception('error'));
@@ -207,14 +198,6 @@ class CRUDRepository {
       } else {
         return [];
       }
-
-      // Logger.log(
-      //     status: LogStatus.Error,
-      //     className: CRUDRepository().toString(),
-      //     function: '$this',
-      //     exception: e,
-      //     stackTrace: s);
-      // rethrow;
     }
   }
 
@@ -281,23 +264,11 @@ class CRUDRepository {
   Future<BaseState> sendQty(double? qty, Tree tree) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final response = await DatabaseService.instance.insert(
-          sendHistoryQty(
-            id_user: prefs.getString('id_user').toString(),
-            id_tree: tree.idTree.isEmpty ? '' : tree.idTree,
-            lat: tree.position.latitude.toString(),
-            name: tree.idTree.isEmpty ? '' : tree.name,
-            long: tree.position.longitude.toString(),
-            qty: (qty! < 1) ? 1 : qty,
-            tipe: '1',
-          ).toMap(),
-          'harvest');
-
-      await Api.post('wp-json/sinar/v1/bum/manual-input', {
+      final addQty = await Api.post('wp-json/sinar/v1/bum/manual-input', {
         "id_user": prefs.getString('id_user').toString(),
         "data": [
           {
-            "qty": (qty < 1) ? 1 : qty,
+            "qty": (qty! < 1) ? 1 : qty,
             "id_tree": tree.idTree.isEmpty ? '' : tree.idTree,
             "lat": tree.position.latitude.toString(),
             "long": tree.position.longitude.toString(),
@@ -305,7 +276,28 @@ class CRUDRepository {
           },
         ],
       });
-      return SuccessState(data: response);
+
+      final resultResponse = addQty.data;
+
+      if (resultResponse['status'] == 'success') {
+        final response = await DatabaseService.instance.insert(
+            sendHistoryQty(
+              id_user: prefs.getString('id_user').toString(),
+              id_tree: tree.idTree.isEmpty ? '' : tree.idTree,
+              lat: tree.position.latitude.toString(),
+              name: tree.idTree.isEmpty ? '' : tree.name,
+              long: tree.position.longitude.toString(),
+              qty: (qty! < 1) ? 1 : qty,
+              tipe: '1',
+              id_harvest: resultResponse['inserted'][0]['id'].toString(),
+            ).toMap(),
+            'harvest');
+
+        return SuccessState(data: response);
+      } else {
+        return GeneralErrorState(
+            e: Exception(), error: resultResponse['status']);
+      }
     } on Exception catch (e, s) {
       Logger.log(
           status: LogStatus.Error,

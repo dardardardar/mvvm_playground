@@ -103,6 +103,7 @@ class sendHistoryQty {
   String name;
   double qty;
   String tipe;
+  String id_harvest;
   String date;
 
   sendHistoryQty(
@@ -113,6 +114,7 @@ class sendHistoryQty {
       required this.long,
       required this.qty,
       required this.tipe,
+      required this.id_harvest,
       this.date = ''});
 
   Map<String, dynamic> toMap() {
@@ -124,6 +126,7 @@ class sendHistoryQty {
       'long': long,
       'qty': qty,
       'tipe': tipe,
+      'id_harvest': id_harvest,
       'date': getCurrentDateTime(),
     };
   }
