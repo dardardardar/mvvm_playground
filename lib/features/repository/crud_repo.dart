@@ -11,7 +11,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 @injectable
 class CRUDRepository {
-  // insert data local
   Future<BaseState> Installation(status) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -65,12 +64,26 @@ class CRUDRepository {
           var names = responseLocation[i]['name'].toString();
           var lats = responseLocation[i]['lat'].toString();
           var longs = responseLocation[i]['long'].toString();
+          var nomor = responseLocation[i]['nomor'].toString();
+          var baris = responseLocation[i]['lat'].toString();
+          var ancak = responseLocation[i]['ancak'].toString();
+          var blok = responseLocation[i]['blok'].toString();
+          var estate = responseLocation[i]['estate'].toString();
+          var afd = responseLocation[i]['afd'].toString();
+          var keterangan = responseLocation[i]['keterangan'].toString();
           await DatabaseService.instance.insert(
               sendTree(
                 id_tree: id_trees,
                 name: names,
                 lat: lats,
                 long: longs,
+                nomor: nomor,
+                baris: baris,
+                ancak: ancak,
+                blok: blok,
+                estate: estate,
+                afd: afd,
+                keterangan: keterangan,
               ).toMap(),
               'trees');
         }
@@ -90,12 +103,19 @@ class CRUDRepository {
         for (var i = 0; responseSchedule.length > i; i++) {
           await DatabaseService.instance.insert(
               sendSchedule(
-                id_user: id_user,
-                id_tree: responseSchedule[i]['id_tree'].toString(),
-                lat: responseSchedule[i]['lat'].toString(),
-                long: responseSchedule[i]['long'].toString(),
-                name: responseSchedule[i]['name'].toString(),
-              ).toMap(),
+                      id_user: responseSchedule[i]['id_user'].toString(),
+                      id_tree: responseSchedule[i]['id_tree'].toString(),
+                      lat: responseSchedule[i]['lat'].toString(),
+                      long: responseSchedule[i]['long'].toString(),
+                      name: responseSchedule[i]['name'].toString(),
+                      nomor: responseSchedule[i]['nomor'].toString(),
+                      baris: responseSchedule[i]['baris'].toString(),
+                      ancak: responseSchedule[i]['ancak'].toString(),
+                      blok: responseSchedule[i]['blok'].toString(),
+                      estate: responseSchedule[i]['estate'].toString(),
+                      afd: responseSchedule[i]['afd'].toString(),
+                      keterangan: responseSchedule[i]['keterangan'].toString())
+                  .toMap(),
               'schedules');
         }
         if (status == 'online') {
@@ -134,8 +154,11 @@ class CRUDRepository {
   }
 
   Future<List<Tree>> getTree() async {
+    final prefs = await SharedPreferences.getInstance();
+    final id_user = prefs.getString("id_user").toString();
     try {
-      final response = await DatabaseService.instance.queryRow('trees');
+      final response = await DatabaseService.instance
+          .queryAllRows('schedules', 'id_user', id_user);
 
       if (response.isNotEmpty) {
         final treeData = response.map((e) => Tree.fromJson(e));

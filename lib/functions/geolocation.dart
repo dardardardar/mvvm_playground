@@ -16,6 +16,7 @@ class GeoLocation {
   List<dynamic> status = [];
   String currentTree = '';
   String currentidTree = '';
+  String blokTree = '';
   LatLng pos = const LatLng(0, 0);
   //constructor
   GeoLocation({required this.userlocation});
@@ -34,13 +35,6 @@ class GeoLocation {
 
   GeoLocation.fromJson(Map<String, dynamic> json) {
     setPointUser(json['latitude'], json['longitude']);
-  }
-  setCurrentTree(String tree) {
-    nameTree = tree;
-  }
-
-  setidTree(String idTree) {
-    idTree = idTree;
   }
 
   //setter
@@ -71,6 +65,7 @@ class GeoLocation {
     centerlocation.setPoint(tree.position.latitude, tree.position.longitude);
     nameTree = tree.name;
     idTree = tree.idTree;
+    blokTree = tree.blok;
     pos = tree.position;
     _calculateRadiusMetersAndInRange();
   }
@@ -87,14 +82,6 @@ class GeoLocation {
 
   double distanceOuterFromCenter() {
     return centerlocation.distanceWith(outerlocation);
-  }
-
-  String getName() {
-    return nameTree;
-  }
-
-  String getId() {
-    return idTree;
   }
 
   double distanceUserFromOuter() {

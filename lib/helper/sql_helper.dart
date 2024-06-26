@@ -36,7 +36,14 @@ class DatabaseService {
         id_tree VARCHAR(5) NOT NULL,
         lat VARCHAR(100) NOT NULL,
         long VARCHAR(100) NOT NULL,
-        name VARCHAR(100) NOT NULL
+        name VARCHAR(100) NOT NULL,
+        nomor VARCHAR(10) NOT NULL,
+        baris VARCHAR(10) NOT NULL,
+        ancak VARCHAR(10) NOT NULL,
+        blok VARCHAR(10) NOT NULL,
+        estate VARCHAR(10) NOT NULL,
+        afd VARCHAR(10) NOT NULL,
+        keterangan VARCHAR(100) NOT NULL
       )
     ''');
 
@@ -47,7 +54,14 @@ class DatabaseService {
         id_tree VARCHAR(5) NOT NULL,
         lat VARCHAR(30) NOT NULL,
         long VARCHAR(30) NOT NULL,
-        name VARCHAR(100) NOT NULL
+        name VARCHAR(100) NOT NULL,
+        nomor VARCHAR(10) NOT NULL,
+        baris VARCHAR(10) NOT NULL,
+        ancak VARCHAR(10) NOT NULL,
+        blok VARCHAR(10) NOT NULL,
+        estate VARCHAR(10) NOT NULL,
+        afd VARCHAR(10) NOT NULL,
+        keterangan VARCHAR(100) NOT NULL
       )
     ''');
 

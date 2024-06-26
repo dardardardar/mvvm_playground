@@ -25,12 +25,26 @@ class sendTree {
   String lat;
   String long;
   String name;
+  String nomor;
+  String baris;
+  String ancak;
+  String blok;
+  String afd;
+  String estate;
+  String keterangan;
 
   sendTree({
     required this.id_tree,
     required this.lat,
     required this.long,
     required this.name,
+    required this.nomor,
+    required this.baris,
+    required this.ancak,
+    required this.blok,
+    required this.estate,
+    required this.afd,
+    required this.keterangan,
   });
 
   Map<String, dynamic> toMap() {
@@ -39,6 +53,13 @@ class sendTree {
       'lat': lat,
       'long': long,
       'name': name,
+      'nomor': nomor,
+      'baris': baris,
+      'ancak': ancak,
+      'blok': blok,
+      'estate': estate,
+      'afd': afd,
+      'keterangan': keterangan,
     };
   }
 }
@@ -75,6 +96,13 @@ class sendSchedule {
   String lat;
   String long;
   String name;
+  String nomor;
+  String baris;
+  String ancak;
+  String blok;
+  String afd;
+  String estate;
+  String keterangan;
 
   sendSchedule({
     required this.id_tree,
@@ -82,6 +110,13 @@ class sendSchedule {
     required this.lat,
     required this.long,
     required this.name,
+    required this.nomor,
+    required this.baris,
+    required this.ancak,
+    required this.blok,
+    required this.estate,
+    required this.afd,
+    required this.keterangan,
   });
 
   Map<String, dynamic> toMap() {
@@ -91,6 +126,13 @@ class sendSchedule {
       'long': long,
       'id_user': id_user,
       'name': name,
+      'nomor': nomor,
+      'baris': baris,
+      'ancak': ancak,
+      'blok': blok,
+      'estate': estate,
+      'afd': afd,
+      'keterangan': keterangan,
     };
   }
 }

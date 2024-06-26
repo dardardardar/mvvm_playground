@@ -56,9 +56,9 @@ class _HomeViewPageState extends State<FlutterMapPage> {
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.bestForNavigation);
       yield latLng.LatLng(position.latitude, position.longitude);
-      context.read<MapsCubit>().sendHistory(
-          lat: position.latitude.toString(),
-          long: position.longitude.toString());
+      // context.read<MapsCubit>().sendHistory(
+      //     lat: position.latitude.toString(),
+      //     long: position.longitude.toString());
       await Future.delayed(const Duration(seconds: 5));
     }
   }
@@ -253,7 +253,31 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                     ),
                                                   ],
                                                 ),
-                                              )
+                                              ),
+                                              const SizedBox(
+                                                width: 24,
+                                              ),
+                                              Flexible(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    displayText('blok',
+                                                        style: Styles.Captions),
+                                                    displayText(
+                                                      userLocation.currentTree
+                                                              .isEmpty
+                                                          ? '-'
+                                                          : '${userLocation.blokTree}',
+                                                      style: Styles.Body,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
                                             ],
                                           ),
                                         ],
