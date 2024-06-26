@@ -3,6 +3,8 @@ import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:mvvm_playground/features/models/tree_model.dart';
 
+String Show = '0';
+
 class GeoLocation {
   GeoPoint userlocation = new GeoPoint.createZeroPoint();
 
