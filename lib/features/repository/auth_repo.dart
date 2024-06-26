@@ -6,6 +6,8 @@ import 'package:mvvm_playground/helper/logger.dart';
 import 'package:mvvm_playground/helper/sql_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/tree_model.dart';
+
 @injectable
 class AuthRepository {
   Future<BaseState> Login(String username) async {
@@ -35,6 +37,23 @@ class AuthRepository {
         throw Exception('Data tidak valid');
       }
     } on Exception catch (e, s) {
+      Logger.log(
+          status: LogStatus.Error,
+          className: AuthRepository().toString(),
+          function: '$this',
+          exception: e,
+          stackTrace: s);
+      rethrow;
+    }
+  }
+
+  Future<bool> getOnTrial() async{
+    try{
+      final result = await Api.get(
+          'wp-json/sinar/v1/bum/ontrial');
+      final response = result.data;
+      return response.toString() == 'true';
+    } on Exception catch (e,s){
       Logger.log(
           status: LogStatus.Error,
           className: AuthRepository().toString(),

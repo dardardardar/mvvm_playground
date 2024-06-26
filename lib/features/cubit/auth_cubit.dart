@@ -64,6 +64,23 @@ class AuthCubit extends Cubit<authData> {
       emit(state.copyWith(
         sendAuth: InitialState(),
       ));
+
+    } on Exception catch (e) {
+      emit(state.copyWith(
+        sendAuth: GeneralErrorState(e: e, error: e.toString()),
+      ));
+    }
+  }
+
+  Future<void> checkTrial() async {
+    try {
+      emit(state.copyWith(
+        sendAuth: InitialState(),
+      ));
+      final dat = await _authRepository.getOnTrial();
+      emit(state.copyWith(
+        sendAuth: SuccessState(data: dat),
+      ));
     } on Exception catch (e) {
       emit(state.copyWith(
         sendAuth: GeneralErrorState(e: e, error: e.toString()),
