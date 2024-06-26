@@ -94,6 +94,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
             final routes = (state.listRoute as SuccessState<List<Tree>>).data;
             final histories =
                 (state.listHistory as SuccessState<List<Tree>>).data;
+
             return StreamBuilder<latLng.LatLng>(
               stream: locationStream,
               builder: (context, snapshot) {
@@ -289,7 +290,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                     child: Center(),
                                   ),
                                   Flexible(
-                                    flex: 1,
+                                    flex: 3,
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
@@ -343,7 +344,21 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                               },
                                               title: 'History',
                                               icon: Icons.history),
-                                        )
+                                        ),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        boxButton(
+                                            context: context,
+                                            onTap: () {
+                                              showModalSchedule(context,
+                                                  tree: trees.isEmpty
+                                                      ? []
+                                                      : trees.reversed
+                                                          .toList());
+                                            },
+                                            title: 'Schedule',
+                                            icon: Icons.calendar_month),
                                       ],
                                     ),
                                   ),
