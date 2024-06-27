@@ -23,18 +23,28 @@ class AuthCubit extends Cubit<authData> {
       ));
 
       final authResponse = await _authRepository.Login(username);
-      if (authResponse is SuccessState<dynamic>) {
-        final checkDatabase = await _authRepository.checkDatabase();
-        if (checkDatabase is ErrorState) {
-          await getIt.get<MapsCubit>().instalation('offline');
+      if (authResponse is SuccessState<String>) {
+        final ressData = (authResponse as SuccessState<String>).data;
+        if (ressData == 'success') {
+          final checkDatabase = await _authRepository.checkDatabase();
+          if (checkDatabase is ErrorState) {
+            await getIt.get<MapsCubit>().instalation('offline');
+          }
+          emit(state.copyWith(
+            processAuth: SuccessState<bool>(data: true),
+            checkAuth: SuccessState<bool>(data: true),
+          ));
+        } else if (ressData == 'expired') {
+          emit(state.copyWith(
+            processAuth:
+                GeneralErrorState(e: Exception(), error: 'Aplikasi Kadarluasa'),
+          ));
+        } else {
+          emit(state.copyWith(
+            processAuth: GeneralErrorState(
+                e: Exception(), error: 'User tidak diketahui'),
+          ));
         }
-        emit(state.copyWith(
-          processAuth: SuccessState<bool>(data: true),
-          checkAuth: SuccessState<bool>(data: true),
-        ));
-        emit(state.copyWith(
-          processAuth: InitialState(),
-        ));
       } else {
         emit(state.copyWith(
           checkAuth: InitialState(),
@@ -84,7 +94,7 @@ class AuthCubit extends Cubit<authData> {
   Future<void> checkTrial() async {
     try {
       DateTime now = DateTime.now();
-      DateTime date1 = DateTime(2024, 10, 5);
+      DateTime date1 = DateTime(2024, 12, 6);
       DateTime date2 = DateTime(now.year, now.month, now.day);
       bool isBefore = date2.isBefore(date1);
       if (isBefore != true) {

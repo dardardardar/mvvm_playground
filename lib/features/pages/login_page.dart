@@ -84,7 +84,10 @@ class _LoginPageState extends State<LoginPage> {
                   });
                   if (state.processAuth is GeneralErrorState) {
                     showSnackbar(context,
-                        message: 'Username Salah', status: Status.Error);
+                        message:
+                            (state.processAuth as GeneralErrorState<dynamic>)
+                                .error,
+                        status: Status.Error);
                   }
                 }
               },
