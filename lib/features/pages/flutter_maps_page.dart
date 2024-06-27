@@ -56,10 +56,10 @@ class _HomeViewPageState extends State<FlutterMapPage> {
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.bestForNavigation);
       yield latLng.LatLng(position.latitude, position.longitude);
-      // context.read<MapsCubit>().sendHistory(
-      //     lat: position.latitude.toString(),
-      //     long: position.longitude.toString());
-      await Future.delayed(const Duration(seconds: 5));
+      context.read<MapsCubit>().sendHistory(
+          lat: position.latitude.toString(),
+          long: position.longitude.toString());
+      await Future.delayed(const Duration(seconds: 10));
     }
   }
 

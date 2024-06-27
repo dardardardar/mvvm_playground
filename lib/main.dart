@@ -53,7 +53,9 @@ class _MyAppState extends State<MyApp> {
     while (true) {
       var connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult[0] == ConnectivityResult.mobile ||
-          connectivityResult[0] == ConnectivityResult.wifi) {}
+          connectivityResult[0] == ConnectivityResult.wifi) {
+        getIt.get<MapsCubit>().instalation('online');
+      }
       await Future.delayed(Duration(seconds: 60));
     }
   }

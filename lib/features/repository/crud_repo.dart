@@ -345,6 +345,8 @@ class CRUDRepository {
       if (getDataRoutes.length > 0) {
         var arrRoutes = [];
         for (var i = 0; getDataRoutes.length > i; i++) {
+          await DatabaseService.instance.update(
+              {'id': getDataRoutes[i]['id']}, 'routes', 'id_user', id_user);
           arrRoutes.add({
             "lat": getDataRoutes[i]['lat'],
             "long": getDataRoutes[i]['long']
@@ -357,9 +359,6 @@ class CRUDRepository {
         };
 
         await Api.post('wp-json/sinar/v1/bum/manual_history', sendArrayRoute);
-
-        await DatabaseService.instance
-            .update({'tipe': '2'}, 'routes', 'id_user', id_user);
       }
       final getDataHarvest = await DatabaseService.instance
           .queryAllRowsDobule('harvest', 'tipe', 'id_user', '1', id_user);
