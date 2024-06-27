@@ -9,7 +9,6 @@ import 'package:mvvm_playground/features/cubit/auth_cubit.dart';
 import 'package:mvvm_playground/features/cubit/auth_cubit_data.dart';
 import 'package:mvvm_playground/features/pages/main_menu_page.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
-import 'package:mvvm_playground/helper/api.dart';
 import 'package:mvvm_playground/widgets/buttons.dart';
 import 'package:mvvm_playground/widgets/input.dart';
 import 'package:mvvm_playground/widgets/snackbar.dart';
@@ -57,30 +56,33 @@ class _LoginPageState extends State<LoginPage> {
             key: _formKey,
             child: BlocConsumer<AuthCubit, authData>(
               listener: (context, state) {
-                if (state.sendAuth is LoadingState) {
+                if ((state.checkTrial as SuccessState<String>).data ==
+                    'Trial') {
+                  showSnackbar(context,
+                      message: 'Aplikasi Kadarluasa', status: Status.Error);
+                }
+                if (state.processAuth is LoadingState) {
                   setState(() {
                     buttontext = 'Loading..';
                   });
                   FocusScope.of(context).unfocus();
-                } else if (state.sendAuth is SuccessState) {
+                } else if (state.processAuth is SuccessState) {
+                  showSnackbar(context,
+                      message: 'Berhasil Login', status: Status.Success);
+
                   setState(() {
                     buttontext = 'Berhasil..';
                   });
-                  showSnackbar(context,
-                      message: 'Berhasil Login', status: Status.Success);
 
                   Navigator.of(context, rootNavigator: true).push(
                     MaterialPageRoute(
                         builder: (context) => const MainMenuPage()),
                   );
-                  setState(() {
-                    buttontext = 'Login';
-                  });
                 } else {
                   setState(() {
                     buttontext = 'Login';
                   });
-                  if (state.sendAuth is GeneralErrorState) {
+                  if (state.processAuth is GeneralErrorState) {
                     showSnackbar(context,
                         message: 'Username Salah', status: Status.Error);
                   }

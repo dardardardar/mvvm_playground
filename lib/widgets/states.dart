@@ -21,6 +21,26 @@ Widget circularLoading({String? text}) {
   );
 }
 
+Widget circularError({String? text}) {
+  return Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        text == null
+            ? const Center()
+            : displayText(
+                text,
+              ),
+        const SizedBox(
+          height: 16,
+        ),
+        const CircularProgressIndicator(color: Colors.black, strokeWidth: 1.5),
+      ],
+    ),
+  );
+}
+
 Widget errorAlert({required String text}) {
   return Center(
     child: Column(

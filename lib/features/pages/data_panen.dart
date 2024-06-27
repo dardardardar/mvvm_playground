@@ -7,6 +7,7 @@ import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit_data.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
 import 'package:mvvm_playground/widgets/navigation_bar.dart';
+import 'package:mvvm_playground/widgets/states.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -284,7 +285,7 @@ class _HomeViewPageState extends State<HasilPanenPage> {
                 );
               }
 
-              return Text('No Data');
+              return circularLoading(text: 'Loading Stream...');
             },
           ),
         );

@@ -74,7 +74,7 @@ class DatabaseService {
         id_user VARCHAR(5) NOT NULL,
         lat VARCHAR(30) NOT NULL,
         long VARCHAR(30) NOT NULL,
-        tipe VARCHAR(5) NOT NULL,
+        tipe VARCHAR(2) NOT NULL,
         date TEXT NULL
       )
     ''');
@@ -121,7 +121,7 @@ class DatabaseService {
   }
 
   Future<int> update(
-      Map<String, dynamic> row, String table, String filter, String id) async {
+      Map<String, dynamic> row, String table, String filter, int id) async {
     Database db = await database;
     return await db.update(table, row, where: filter + ' = ?', whereArgs: [id]);
   }

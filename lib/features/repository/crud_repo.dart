@@ -13,12 +13,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 class CRUDRepository {
   Future<BaseState> Installation(status) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final id_user = prefs.getString("id_user").toString();
       var resultAll;
       if (status == 'online') {
-        resultAll = await Api.get('wp-json/sinar/v1/bum/all');
-        resultAll = resultAll.data;
+        final Response = await Api.get('wp-json/sinar/v1/bum/all');
+        resultAll = Response.data;
       } else {
         resultAll = responseStatic;
       }
@@ -289,8 +287,8 @@ class CRUDRepository {
   }
 
   Future<BaseState> sendQty(double? qty, Tree tree) async {
+    final prefs = await SharedPreferences.getInstance();
     try {
-      final prefs = await SharedPreferences.getInstance();
       final addQty = await Api.post('wp-json/sinar/v1/bum/manual-input', {
         "id_user": prefs.getString('id_user').toString(),
         "data": [
@@ -315,17 +313,43 @@ class CRUDRepository {
               name: tree.idTree.isEmpty ? '' : tree.name,
               long: tree.position.longitude.toString(),
               qty: (qty! < 1) ? 1 : qty,
-              tipe: '1',
+              tipe: '2',
               id_harvest: resultResponse['inserted'][0]['id'].toString(),
             ).toMap(),
             'harvest');
 
         return SuccessState(data: response);
       } else {
+        await DatabaseService.instance.insert(
+            sendHistoryQty(
+              id_user: prefs.getString('id_user').toString(),
+              id_tree: tree.idTree.isEmpty ? '' : tree.idTree,
+              lat: tree.position.latitude.toString(),
+              name: tree.idTree.isEmpty ? '' : tree.name,
+              long: tree.position.longitude.toString(),
+              qty: (qty < 1) ? 1 : qty,
+              tipe: '1',
+              id_harvest: resultResponse['inserted'][0]['id'].toString(),
+            ).toMap(),
+            'harvest');
+
         return GeneralErrorState(
             e: Exception(), error: resultResponse['status']);
       }
     } on Exception catch (e, s) {
+      await DatabaseService.instance.insert(
+          sendHistoryQty(
+            id_user: prefs.getString('id_user').toString(),
+            id_tree: tree.idTree.isEmpty ? '' : tree.idTree,
+            lat: tree.position.latitude.toString(),
+            name: tree.idTree.isEmpty ? '' : tree.name,
+            long: tree.position.longitude.toString(),
+            qty: (qty! < 1) ? 1 : qty,
+            tipe: '1',
+            id_harvest: '',
+          ).toMap(),
+          'harvest');
+
       Logger.log(
           status: LogStatus.Error,
           className: CRUDRepository().toString(),
@@ -345,8 +369,8 @@ class CRUDRepository {
       if (getDataRoutes.length > 0) {
         var arrRoutes = [];
         for (var i = 0; getDataRoutes.length > i; i++) {
-          await DatabaseService.instance.update(
-              {'id': getDataRoutes[i]['id']}, 'routes', 'id_user', id_user);
+          await DatabaseService.instance
+              .update({'tipe': '2'}, 'routes', 'id', getDataRoutes[i]['id']);
           arrRoutes.add({
             "lat": getDataRoutes[i]['lat'],
             "long": getDataRoutes[i]['long']
@@ -365,6 +389,9 @@ class CRUDRepository {
       if (getDataHarvest.length > 0) {
         var arrHarvest = [];
         for (var i = 0; getDataHarvest.length > i; i++) {
+          await DatabaseService.instance
+              .update({'tipe': '2'}, 'harvest', 'id', getDataHarvest[i]['id']);
+
           arrHarvest.add({
             "qty": getDataHarvest[i]['qty'],
             "id_tree": getDataHarvest[i]['id_tree'],
@@ -379,11 +406,6 @@ class CRUDRepository {
         };
 
         await Api.post('wp-json/sinar/v1/bum/manual-input', sendArrayHarvest);
-        await DatabaseService.instance
-            .queryAllRowsDobule('harvest', 'tipe', 'id_user', '1', id_user);
-
-        await DatabaseService.instance
-            .update({'tipe': '2'}, 'harvest', 'id_user', id_user);
       }
       return SuccessState<bool>(data: true);
     } on Exception catch (e, s) {

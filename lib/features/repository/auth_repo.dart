@@ -57,13 +57,31 @@ class AuthRepository {
     }
   }
 
-  Future<bool> getOnTrial() async{
-    try{
-      final result = await Api.get(
-          'wp-json/sinar/v1/bum/ontrial');
+  Future<bool> getOnTrial() async {
+    try {
+      final result = await Api.get('wp-json/sinar/v1/bum/ontrial');
       final response = result.data;
       return response.toString() == 'true';
-    } on Exception catch (e,s){
+    } on Exception catch (e, s) {
+      Logger.log(
+          status: LogStatus.Error,
+          className: AuthRepository().toString(),
+          function: '$this',
+          exception: e,
+          stackTrace: s);
+      rethrow;
+    }
+  }
+
+  Future<BaseState> checkDatabase() async {
+    try {
+      final response = await DatabaseService.instance.queryRow('users');
+      if (response.isNotEmpty) {
+        return SuccessState(data: 'Berhasil');
+      } else {
+        return GeneralErrorState(e: Exception(), error: 'Error');
+      }
+    } on Exception catch (e, s) {
       Logger.log(
           status: LogStatus.Error,
           className: AuthRepository().toString(),

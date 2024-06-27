@@ -19,22 +19,31 @@ class AuthCubit extends Cubit<authData> {
   Future<void> sendAuth(String username) async {
     try {
       emit(state.copyWith(
-        sendAuth: LoadingState<bool>(),
+        processAuth: LoadingState<bool>(),
       ));
 
       final authResponse = await _authRepository.Login(username);
       if (authResponse is SuccessState<dynamic>) {
-        await getIt.get<MapsCubit>().instalation('offline');
+        final checkDatabase = await _authRepository.checkDatabase();
+        if (checkDatabase is ErrorState) {
+          await getIt.get<MapsCubit>().instalation('offline');
+        }
         emit(state.copyWith(
-          sendAuth: SuccessState<bool>(data: true),
+          processAuth: SuccessState<bool>(data: true),
+          checkAuth: SuccessState<bool>(data: true),
         ));
         emit(state.copyWith(
-          sendAuth: InitialState<bool>(),
+          processAuth: InitialState(),
+        ));
+      } else {
+        emit(state.copyWith(
+          checkAuth: InitialState(),
         ));
       }
     } on Exception catch (e) {
       emit(state.copyWith(
-        sendAuth: GeneralErrorState(e: e, error: e.toString()),
+        processAuth: GeneralErrorState(e: e, error: e.toString()),
+        checkAuth: GeneralErrorState(e: e, error: e.toString()),
       ));
     }
   }
@@ -45,45 +54,49 @@ class AuthCubit extends Cubit<authData> {
       final String? id_user = prefs.getString('id_user');
       if (id_user == null) {
         emit(state.copyWith(
-          sendAuth: InitialState(),
+          checkAuth: InitialState(),
         ));
       } else {
         emit(state.copyWith(
-          sendAuth: SuccessState<bool>(data: true),
+          checkAuth: SuccessState<bool>(data: true),
         ));
       }
     } on Exception catch (e) {
       emit(state.copyWith(
-        sendAuth: GeneralErrorState(e: e, error: e.toString()),
+        checkAuth: GeneralErrorState(e: e, error: e.toString()),
       ));
     }
   }
 
   Future<void> logout() async {
     try {
+      await _authRepository.logout();
       emit(state.copyWith(
-        sendAuth: InitialState(),
+        checkAuth: InitialState(),
       ));
-
     } on Exception catch (e) {
       emit(state.copyWith(
-        sendAuth: GeneralErrorState(e: e, error: e.toString()),
+        checkAuth: GeneralErrorState(e: e, error: e.toString()),
       ));
     }
   }
 
   Future<void> checkTrial() async {
     try {
-      emit(state.copyWith(
-        sendAuth: InitialState(),
-      ));
-      final dat = await _authRepository.getOnTrial();
-      emit(state.copyWith(
-        sendAuth: SuccessState(data: dat),
-      ));
+      DateTime now = DateTime.now();
+      DateTime date1 = DateTime(2024, 10, 5);
+      DateTime date2 = DateTime(now.year, now.month, now.day);
+      bool isBefore = date2.isBefore(date1);
+      if (isBefore != true) {
+        getIt.get<AuthCubit>().logout();
+        emit(state.copyWith(
+            checkTrial: SuccessState<String>(data: 'Trial'),
+            processAuth: InitialState(),
+            checkAuth: InitialState()));
+      }
     } on Exception catch (e) {
       emit(state.copyWith(
-        sendAuth: GeneralErrorState(e: e, error: e.toString()),
+        checkTrial: GeneralErrorState(e: e, error: e.toString()),
       ));
     }
   }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,10 +7,12 @@ import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/features/cubit/auth_cubit.dart';
 import 'package:mvvm_playground/features/cubit/auth_cubit_data.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
+import 'package:mvvm_playground/features/pages/error_page.dart';
 import 'package:mvvm_playground/features/pages/login_page.dart';
 import 'package:mvvm_playground/features/pages/main_menu_page.dart';
 import 'package:mvvm_playground/features/repository/auth_repo.dart';
 import 'package:mvvm_playground/features/repository/crud_repo.dart';
+import 'package:mvvm_playground/features/response/trialConstant.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
 import 'package:mvvm_playground/functions/geolocation.dart';
 import 'package:mvvm_playground/functions/location.dart';
@@ -49,13 +53,28 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  Timer? _trialTimer;
+
+  Future<void> _checkTrial() async {
+    getIt.get<AuthCubit>().checkTrial();
+  }
+
+  void _startTrialTimer() {
+    _trialTimer?.cancel();
+    _trialTimer = Timer.periodic(Duration(seconds: 10), (timer) async {
+      await _checkTrial();
+      _startConnectivityCheck();
+    });
+  }
+
   Future<void> _startConnectivityCheck() async {
     while (true) {
       var connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult[0] == ConnectivityResult.mobile ||
           connectivityResult[0] == ConnectivityResult.wifi) {
-        getIt.get<MapsCubit>().instalation('online');
+        getIt.get<MapsCubit>().sendSyncAll();
       }
+
       await Future.delayed(Duration(seconds: 60));
     }
   }
@@ -63,7 +82,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    //_startConnectivityCheck();
+    _startConnectivityCheck();
+    _startTrialTimer();
   }
 
   Widget currentPage = const LoginPage();
@@ -77,23 +97,49 @@ class _MyAppState extends State<MyApp> {
       ],
       child: MultiBlocListener(
         listeners: [
-          BlocListener<AuthCubit, authData>(
-            listener: (context, state) {
-              if (state.sendAuth is SuccessState) {
+          BlocListener<AuthCubit, authData>(listener: (context, state) {
+            if (state.checkAuth is SuccessState &&
+                state.checkTrial is SuccessState<String>) {
+              if ((state.checkTrial as SuccessState).data == 'Trial') {
+                setState(() {
+                  checkingTrial = 'Trial';
+                });
+              } else {
                 setState(() {
                   currentPage = const MainMenuPage();
                 });
-              } else if (state.sendAuth is InitialState) {
+              }
+            } else if (state.checkTrial is SuccessState<String> &&
+                state.checkAuth is InitialState) {
+              if ((state.checkTrial as SuccessState).data == 'Trial') {
                 setState(() {
-                  currentPage = const LoginPage();
+                  checkingTrial = 'Trial';
                 });
-              } else if (state.sendAuth is ErrorState) {
+              } else {
                 setState(() {
                   currentPage = const LoginPage();
                 });
               }
-            },
-          ),
+            } else if (state.checkTrial is SuccessState<String> &&
+                state.checkAuth is ErrorState) {
+              if ((state.checkTrial as SuccessState).data == 'Trial') {
+                setState(() {
+                  checkingTrial = 'Trial';
+                });
+              } else {
+                setState(() {
+                  currentPage = const LoginPage();
+                });
+              }
+            } else {
+              if ((state.checkTrial as SuccessState).data == 'Trial') {
+                setState(() {
+                  checkingTrial = 'Trial';
+                });
+              }
+              currentPage = const LoginPage();
+            }
+          }),
         ],
         child: StreamProvider<GeoLocation>(
           initialData: GeoLocation.createZeroUserPoint(),
@@ -106,5 +152,11 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _trialTimer?.cancel();
+    super.dispose();
   }
 }
