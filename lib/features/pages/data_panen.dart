@@ -82,7 +82,7 @@ class _HomeViewPageState extends State<HasilPanenPage> {
                         child: Row(
                           children: [
                             Expanded(
-                              flex: 2,
+                              flex: 3,
                               child: Text(
                                 'Rencana Panen',
                                 style: subtitle2,
@@ -90,9 +90,11 @@ class _HomeViewPageState extends State<HasilPanenPage> {
                             ),
                             Expanded(
                               flex: 1,
-                              child: Text(
-                                rnc_panen_kg,
-                                style: subtitle2,
+                              child: Center(
+                                child: Text(
+                                  rnc_panen_kg,
+                                  style: subtitle2,
+                                ),
                               ),
                             ),
                           ],
@@ -108,7 +110,35 @@ class _HomeViewPageState extends State<HasilPanenPage> {
                         child: Row(
                           children: [
                             Expanded(
-                              flex: 2,
+                              flex: 3,
+                              child: Text(
+                                'Rencana Panen Janjang',
+                                style: subtitle2,
+                              ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Center(
+                                child: Text(
+                                  rnc_panen_janjang,
+                                  style: subtitle2,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(8),
+                        margin: EdgeInsets.symmetric(vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 3,
                               child: Text(
                                 'Penghasilan',
                                 style: subtitle2,
@@ -116,99 +146,11 @@ class _HomeViewPageState extends State<HasilPanenPage> {
                             ),
                             Expanded(
                               flex: 1,
-                              child: Text(
-                                rnc_penghasilan,
-                                style: subtitle2,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.all(8),
-                        margin: EdgeInsets.symmetric(vertical: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Text(
-                                'Rencana Panen',
-                                style: subtitle2,
-                              ),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: Text(
-                                rnc_panen_kg,
-                                style: subtitle2,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      // Column(
-                      //   mainAxisAlignment: MainAxisAlignment.center,
-                      //   children: histories.map((item) {
-                      //     return Container(
-                      //       padding: EdgeInsets.all(8),
-                      //       margin: EdgeInsets.symmetric(vertical: 8),
-                      //       decoration: BoxDecoration(
-                      //         color: Colors.white,
-                      //         borderRadius: BorderRadius.circular(8),
-                      //       ),
-                      //       child: Row(
-                      //         children: [
-                      //           Expanded(
-                      //             flex: 2,
-                      //             child: Text(
-                      //               item.date,
-                      //               style: subtitle2,
-                      //             ),
-                      //           ),
-                      //           Expanded(
-                      //             flex: 1,
-                      //             child: Text(
-                      //               item.name,
-                      //               style: subtitle2,
-                      //             ),
-                      //           ),
-                      //           Expanded(
-                      //             flex: 1,
-                      //             child: Text(
-                      //               item.qty,
-                      //               style: subtitle2,
-                      //             ),
-                      //           ),
-                      //         ],
-                      //       ),
-                      //     );
-                      //   }).toList(),
-                      // ),
-                      Container(
-                        padding: EdgeInsets.all(8),
-                        margin: EdgeInsets.symmetric(vertical: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: 3,
-                              child: Text(
-                                'Total Buah',
-                                style: subtitle2,
-                              ),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: Text(
-                                sumQty.toString(),
-                                style: subtitle2,
+                              child: Center(
+                                child: Text(
+                                  rnc_penghasilan,
+                                  style: subtitle2,
+                                ),
                               ),
                             ),
                           ],
@@ -226,15 +168,48 @@ class _HomeViewPageState extends State<HasilPanenPage> {
                             Expanded(
                               flex: 3,
                               child: Text(
-                                'Total Berat Kg',
+                                'Total Buah Hari ini',
                                 style: subtitle2,
                               ),
                             ),
                             Expanded(
                               flex: 1,
+                              child: Center(
+                                child: Text(
+                                  sumQty.toString(),
+                                  style: subtitle2,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(8),
+                        margin: EdgeInsets.symmetric(vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 3,
                               child: Text(
-                                (sumQty * 5).toString(),
+                                'Total Penapatan Hari ini',
                                 style: subtitle2,
+                              ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Center(
+                                child: Text(
+                                  (sumQty /
+                                          (int.parse(rnc_panen_kg) /
+                                              int.parse(rnc_panen_janjang)))
+                                      .toString(),
+                                  style: subtitle2,
+                                ),
                               ),
                             ),
                           ],
