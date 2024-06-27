@@ -21,6 +21,11 @@ class AuthRepository {
         await prefs.setString('id_user', rss['id_user'].toString());
         await prefs.setString('name', rss['username']);
         await prefs.setString('username', rss['username']);
+        await prefs.setString('rnc_panen_kg', rss['rnc_panen_kg'].toString());
+        await prefs.setString(
+            'rnc_panen_janjang', rss['rnc_panen_janjang'].toString());
+        await prefs.setString(
+            'rnc_penghasilan', rss['rnc_penghasilan'].toString());
         return SuccessState(data: response);
       } else {
         final result = await Api.post(
@@ -32,6 +37,11 @@ class AuthRepository {
           await prefs.setString('id_user', rss['id'].toString());
           await prefs.setString('name', rss['username']);
           await prefs.setString('username', rss['username']);
+          await prefs.setString('rnc_panen_kg', rss['rnc_panen_kg'].toString());
+          await prefs.setString(
+              'rnc_panen_janjang', rss['rnc_panen_janjang'].toString());
+          await prefs.setString(
+              'rnc_penghasilan', rss['rnc_penghasilan'].toString());
           return SuccessState(data: response);
         }
         throw Exception('Data tidak valid');
@@ -70,6 +80,9 @@ class AuthRepository {
       prefs.remove('id_user');
       prefs.remove('name');
       prefs.remove('username');
+      prefs.remove('rnc_panen_kg');
+      prefs.remove('rnc_panen_janjang');
+      prefs.remove('rnc_penghasilan');
       return SuccessState<bool>(data: true);
     } on Exception catch (e, s) {
       Logger.log(

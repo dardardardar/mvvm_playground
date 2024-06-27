@@ -52,10 +52,14 @@ class CRUDRepository {
         for (var i = 0; responseUsers.length > i; i++) {
           await DatabaseService.instance.insert(
               Users(
-                      id_user: responseUsers[i]['id'].toString(),
-                      name: responseUsers[i]['name'].toString(),
-                      username: responseUsers[i]['username'].toString())
-                  .toMap(),
+                id_user: responseUsers[i]['id'].toString(),
+                name: responseUsers[i]['name'].toString(),
+                username: responseUsers[i]['username'].toString(),
+                rnc_panen_janjang:
+                    responseUsers[i]['rnc_panen_janjang'].toString(),
+                rnc_panen_kg: responseUsers[i]['rnc_panen_kg'].toString(),
+                rnc_penghasilan: responseUsers[i]['rnc_penghasilan'].toString(),
+              ).toMap(),
               'users');
         }
 

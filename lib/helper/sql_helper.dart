@@ -26,6 +26,9 @@ class DatabaseService {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         id_user VARCHAR(5) NOT NULL,
         name VARCHAR(100) NOT NULL,
+        rnc_panen_kg VARCHAR(100) NOT NULL,
+        rnc_panen_janjang VARCHAR(100) NOT NULL,
+        rnc_penghasilan VARCHAR(100) NOT NULL,
         username VARCHAR(100) NOT NULL
       )
     ''');

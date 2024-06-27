@@ -255,30 +255,6 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                   ],
                                                 ),
                                               ),
-                                              const SizedBox(
-                                                width: 24,
-                                              ),
-                                              Flexible(
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    displayText('blok',
-                                                        style: Styles.Captions),
-                                                    displayText(
-                                                      userLocation.currentTree
-                                                              .isEmpty
-                                                          ? '-'
-                                                          : '${userLocation.blokTree}',
-                                                      style: Styles.Body,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
                                             ],
                                           ),
                                         ],

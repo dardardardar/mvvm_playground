@@ -4,11 +4,17 @@ class Users {
   String id_user;
   String username;
   String name;
+  String rnc_panen_kg;
+  String rnc_panen_janjang;
+  String rnc_penghasilan;
 
   Users({
     required this.id_user,
     required this.username,
     required this.name,
+    required this.rnc_panen_kg,
+    required this.rnc_panen_janjang,
+    required this.rnc_penghasilan,
   });
 
   Map<String, dynamic> toMap() {
@@ -16,6 +22,9 @@ class Users {
       'id_user': id_user,
       'username': username,
       'name': name,
+      'rnc_panen_kg': rnc_panen_kg,
+      'rnc_panen_janjang': rnc_panen_janjang,
+      'rnc_penghasilan': rnc_penghasilan,
     };
   }
 }

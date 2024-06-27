@@ -6,6 +6,7 @@ import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/features/cubit/auth_cubit.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit_data.dart';
+import 'package:mvvm_playground/features/pages/data_panen.dart';
 import 'package:mvvm_playground/features/pages/flutter_maps_page.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
 import 'package:mvvm_playground/widgets/buttons.dart';
@@ -130,8 +131,28 @@ class _MainMenuPageState extends State<MainMenuPage> {
                           color: Colors.white,
                         ),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: flatButton(
+                          context: context,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const HasilPanenPage(
+                                  title: 'Hasil Panen',
+                                ),
+                              ),
+                            );
+                          },
+                          title: 'Hasil Panen',
+                          backgroundColor: primaryColor,
+                          icon: Icons.timer_outlined,
+                          color: Colors.white,
+                        ),
+                      ),
                       Visibility(
-                        visible: true,
+                        visible: false,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: flatButton(
