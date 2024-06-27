@@ -168,7 +168,7 @@ class _HomeViewPageState extends State<HasilPanenPage> {
                             Expanded(
                               flex: 3,
                               child: Text(
-                                'Total Buah Hari ini',
+                                'Total Janjang Hari ini',
                                 style: subtitle2,
                               ),
                             ),
@@ -196,7 +196,37 @@ class _HomeViewPageState extends State<HasilPanenPage> {
                             Expanded(
                               flex: 3,
                               child: Text(
-                                'Total Penapatan Hari ini',
+                                'Proporsi Pendapatan (kg)',
+                                style: subtitle2,
+                              ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Center(
+                                child: Text(
+                                  ((int.parse(rnc_penghasilan) /
+                                          int.parse(rnc_panen_kg)))
+                                      .toStringAsFixed(2),
+                                  style: subtitle2,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(8),
+                        margin: EdgeInsets.symmetric(vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 3,
+                              child: Text(
+                                'Total Penapatan Hari ini (kg)',
                                 style: subtitle2,
                               ),
                             ),
@@ -208,6 +238,40 @@ class _HomeViewPageState extends State<HasilPanenPage> {
                                           (int.parse(rnc_panen_kg) /
                                               int.parse(rnc_panen_janjang)))
                                       .toString(),
+                                  style: subtitle2,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(8),
+                        margin: EdgeInsets.symmetric(vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 3,
+                              child: Text(
+                                'Pendapatan Pemanen Hari ini (Rp)',
+                                style: subtitle2,
+                              ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Center(
+                                child: Text(
+                                  (((int.parse(rnc_penghasilan) /
+                                              int.parse(rnc_panen_kg))) *
+                                          (sumQty /
+                                              (int.parse(rnc_panen_kg) /
+                                                  int.parse(
+                                                      rnc_panen_janjang))))
+                                      .toStringAsFixed(2),
                                   style: subtitle2,
                                 ),
                               ),
