@@ -38,14 +38,15 @@ class CRUDRepository {
           responseSchedule = resultAll['schedule'];
           responseLocation = resultAll['location'];
           responseRoute = resultAll['route'];
-          responseHarvest = [];
+          responseHarvest = resultAll['forage_result'];
         }
 
         await DatabaseService.instance.truncate('users');
         await DatabaseService.instance.truncate('trees');
         await DatabaseService.instance.truncate('routes');
         await DatabaseService.instance.truncate('schedules');
-        await DatabaseService.instance.delete(1, 'harvest', 'tipe');
+        await DatabaseService.instance.truncate('harvest');
+        // await DatabaseService.instance.delete(1, 'harvest', 'tipe');
 
         for (var i = 0; responseUsers.length > i; i++) {
           await DatabaseService.instance.insert(
@@ -167,11 +168,13 @@ class CRUDRepository {
         final List<dynamic> responseSchedule;
         final List<dynamic> responseLocation;
         final List<dynamic> responseRoute;
+        final List<dynamic> responseHarvest;
         if (resultAll['status'] != 'failed') {
           responseUsers = resultAll['user'] as List<dynamic>;
           responseSchedule = resultAll['schedule'] as List<dynamic>;
           responseLocation = resultAll['location'] as List<dynamic>;
           responseRoute = resultAll['route'] as List<dynamic>;
+          responseHarvest = [];
 
           await DatabaseService.instance.truncate('users');
           await DatabaseService.instance.truncate('trees');

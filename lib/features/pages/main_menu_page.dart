@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mvvm_playground/const/enums.dart';
 import 'package:mvvm_playground/const/theme.dart';
@@ -8,10 +9,8 @@ import 'package:mvvm_playground/features/cubit/auth_cubit_data.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit_data.dart';
 import 'package:mvvm_playground/features/pages/data_panen.dart';
-import 'package:mvvm_playground/features/pages/error_page.dart';
 import 'package:mvvm_playground/features/pages/flutter_maps_page.dart';
 import 'package:mvvm_playground/features/pages/login_page.dart';
-import 'package:mvvm_playground/features/response/trialConstant.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
 import 'package:mvvm_playground/widgets/buttons.dart';
 import 'package:mvvm_playground/widgets/snackbar.dart';
@@ -41,12 +40,12 @@ class _MainMenuPageState extends State<MainMenuPage> {
         listener: (context, state) {
           if (state.checkAuth is InitialState) {
             if (checkNav == true) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const LoginPage(),
-                ),
-              );
+              // Navigator.pushReplacement(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => const LoginPage(),
+              //   ),
+              // );
               setState(() {
                 checkNav = false;
               });
@@ -196,21 +195,29 @@ class _MainMenuPageState extends State<MainMenuPage> {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: flatButton(
-                            context: context,
-                            onTap: () {
-                              context.read<AuthCubit>().logout();
-                              Navigator.pop(context);
-                              showSnackbar(context,
-                                  message: 'Berhasil Logout',
-                                  status: Status.Success);
-                            },
-                            title: 'Logout',
-                            backgroundColor: primaryColor,
-                            icon: Icons.timer_outlined,
-                            color: Colors.white,
+                        Visibility(
+                          visible: (buttontext != 'Loading..'),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: flatButton(
+                              context: context,
+                              onTap: () {
+                                context.read<AuthCubit>().logout();
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const LoginPage(),
+                                  ),
+                                );
+                                showSnackbar(context,
+                                    message: 'Berhasil Logout',
+                                    status: Status.Success);
+                              },
+                              title: 'Logout',
+                              backgroundColor: primaryColor,
+                              icon: Icons.timer_outlined,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 100),

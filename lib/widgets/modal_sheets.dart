@@ -18,6 +18,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void showModalInputQty(BuildContext context,
     {bool? isNear, required Tree data, required LatLng current}) {
+  int ressQty = 1;
   showModalBottomSheet<void>(
     clipBehavior: Clip.antiAlias,
     shape: RoundedRectangleBorder(
@@ -83,6 +84,7 @@ void showModalInputQty(BuildContext context,
                 InputQty(
                   minVal: 1,
                   onQtyChanged: (value) {
+                    ressQty = value;
                     userloc.setQty(value);
                   },
                 ),
@@ -96,7 +98,8 @@ void showModalInputQty(BuildContext context,
                           idTree: data.idTree,
                           position: current);
                       context.read<MapsCubit>().sendQty(
-                            qty: userloc.qty,
+                            // qty: userloc.qty,
+                            qty: ressQty.toDouble(),
                             data: tree,
                           );
                       Navigator.pop(context);
