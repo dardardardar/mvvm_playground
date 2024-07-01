@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mvvm_playground/const/enums.dart';
 import 'package:mvvm_playground/const/theme.dart';
-import 'package:mvvm_playground/features/cubit/auth_cubit.dart';
-import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
-import 'package:mvvm_playground/helper/api.dart';
 import 'package:mvvm_playground/widgets/typography.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

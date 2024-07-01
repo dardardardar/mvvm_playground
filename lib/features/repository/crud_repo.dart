@@ -3,6 +3,7 @@ import 'package:mvvm_playground/const/enums.dart';
 import 'package:mvvm_playground/features/models/tree_model.dart';
 import 'package:mvvm_playground/features/models/users_model.dart';
 import 'package:mvvm_playground/features/response/constants.dart';
+import 'package:mvvm_playground/features/response/trialConstant.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
 import 'package:mvvm_playground/helper/api.dart';
 import 'package:mvvm_playground/helper/logger.dart';
@@ -408,22 +409,55 @@ class CRUDRepository {
   Future<BaseState> sendQty(double? qty, Tree tree) async {
     final prefs = await SharedPreferences.getInstance();
     try {
-      final addQty = await Api.post('wp-json/sinar/v1/bum/manual-input', {
-        "id_user": prefs.getString('id_user').toString(),
-        "data": [
-          {
-            "qty": (qty! < 1) ? 1 : qty,
-            "id_tree": tree.idTree.isEmpty ? '' : tree.idTree,
-            "lat": tree.position.latitude.toString(),
-            "long": tree.position.longitude.toString(),
-            "date": DateTime.now().toIso8601String()
-          },
-        ],
-      });
+      if (connectivityStatus == true) {
+        final addQty = await Api.post('wp-json/sinar/v1/bum/manual-input', {
+          "id_user": prefs.getString('id_user').toString(),
+          "data": [
+            {
+              "qty": (qty! < 1) ? 1 : qty,
+              "id_tree": tree.idTree.isEmpty ? '' : tree.idTree,
+              "lat": tree.position.latitude.toString(),
+              "long": tree.position.longitude.toString(),
+              "date": DateTime.now().toIso8601String()
+            },
+          ],
+        });
 
-      final resultResponse = addQty.data;
+        final resultResponse = addQty.data;
 
-      if (resultResponse['status'] == 'success') {
+        if (resultResponse['status'] == 'success') {
+          final response = await DatabaseService.instance.insert(
+              sendHistoryQty(
+                id_user: prefs.getString('id_user').toString(),
+                id_tree: tree.idTree.isEmpty ? '' : tree.idTree,
+                lat: tree.position.latitude.toString(),
+                name: tree.idTree.isEmpty ? '' : tree.name,
+                long: tree.position.longitude.toString(),
+                qty: (qty! < 1) ? 1 : qty,
+                tipe: '2',
+                id_harvest: resultResponse['inserted'][0]['id'].toString(),
+              ).toMap(),
+              'harvest');
+
+          return SuccessState(data: response);
+        } else {
+          await DatabaseService.instance.insert(
+              sendHistoryQty(
+                id_user: prefs.getString('id_user').toString(),
+                id_tree: tree.idTree.isEmpty ? '' : tree.idTree,
+                lat: tree.position.latitude.toString(),
+                name: tree.idTree.isEmpty ? '' : tree.name,
+                long: tree.position.longitude.toString(),
+                qty: (qty < 1) ? 1 : qty,
+                tipe: '1',
+                id_harvest: resultResponse['inserted'][0]['id'].toString(),
+              ).toMap(),
+              'harvest');
+
+          return GeneralErrorState(
+              e: Exception(), error: resultResponse['status']);
+        }
+      } else {
         final response = await DatabaseService.instance.insert(
             sendHistoryQty(
               id_user: prefs.getString('id_user').toString(),
@@ -432,28 +466,12 @@ class CRUDRepository {
               name: tree.idTree.isEmpty ? '' : tree.name,
               long: tree.position.longitude.toString(),
               qty: (qty! < 1) ? 1 : qty,
-              tipe: '2',
-              id_harvest: resultResponse['inserted'][0]['id'].toString(),
+              tipe: '1',
+              id_harvest: '',
             ).toMap(),
             'harvest');
 
         return SuccessState(data: response);
-      } else {
-        await DatabaseService.instance.insert(
-            sendHistoryQty(
-              id_user: prefs.getString('id_user').toString(),
-              id_tree: tree.idTree.isEmpty ? '' : tree.idTree,
-              lat: tree.position.latitude.toString(),
-              name: tree.idTree.isEmpty ? '' : tree.name,
-              long: tree.position.longitude.toString(),
-              qty: (qty < 1) ? 1 : qty,
-              tipe: '1',
-              id_harvest: resultResponse['inserted'][0]['id'].toString(),
-            ).toMap(),
-            'harvest');
-
-        return GeneralErrorState(
-            e: Exception(), error: resultResponse['status']);
       }
     } on Exception catch (e, s) {
       await DatabaseService.instance.insert(
