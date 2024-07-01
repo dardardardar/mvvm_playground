@@ -534,7 +534,7 @@ class CRUDRepository {
             "id_tree": getDataHarvest[i]['id_tree'],
             "lat": getDataHarvest[i]['lat'],
             "long": getDataHarvest[i]['long'],
-            "date": getDataHarvest[i]['created_at']
+            "date": getDataHarvest[i]['date']
           });
         }
         var sendArrayHarvest = {
