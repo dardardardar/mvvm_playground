@@ -138,7 +138,7 @@ class CRUDRepository {
                   qty: double.parse(responseHarvest[i]['qty']),
                   id_harvest: responseHarvest[i]['id'].toString(),
                   date: responseHarvest[i]['date'].toString(),
-                  tipe: '1',
+                  tipe: '2',
                 ).toMap(),
                 'harvest');
           }

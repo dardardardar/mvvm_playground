@@ -61,7 +61,7 @@ class _MyAppState extends State<MyApp> {
 
   void _startTrialTimer() {
     _trialTimer?.cancel();
-    _trialTimer = Timer.periodic(Duration(seconds: 15), (timer) async {
+    _trialTimer = Timer.periodic(Duration(seconds: 20), (timer) async {
       await _checkTrial();
       _startConnectivityCheck();
     });
@@ -156,13 +156,5 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _trialTimer?.cancel();
-    getIt.get<MapsCubit>().close();
-    getIt.get<AuthCubit>().close();
-    super.dispose();
   }
 }
