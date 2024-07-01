@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:injectable/injectable.dart';
 import 'package:mvvm_playground/features/cubit/auth_cubit_data.dart';
-import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/repository/auth_repo.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
 import 'package:mvvm_playground/helper/api.dart';
@@ -27,9 +26,6 @@ class AuthCubit extends Cubit<authData> {
         final ressData = (authResponse as SuccessState<String>).data;
         if (ressData == 'success') {
           await _authRepository.checkDatabase();
-          // if (checkDatabase is GeneralErrorState) {
-          // await getIt.get<MapsCubit>().installation('online');
-          // }
           emit(state.copyWith(
             processAuth: SuccessState<bool>(data: true),
             checkAuth: SuccessState<bool>(data: true),
@@ -98,27 +94,6 @@ class AuthCubit extends Cubit<authData> {
         emit(state.copyWith(
           checkTrial: SuccessState<String>(data: 'Full'),
         ));
-        // final prefs = await SharedPreferences.getInstance();
-        // final date = prefs.getString("datetrial").toString();
-        // if (date != "null") {
-        //   DateTime dateObject = DateTime.parse(date);
-        //   int year = dateObject.year;
-        //   int month = dateObject.month;
-        //   int day = dateObject.day;
-
-        //   DateTime now = DateTime.now();
-
-        //   DateTime date1 = DateTime(year, month, day);
-        //   DateTime date2 = DateTime(now.year, now.month, now.day);
-        //   bool isBefore = date2.isBefore(date1);
-        //   if (isBefore != true) {
-        //     getIt.get<AuthCubit>().logout();
-        //     emit(state.copyWith(
-        //         checkTrial: SuccessState<String>(data: 'Trial'),
-        //         processAuth: InitialState(),
-        //         checkAuth: InitialState()));
-        //   }
-        // }
       } else {
         getIt.get<AuthCubit>().logout();
         emit(state.copyWith(

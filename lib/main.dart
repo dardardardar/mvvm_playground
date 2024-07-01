@@ -70,8 +70,8 @@ class _MyAppState extends State<MyApp> {
   Future<void> _startConnectivityCheck() async {
     while (true) {
       var connectivityResult = await Connectivity().checkConnectivity();
-      if (connectivityResult[0] == ConnectivityResult.mobile ||
-          connectivityResult[0] == ConnectivityResult.wifi) {
+      if (connectivityResult == ConnectivityResult.mobile ||
+          connectivityResult == ConnectivityResult.wifi) {
         getIt.get<MapsCubit>().sendSyncAll();
       }
 
@@ -155,6 +155,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void dispose() {
     _trialTimer?.cancel();
+    getIt.get<MapsCubit>().close();
+    getIt.get<AuthCubit>().close();
     super.dispose();
   }
 }

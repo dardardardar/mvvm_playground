@@ -31,7 +31,7 @@ class _HomeViewPageState extends State<ErrorPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: appBar(),
+      appBar: appBar(title: 'Error', context: context),
       body: _buildInputDataBody(context),
     );
   }

@@ -6,6 +6,7 @@ import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit_data.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
+import 'package:mvvm_playground/main.dart';
 import 'package:mvvm_playground/widgets/navigation_bar.dart';
 import 'package:mvvm_playground/widgets/states.dart';
 import 'package:provider/provider.dart';
@@ -36,9 +37,7 @@ class _HomeViewPageState extends State<HasilPanenPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: appBar(
-        title: widget.title,
-      ),
+      appBar: appBar(title: widget.title, context: context),
       body: _buildInputDataBody(context),
     );
   }
