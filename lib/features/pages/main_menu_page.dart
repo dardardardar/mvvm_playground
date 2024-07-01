@@ -115,66 +115,75 @@ class _MainMenuPageState extends State<MainMenuPage> {
                           ),
                         ),
                         const SizedBox(height: 100),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: flatButton(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const FlutterMapPage(
-                                    isHistory: false,
-                                    title: 'Harvest',
+                        Visibility(
+                          visible: (buttontext != 'Loading..'),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: flatButton(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const FlutterMapPage(
+                                      isHistory: false,
+                                      title: 'Harvest',
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                            context: context,
-                            title: 'Harvest',
-                            backgroundColor: primaryColor,
-                            icon: Icons.shopping_cart_rounded,
-                            color: Colors.white,
+                                );
+                              },
+                              context: context,
+                              title: 'Harvest',
+                              backgroundColor: primaryColor,
+                              icon: Icons.shopping_cart_rounded,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: flatButton(
-                            context: context,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const FlutterMapPage(
-                                    isHistory: true,
-                                    title: 'History',
+                        Visibility(
+                          visible: (buttontext != 'Loading..'),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: flatButton(
+                              context: context,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const FlutterMapPage(
+                                      isHistory: true,
+                                      title: 'History',
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                            title: 'History',
-                            backgroundColor: primaryColor,
-                            icon: Icons.timer_outlined,
-                            color: Colors.white,
+                                );
+                              },
+                              title: 'History',
+                              backgroundColor: primaryColor,
+                              icon: Icons.timer_outlined,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: flatButton(
-                            context: context,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const HasilPanenPage(
-                                    title: 'Hasil Panen',
+                        Visibility(
+                          visible: (buttontext != 'Loading..'),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: flatButton(
+                              context: context,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const HasilPanenPage(
+                                      title: 'Hasil Panen',
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                            title: 'Hasil Panen',
-                            backgroundColor: primaryColor,
-                            icon: Icons.timer_outlined,
-                            color: Colors.white,
+                                );
+                              },
+                              title: 'Hasil Panen',
+                              backgroundColor: primaryColor,
+                              icon: Icons.timer_outlined,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                         Visibility(
