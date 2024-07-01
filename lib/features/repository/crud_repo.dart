@@ -38,7 +38,7 @@ class CRUDRepository {
           responseSchedule = resultAll['schedule'];
           responseLocation = resultAll['location'];
           responseRoute = resultAll['route'];
-          responseHarvest = resultAll['forage_result'];
+          responseHarvest = [];
         }
 
         await DatabaseService.instance.truncate('users');
@@ -144,6 +144,122 @@ class CRUDRepository {
       } else {
         return GeneralErrorState(e: Exception('error'));
       }
+    } on Exception catch (e, s) {
+      Logger.log(
+          status: LogStatus.Error,
+          className: CRUDRepository().toString(),
+          function: '$this',
+          exception: e,
+          stackTrace: s);
+      rethrow;
+    }
+  }
+
+  Future<BaseState> syncLogin(status) async {
+    try {
+      var resultAll;
+
+      final response = await DatabaseService.instance.queryRow('users');
+      if (response.isEmpty) {
+        resultAll = responseStatic;
+
+        final List<dynamic> responseUsers;
+        final List<dynamic> responseSchedule;
+        final List<dynamic> responseLocation;
+        final List<dynamic> responseRoute;
+        if (resultAll['status'] != 'failed') {
+          responseUsers = resultAll['user'] as List<dynamic>;
+          responseSchedule = resultAll['schedule'] as List<dynamic>;
+          responseLocation = resultAll['location'] as List<dynamic>;
+          responseRoute = resultAll['route'] as List<dynamic>;
+
+          await DatabaseService.instance.truncate('users');
+          await DatabaseService.instance.truncate('trees');
+          await DatabaseService.instance.truncate('routes');
+          await DatabaseService.instance.truncate('schedules');
+          await DatabaseService.instance.delete(1, 'harvest', 'tipe');
+
+          for (var i = 0; responseUsers.length > i; i++) {
+            await DatabaseService.instance.insert(
+                Users(
+                  id_user: responseUsers[i]['id'].toString(),
+                  name: responseUsers[i]['name'].toString(),
+                  username: responseUsers[i]['username'].toString(),
+                  rnc_panen_janjang:
+                      responseUsers[i]['rnc_panen_janjang'].toString(),
+                  rnc_panen_kg: responseUsers[i]['rnc_panen_kg'].toString(),
+                  rnc_penghasilan:
+                      responseUsers[i]['rnc_penghasilan'].toString(),
+                ).toMap(),
+                'users');
+          }
+
+          for (var i = 0; responseLocation.length > i; i++) {
+            var id_trees = responseLocation[i]['id'].toString();
+            var names = responseLocation[i]['name'].toString();
+            var lats = responseLocation[i]['lat'].toString();
+            var longs = responseLocation[i]['long'].toString();
+            var nomor = responseLocation[i]['nomor'].toString();
+            var baris = responseLocation[i]['lat'].toString();
+            var ancak = responseLocation[i]['ancak'].toString();
+            var blok = responseLocation[i]['blok'].toString();
+            var estate = responseLocation[i]['estate'].toString();
+            var afd = responseLocation[i]['afd'].toString();
+            var keterangan = responseLocation[i]['keterangan'].toString();
+            await DatabaseService.instance.insert(
+                sendTree(
+                  id_tree: id_trees,
+                  name: names,
+                  lat: lats,
+                  long: longs,
+                  nomor: nomor,
+                  baris: baris,
+                  ancak: ancak,
+                  blok: blok,
+                  estate: estate,
+                  afd: afd,
+                  keterangan: keterangan,
+                ).toMap(),
+                'trees');
+          }
+
+          for (var i = 0; responseRoute.length > i; i++) {
+            await DatabaseService.instance.insert(
+                sendRoute(
+                        id_user: responseRoute[i]['id_user'].toString(),
+                        lat: responseRoute[i]['lat'].toString(),
+                        long: responseRoute[i]['long'].toString(),
+                        tipe: '2',
+                        date: DateTime.now().toIso8601String())
+                    .toMap(),
+                'routes');
+          }
+
+          for (var i = 0; responseSchedule.length > i; i++) {
+            await DatabaseService.instance.insert(
+                sendSchedule(
+                        id_user: responseSchedule[i]['id_user'].toString(),
+                        id_tree: responseSchedule[i]['id_tree'].toString(),
+                        lat: responseSchedule[i]['lat'].toString(),
+                        long: responseSchedule[i]['long'].toString(),
+                        name: responseSchedule[i]['name'].toString(),
+                        nomor: responseSchedule[i]['nomor'].toString(),
+                        baris: responseSchedule[i]['baris'].toString(),
+                        ancak: responseSchedule[i]['ancak'].toString(),
+                        blok: responseSchedule[i]['blok'].toString(),
+                        estate: responseSchedule[i]['estate'].toString(),
+                        afd: responseSchedule[i]['afd'].toString(),
+                        keterangan:
+                            responseSchedule[i]['keterangan'].toString())
+                    .toMap(),
+                'schedules');
+          }
+          return SuccessState<bool>(data: true);
+        } else {
+          return GeneralErrorState(e: Exception('error'));
+        }
+      }
+      return SuccessState<bool>(data: true);
     } on Exception catch (e, s) {
       Logger.log(
           status: LogStatus.Error,

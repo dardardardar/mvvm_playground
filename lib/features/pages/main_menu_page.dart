@@ -11,12 +11,13 @@ import 'package:mvvm_playground/features/pages/data_panen.dart';
 import 'package:mvvm_playground/features/pages/error_page.dart';
 import 'package:mvvm_playground/features/pages/flutter_maps_page.dart';
 import 'package:mvvm_playground/features/pages/login_page.dart';
-import 'package:mvvm_playground/features/repository/auth_repo.dart';
 import 'package:mvvm_playground/features/response/trialConstant.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
 import 'package:mvvm_playground/widgets/buttons.dart';
 import 'package:mvvm_playground/widgets/snackbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+bool checkNav = true;
 
 class MainMenuPage extends StatefulWidget {
   const MainMenuPage({super.key});
@@ -26,20 +27,30 @@ class MainMenuPage extends StatefulWidget {
 }
 
 class _MainMenuPageState extends State<MainMenuPage> {
-  String buttontext = 'Sync';
+  @override
+  void initState() {
+    super.initState();
+    checkNav = true;
+  }
 
+  String buttontext = 'Sync';
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: BlocListener<AuthCubit, authData>(
         listener: (context, state) {
           if (state.checkAuth is InitialState) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const LoginPage(),
-              ),
-            );
+            if (checkNav == true) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const LoginPage(),
+                ),
+              );
+              setState(() {
+                checkNav = false;
+              });
+            }
           }
         },
         child: Scaffold(
@@ -109,24 +120,15 @@ class _MainMenuPageState extends State<MainMenuPage> {
                           padding: const EdgeInsets.all(8.0),
                           child: flatButton(
                             onTap: () {
-                              if (checkingTrial == 'Full') {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const FlutterMapPage(
-                                      isHistory: false,
-                                      title: 'Harvest',
-                                    ),
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const FlutterMapPage(
+                                    isHistory: false,
+                                    title: 'Harvest',
                                   ),
-                                );
-                              } else {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const ErrorPage(),
-                                  ),
-                                );
-                              }
+                                ),
+                              );
                             },
                             context: context,
                             title: 'Harvest',
@@ -140,24 +142,15 @@ class _MainMenuPageState extends State<MainMenuPage> {
                           child: flatButton(
                             context: context,
                             onTap: () {
-                              if (checkingTrial == 'Full') {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const FlutterMapPage(
-                                      isHistory: true,
-                                      title: 'History',
-                                    ),
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const FlutterMapPage(
+                                    isHistory: true,
+                                    title: 'History',
                                   ),
-                                );
-                              } else {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const ErrorPage(),
-                                  ),
-                                );
-                              }
+                                ),
+                              );
                             },
                             title: 'History',
                             backgroundColor: primaryColor,
@@ -170,23 +163,14 @@ class _MainMenuPageState extends State<MainMenuPage> {
                           child: flatButton(
                             context: context,
                             onTap: () {
-                              if (checkingTrial == 'Full') {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const HasilPanenPage(
-                                      title: 'Hasil Panen',
-                                    ),
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const HasilPanenPage(
+                                    title: 'Hasil Panen',
                                   ),
-                                );
-                              } else {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const ErrorPage(),
-                                  ),
-                                );
-                              }
+                                ),
+                              );
                             },
                             title: 'Hasil Panen',
                             backgroundColor: primaryColor,
@@ -195,13 +179,15 @@ class _MainMenuPageState extends State<MainMenuPage> {
                           ),
                         ),
                         Visibility(
-                          visible: false,
+                          visible: true,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: flatButton(
                               context: context,
                               onTap: () {
-                                context.read<MapsCubit>().instalation('online');
+                                context
+                                    .read<MapsCubit>()
+                                    .installation('online');
                               },
                               title: buttontext,
                               backgroundColor: primaryColor,
@@ -216,12 +202,10 @@ class _MainMenuPageState extends State<MainMenuPage> {
                             context: context,
                             onTap: () {
                               context.read<AuthCubit>().logout();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const LoginPage(),
-                                ),
-                              );
+                              Navigator.pop(context);
+                              showSnackbar(context,
+                                  message: 'Berhasil Logout',
+                                  status: Status.Success);
                             },
                             title: 'Logout',
                             backgroundColor: primaryColor,
@@ -232,7 +216,7 @@ class _MainMenuPageState extends State<MainMenuPage> {
                         const SizedBox(height: 100),
                         const Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text('Version 0.1'),
+                          child: Text('Version 0.1 Demo'),
                         ),
                       ],
                     );

@@ -7,7 +7,6 @@ import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/features/cubit/auth_cubit.dart';
 import 'package:mvvm_playground/features/cubit/auth_cubit_data.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
-import 'package:mvvm_playground/features/pages/error_page.dart';
 import 'package:mvvm_playground/features/pages/login_page.dart';
 import 'package:mvvm_playground/features/pages/main_menu_page.dart';
 import 'package:mvvm_playground/features/repository/auth_repo.dart';
@@ -54,6 +53,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   Timer? _trialTimer;
+  bool chcekCubit = false;
 
   Future<void> _checkTrial() async {
     getIt.get<AuthCubit>().checkTrial();
@@ -98,46 +98,44 @@ class _MyAppState extends State<MyApp> {
       child: MultiBlocListener(
         listeners: [
           BlocListener<AuthCubit, authData>(listener: (context, state) {
+            final ress = (state.checkTrial as SuccessState).data;
+            if (ress == 'Trial') {
+              setState(() {
+                checkingTrial = 'Trial';
+              });
+            } else {
+              setState(() {
+                checkingTrial = 'Full';
+              });
+            }
             if (state.checkAuth is SuccessState &&
                 state.checkTrial is SuccessState<String>) {
-              if ((state.checkTrial as SuccessState).data == 'Trial') {
-                setState(() {
-                  checkingTrial = 'Trial';
-                });
-              } else {
+              if ((state.checkTrial as SuccessState).data != 'Trial') {
                 setState(() {
                   currentPage = const MainMenuPage();
                 });
               }
             } else if (state.checkTrial is SuccessState<String> &&
                 state.checkAuth is InitialState) {
-              if ((state.checkTrial as SuccessState).data == 'Trial') {
-                setState(() {
-                  checkingTrial = 'Trial';
-                });
-              } else {
+              if ((state.checkTrial as SuccessState).data != 'Trial') {
                 setState(() {
                   currentPage = const LoginPage();
                 });
               }
             } else if (state.checkTrial is SuccessState<String> &&
                 state.checkAuth is ErrorState) {
-              if ((state.checkTrial as SuccessState).data == 'Trial') {
-                setState(() {
-                  checkingTrial = 'Trial';
-                });
-              } else {
+              if ((state.checkTrial as SuccessState).data != 'Trial') {
                 setState(() {
                   currentPage = const LoginPage();
                 });
               }
             } else {
-              if ((state.checkTrial as SuccessState).data == 'Trial') {
+              if ((state.checkTrial as SuccessState<String>).data == 'Trial') {
                 setState(() {
                   checkingTrial = 'Trial';
+                  currentPage = const LoginPage();
                 });
               }
-              currentPage = const LoginPage();
             }
           }),
         ],

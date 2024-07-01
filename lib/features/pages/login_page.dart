@@ -7,12 +7,17 @@ import 'package:mvvm_playground/const/enums.dart';
 import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/features/cubit/auth_cubit.dart';
 import 'package:mvvm_playground/features/cubit/auth_cubit_data.dart';
+import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/pages/main_menu_page.dart';
+import 'package:mvvm_playground/features/response/trialConstant.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
+import 'package:mvvm_playground/helper/api.dart';
 import 'package:mvvm_playground/widgets/buttons.dart';
 import 'package:mvvm_playground/widgets/input.dart';
 import 'package:mvvm_playground/widgets/snackbar.dart';
 import 'package:mvvm_playground/widgets/typography.dart';
+
+bool StatusCubit = false;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -24,6 +29,12 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  @override
+  void initState() {
+    super.initState();
+    getIt.get<MapsCubit>().syncLogin('offline');
+  }
+
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   String buttontext = 'Login';
@@ -56,39 +67,40 @@ class _LoginPageState extends State<LoginPage> {
             key: _formKey,
             child: BlocConsumer<AuthCubit, authData>(
               listener: (context, state) {
-                if ((state.checkTrial as SuccessState<String>).data ==
-                    'Trial') {
-                  showSnackbar(context,
-                      message: 'Aplikasi Kadarluasa', status: Status.Error);
-                }
                 if (state.processAuth is LoadingState) {
                   setState(() {
                     buttontext = 'Loading..';
+                    StatusCubit = true;
                   });
                   FocusScope.of(context).unfocus();
                 } else if (state.processAuth is SuccessState) {
-                  showSnackbar(context,
-                      message: 'Berhasil Login', status: Status.Success);
+                  if (StatusCubit == true) {
+                    showSnackbar(context,
+                        message: 'Berhasil Login', status: Status.Success);
+                    setState(() {
+                      buttontext = 'Berhasil..';
+                      StatusCubit = false;
+                    });
 
-                  setState(() {
-                    buttontext = 'Berhasil..';
-                  });
-
-                  Navigator.of(context, rootNavigator: true).push(
-                    MaterialPageRoute(
-                        builder: (context) => const MainMenuPage()),
-                  );
+                    Navigator.of(context, rootNavigator: true).push(
+                      MaterialPageRoute(
+                          builder: (context) => const MainMenuPage()),
+                    );
+                  }
                 } else {
+                  if (state.processAuth is GeneralErrorState) {
+                    if (StatusCubit == true) {
+                      showSnackbar(context,
+                          message:
+                              (state.processAuth as GeneralErrorState<dynamic>)
+                                  .error,
+                          status: Status.Error);
+                    }
+                  }
                   setState(() {
                     buttontext = 'Login';
+                    StatusCubit = false;
                   });
-                  if (state.processAuth is GeneralErrorState) {
-                    showSnackbar(context,
-                        message:
-                            (state.processAuth as GeneralErrorState<dynamic>)
-                                .error,
-                        status: Status.Error);
-                  }
                 }
               },
               builder: (context, state) {
@@ -99,6 +111,16 @@ class _LoginPageState extends State<LoginPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       displayText('Login', style: Styles.Display1Alt),
+                      Visibility(
+                        visible: (checkingTrial == 'Trial'),
+                        child: Center(
+                          child: Text(
+                            'Aplikasi tidak dapat digunakan karena masa demo telah berakhir.',
+                            style: subtitle.copyWith(
+                                fontWeight: FontWeight.bold, color: Colors.red),
+                          ),
+                        ),
+                      ),
                       const SizedBox(
                         height: 32,
                       ),
@@ -113,14 +135,15 @@ class _LoginPageState extends State<LoginPage> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 32),
+                      const SizedBox(height: 32),
                       flatButton(
                           context: context,
                           title: buttontext,
                           backgroundColor: primaryColor,
                           onTap: () {
                             if (_formKey.currentState?.validate() ?? false) {
-                              if (buttontext == 'Login') {
+                              if (buttontext == 'Login' &&
+                                  (checkingTrial != 'Trial')) {
                                 sendAuth();
                               }
                             }

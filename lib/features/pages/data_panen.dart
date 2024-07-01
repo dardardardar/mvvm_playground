@@ -66,9 +66,7 @@ class _HomeViewPageState extends State<HasilPanenPage> {
                 final histories =
                     (state.listHistory as SuccessState<List<Tree>>).data;
                 final sumQty = histories.fold<int>(0, (sum, item) {
-                  return sum +
-                      int.parse(item
-                          .qty); // Assuming item.qty is a String, parse it to int
+                  return sum + int.parse(item.qty);
                 });
                 return SingleChildScrollView(
                   child: Column(

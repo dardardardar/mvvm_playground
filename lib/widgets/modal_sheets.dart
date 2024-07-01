@@ -14,6 +14,7 @@ import 'package:mvvm_playground/functions/geolocation.dart';
 import 'package:mvvm_playground/widgets/input.dart';
 import 'package:mvvm_playground/widgets/typography.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void showModalInputQty(BuildContext context,
     {bool? isNear, required Tree data, required LatLng current}) {
@@ -341,8 +342,43 @@ void showModalSchedule(BuildContext context, {required List<Tree> tree}) {
             padding: const EdgeInsets.all(16),
             child: Column(
                 mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text('Rencana Kerja Harian ',
+                      style: subtitle.copyWith(fontWeight: FontWeight.w600)),
+                  FutureBuilder<SharedPreferences>(
+                      future: SharedPreferences.getInstance(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+
+                        final prefs = snapshot.data!;
+                        final rnc_panen_kg =
+                            prefs.getString("rnc_panen_kg") ?? "0";
+                        final rnc_panen_janjang =
+                            prefs.getString("rnc_panen_janjang") ?? "0";
+                        final rnc_penghasilan =
+                            prefs.getString("rnc_penghasilan") ?? "0";
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('- Rnc Panen (Kg) = $rnc_panen_kg Kg',
+                                style: subtitle2),
+                            Text('- Rnc Panen Janjang = $rnc_panen_janjang',
+                                style: subtitle2),
+                            Text(
+                                '- Rencana Penghasilan = Rp.$rnc_penghasilan/Hari ',
+                                style: subtitle2),
+                          ],
+                        );
+                      }),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text('Jadwal ',
+                      style: subtitle.copyWith(fontWeight: FontWeight.w600)),
                   const Row(
                     children: [
                       Expanded(

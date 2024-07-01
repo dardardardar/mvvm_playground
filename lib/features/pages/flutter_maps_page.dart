@@ -51,7 +51,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
   }
 
   Stream<latLng.LatLng> getLocationStream() async* {
-    Future.delayed(const Duration(seconds: 3));
+    Future.delayed(const Duration(seconds: 4));
     while (true) {
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.bestForNavigation);
@@ -105,6 +105,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                     userLocation.setPointCenter(trees[i]);
                   }
                   var userLocationCurrent = snapshot.data!;
+
                   return SafeArea(
                     child: Column(
                       children: [
@@ -333,7 +334,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                       : trees.reversed
                                                           .toList());
                                             },
-                                            title: 'Schedule',
+                                            title: 'RKH',
                                             icon: Icons.calendar_month),
                                       ],
                                     ),
@@ -349,11 +350,18 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                 } else if (snapshot.hasError) {
                   return errorAlert(text: snapshot.error.toString());
                 } else {
+                  if (!widget.isHistory) {
+                    Future.delayed(Duration(seconds: 1), () {
+                      showModalSchedule(context,
+                          tree: trees.isEmpty ? [] : trees.reversed.toList());
+                    });
+                  }
                   return circularLoading(text: 'Loading Stream...');
                 }
               },
             );
           }
+
           return circularLoading(text: 'Loading States...');
         },
       ),

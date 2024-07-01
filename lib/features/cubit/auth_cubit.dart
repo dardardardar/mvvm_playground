@@ -26,10 +26,10 @@ class AuthCubit extends Cubit<authData> {
       if (authResponse is SuccessState<String>) {
         final ressData = (authResponse as SuccessState<String>).data;
         if (ressData == 'success') {
-          final checkDatabase = await _authRepository.checkDatabase();
-          if (checkDatabase is ErrorState) {
-            await getIt.get<MapsCubit>().instalation('offline');
-          }
+          await _authRepository.checkDatabase();
+          // if (checkDatabase is GeneralErrorState) {
+          // await getIt.get<MapsCubit>().installation('online');
+          // }
           emit(state.copyWith(
             processAuth: SuccessState<bool>(data: true),
             checkAuth: SuccessState<bool>(data: true),
@@ -93,11 +93,33 @@ class AuthCubit extends Cubit<authData> {
 
   Future<void> checkTrial() async {
     try {
-      DateTime now = DateTime.now();
-      DateTime date1 = DateTime(2024, 12, 6);
-      DateTime date2 = DateTime(now.year, now.month, now.day);
-      bool isBefore = date2.isBefore(date1);
-      if (isBefore != true) {
+      final check = await _authRepository.getOnTrial();
+      if (check == true) {
+        emit(state.copyWith(
+          checkTrial: SuccessState<String>(data: 'Full'),
+        ));
+        // final prefs = await SharedPreferences.getInstance();
+        // final date = prefs.getString("datetrial").toString();
+        // if (date != "null") {
+        //   DateTime dateObject = DateTime.parse(date);
+        //   int year = dateObject.year;
+        //   int month = dateObject.month;
+        //   int day = dateObject.day;
+
+        //   DateTime now = DateTime.now();
+
+        //   DateTime date1 = DateTime(year, month, day);
+        //   DateTime date2 = DateTime(now.year, now.month, now.day);
+        //   bool isBefore = date2.isBefore(date1);
+        //   if (isBefore != true) {
+        //     getIt.get<AuthCubit>().logout();
+        //     emit(state.copyWith(
+        //         checkTrial: SuccessState<String>(data: 'Trial'),
+        //         processAuth: InitialState(),
+        //         checkAuth: InitialState()));
+        //   }
+        // }
+      } else {
         getIt.get<AuthCubit>().logout();
         emit(state.copyWith(
             checkTrial: SuccessState<String>(data: 'Trial'),

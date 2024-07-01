@@ -26,6 +26,7 @@ class AuthRepository {
       //       'rnc_panen_janjang', rss['rnc_panen_janjang'].toString());
       //   await prefs.setString(
       //       'rnc_penghasilan', rss['rnc_penghasilan'].toString());
+      // await prefs.setString('date', rss['date'].toString());
       //   return SuccessState(data: response);
       // } else {
       final result =
@@ -42,6 +43,7 @@ class AuthRepository {
             'rnc_panen_janjang', rss['rnc_panen_janjang'].toString());
         await prefs.setString(
             'rnc_penghasilan', rss['rnc_penghasilan'].toString());
+        await prefs.setString('datetrial', response['date'].toString());
 
         if (response['is_expired'] == false) {
           return SuccessState<String>(data: 'success');
@@ -68,13 +70,23 @@ class AuthRepository {
       final response = result.data;
       return response.toString() == 'true';
     } on Exception catch (e, s) {
-      Logger.log(
-          status: LogStatus.Error,
-          className: AuthRepository().toString(),
-          function: '$this',
-          exception: e,
-          stackTrace: s);
-      rethrow;
+      final prefs = await SharedPreferences.getInstance();
+      final date = prefs.getString("datetrial").toString();
+
+      if (date != "null") {
+        DateTime dateObject = DateTime.parse(date);
+        int year = dateObject.year;
+        int month = dateObject.month;
+        int day = dateObject.day;
+
+        DateTime now = DateTime.now();
+
+        DateTime date1 = DateTime(year, month, day);
+        DateTime date2 = DateTime(now.year, now.month, now.day);
+        bool isBefore = date2.isBefore(date1);
+        return isBefore;
+      }
+      return true;
     }
   }
 
