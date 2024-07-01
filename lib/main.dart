@@ -70,7 +70,6 @@ class _MyAppState extends State<MyApp> {
   Future<void> _startConnectivityCheck() async {
     while (true) {
       var connectivityResult = await Connectivity().checkConnectivity();
-
       if (connectivityResult[0] == ConnectivityResult.mobile ||
           connectivityResult[0] == ConnectivityResult.wifi) {
         getIt.get<MapsCubit>().sendSyncAll();

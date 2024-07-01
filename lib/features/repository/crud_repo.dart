@@ -419,7 +419,7 @@ class CRUDRepository {
               "id_tree": tree.idTree.isEmpty ? '' : tree.idTree,
               "lat": tree.position.latitude.toString(),
               "long": tree.position.longitude.toString(),
-              "date": DateTime.now().toIso8601String()
+              "date": getCurrentDateTime()
             },
           ],
         });
@@ -429,30 +429,34 @@ class CRUDRepository {
         if (resultResponse['status'] == 'success') {
           final response = await DatabaseService.instance.insert(
               sendHistoryQty(
-                id_user: prefs.getString('id_user').toString(),
-                id_tree: tree.idTree.isEmpty ? '' : tree.idTree,
-                lat: tree.position.latitude.toString(),
-                name: tree.idTree.isEmpty ? '' : tree.name,
-                long: tree.position.longitude.toString(),
-                qty: (qty! < 1) ? 1 : qty,
-                tipe: '2',
-                id_harvest: resultResponse['inserted'][0]['id'].toString(),
-              ).toMap(),
+                      id_user: prefs.getString('id_user').toString(),
+                      id_tree: tree.idTree.isEmpty ? '' : tree.idTree,
+                      lat: tree.position.latitude.toString(),
+                      name: tree.idTree.isEmpty ? '' : tree.name,
+                      long: tree.position.longitude.toString(),
+                      qty: (qty! < 1) ? 1 : qty,
+                      tipe: '2',
+                      id_harvest:
+                          resultResponse['inserted'][0]['id'].toString(),
+                      date: getCurrentDateTime())
+                  .toMap(),
               'harvest');
 
           return SuccessState(data: response);
         } else {
           await DatabaseService.instance.insert(
               sendHistoryQty(
-                id_user: prefs.getString('id_user').toString(),
-                id_tree: tree.idTree.isEmpty ? '' : tree.idTree,
-                lat: tree.position.latitude.toString(),
-                name: tree.idTree.isEmpty ? '' : tree.name,
-                long: tree.position.longitude.toString(),
-                qty: (qty < 1) ? 1 : qty,
-                tipe: '1',
-                id_harvest: resultResponse['inserted'][0]['id'].toString(),
-              ).toMap(),
+                      id_user: prefs.getString('id_user').toString(),
+                      id_tree: tree.idTree.isEmpty ? '' : tree.idTree,
+                      lat: tree.position.latitude.toString(),
+                      name: tree.idTree.isEmpty ? '' : tree.name,
+                      long: tree.position.longitude.toString(),
+                      qty: (qty < 1) ? 1 : qty,
+                      tipe: '1',
+                      id_harvest:
+                          resultResponse['inserted'][0]['id'].toString(),
+                      date: getCurrentDateTime())
+                  .toMap(),
               'harvest');
 
           return GeneralErrorState(
@@ -468,6 +472,7 @@ class CRUDRepository {
               long: tree.position.longitude.toString(),
               qty: (qty! < 1) ? 1 : qty,
               tipe: '1',
+              date: getCurrentDateTime(),
               id_harvest: '',
             ).toMap(),
             'harvest');
@@ -484,6 +489,7 @@ class CRUDRepository {
             long: tree.position.longitude.toString(),
             qty: (qty! < 1) ? 1 : qty,
             tipe: '1',
+            date: getCurrentDateTime(),
             id_harvest: '',
           ).toMap(),
           'harvest');
