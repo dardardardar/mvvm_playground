@@ -90,7 +90,7 @@ class DatabaseService {
         long VARCHAR(30) NOT NULL,
         tipe VARCHAR(2) NOT NULL,
         id_harvest VARCHAR(5) NOT NULL,
-        date TEXT
+        date TEXT NULL
       )
     ''');
   }
