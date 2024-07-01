@@ -61,7 +61,7 @@ class _MyAppState extends State<MyApp> {
 
   void _startTrialTimer() {
     _trialTimer?.cancel();
-    _trialTimer = Timer.periodic(Duration(seconds: 10), (timer) async {
+    _trialTimer = Timer.periodic(Duration(seconds: 15), (timer) async {
       await _checkTrial();
       _startConnectivityCheck();
     });
@@ -83,8 +83,6 @@ class _MyAppState extends State<MyApp> {
           connectivityStatus = false;
         });
       }
-
-      await Future.delayed(Duration(seconds: 60));
     }
   }
 

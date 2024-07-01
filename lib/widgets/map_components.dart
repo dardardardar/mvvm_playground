@@ -43,7 +43,7 @@ List<Polyline> mapPolylineHistories({required List<dynamic> routes}) {
   return [
     Polyline(
       points: routes.map((route) => route.position as LatLng).toList(),
-      color: Colors.green,
+      color: Colors.blue,
       strokeWidth: 1,
       isDotted: true,
       useStrokeWidthInMeter: true,
