@@ -97,7 +97,7 @@ class CRUDRepository {
             'id_tree': (responseSchedule[i]['id_tree'] == null)
                 ? ''
                 : responseSchedule[i]['id_tree'],
-            'lat': responseSchedule[i]['id_user'].toString(),
+            'lat': responseSchedule[i]['lat'].toString(),
             'name': (responseSchedule[i]['name'] == null)
                 ? ''
                 : responseSchedule[i]['name'].toString(),
@@ -255,7 +255,7 @@ class CRUDRepository {
                 'id_tree': (responseHarvest[i]['id_tree'] == null)
                     ? ''
                     : responseHarvest[i]['id_tree'],
-                'lat': responseHarvest[i]['id_user'].toString(),
+                'lat': responseHarvest[i]['lat'].toString(),
                 'name': (responseHarvest[i]['name'] == null)
                     ? ''
                     : responseHarvest[i]['id_tree'].toString(),

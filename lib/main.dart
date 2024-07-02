@@ -61,7 +61,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _startTrialTimer() async {
     _trialTimer?.cancel();
-    _trialTimer = Timer.periodic(Duration(seconds: 80), (timer) async {
+    _trialTimer = Timer.periodic(Duration(seconds: 60), (timer) async {
       await _checkTrial();
       getIt.get<MapsCubit>().sendSyncAll();
       await _startConnectivityCheck();
