@@ -5,9 +5,13 @@ import 'package:mvvm_playground/const/theme.dart';
 
 ///  Custom Text widget with overflow implementation. jd gaakan overlow lagi.
 Widget displayText(String text,
-    {Styles? style, TextOverflow? overflow, TextStyle? styleOverride}) {
+    {Styles? style,
+    TextOverflow? overflow,
+    TextStyle? styleOverride,
+    TextAlign? textAlign}) {
   return Text(
     text,
+    textAlign: textAlign,
     overflow: overflow ?? TextOverflow.ellipsis,
     style: styleOverride != null
         ? _styles(style ?? Styles.Body).merge(styleOverride)

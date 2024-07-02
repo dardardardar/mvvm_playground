@@ -2,12 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:mvvm_playground/const/enums.dart';
 import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit_data.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
 import 'package:mvvm_playground/widgets/navigation_bar.dart';
 import 'package:mvvm_playground/widgets/states.dart';
+import 'package:mvvm_playground/widgets/typography.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -66,233 +69,227 @@ class _HomeViewPageState extends State<HasilPanenPage> {
                 final histories =
                     (state.listHistory as SuccessState<List<Tree>>).data;
 
-                return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      ...harvest.map((item) {
-                        final sumQty = histories
-                            .where(
-                                (element) => element.date.contains(item.date))
-                            .fold<int>(0, (sum, item) {
-                          return sum + int.parse(item.qty);
-                        });
-                        return Column(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.all(8),
-                              margin: EdgeInsets.symmetric(vertical: 8),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 3,
-                                    child: Text(
-                                      'Tanggal',
-                                      style: subtitle2,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: Center(
-                                      child: Text(
-                                        item.date.toString(),
-                                        style: subtitle2,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                return Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: secondaryColor,
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black12,
+                            spreadRadius: 0,
+                            blurRadius: 3,
+                            offset: Offset(0, 3), // changes position of shadow
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          Container(
+                            child: displayText(
+                              'Rencana Harian Kerja',
+                              style: Styles.Display3,
                             ),
-                            Container(
-                              padding: EdgeInsets.all(8),
-                              margin: EdgeInsets.symmetric(vertical: 8),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
+                          ),
+                          Divider(
+                            thickness: 0.75,
+                          ),
+                          Row(
+                            children: [
+                              displayText(
+                                'Rencana Panen :',
                               ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 3,
-                                    child: Text(
-                                      'Rencana Panen',
-                                      style: subtitle2,
-                                    ),
+                              Spacer(),
+                              displayText(
+                                '$rnc_panen_kg kg',
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              displayText(
+                                'Rencana Panen Janjang :',
+                              ),
+                              Spacer(),
+                              displayText(
+                                rnc_panen_janjang,
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              displayText(
+                                'Penghasilan :',
+                              ),
+                              Spacer(),
+                              displayText(
+                                NumberFormat.currency(
+                                  locale: 'id',
+                                  symbol: 'Rp ',
+                                ).format(int.parse(rnc_penghasilan)),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          ...harvest.map((item) {
+                            final sumQty = histories
+                                .where((element) =>
+                                    element.date.contains(item.date))
+                                .fold<int>(0, (sum, item) {
+                              return sum + int.parse(item.qty);
+                            });
+                            return Column(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(12),
+                                  margin: EdgeInsets.symmetric(
+                                    vertical: 8,
                                   ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: Center(
-                                      child: Text(
-                                        rnc_panen_kg,
-                                        style: subtitle2,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Colors.black12,
+                                        spreadRadius: 0,
+                                        blurRadius: 3,
+                                        offset: Offset(
+                                            0, 3), // changes position of shadow
                                       ),
-                                    ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.all(8),
-                              margin: EdgeInsets.symmetric(vertical: 8),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 3,
-                                    child: Text(
-                                      'Rencana Panen Janjang',
-                                      style: subtitle2,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: Center(
-                                      child: Text(
-                                        rnc_panen_janjang,
-                                        style: subtitle2,
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: Colors.green.shade100,
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              flex: 3,
+                                              child: displayText(
+                                                'Tanggal',
+                                              ),
+                                            ),
+                                            Expanded(
+                                              flex: 1,
+                                              child: Center(
+                                                child: displayText(
+                                                  item.date.toString(),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.all(8),
-                              margin: EdgeInsets.symmetric(vertical: 8),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 3,
-                                    child: Text(
-                                      'Penghasilan',
-                                      style: subtitle2,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: Center(
-                                      child: Text(
-                                        rnc_penghasilan,
-                                        style: subtitle2,
+                                      SizedBox(
+                                        height: 12,
                                       ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.all(8),
-                              margin: EdgeInsets.symmetric(vertical: 8),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 3,
-                                    child: Text(
-                                      'Proporsi Pendapatan (kg)',
-                                      style: subtitle2,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: Center(
-                                      child: Text(
-                                        ((int.parse(rnc_penghasilan) /
-                                                int.parse(rnc_panen_kg)))
-                                            .toStringAsFixed(2),
-                                        style: subtitle2,
+                                      Container(
+                                        padding: EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              flex: 3,
+                                              child: displayText(
+                                                'Proporsi Pendapatan (kg)',
+                                              ),
+                                            ),
+                                            Expanded(
+                                              flex: 1,
+                                              child: Center(
+                                                child: displayText(
+                                                  ((int.parse(rnc_penghasilan) /
+                                                          int.parse(
+                                                              rnc_panen_kg)))
+                                                      .toStringAsFixed(2),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.all(8),
-                              margin: EdgeInsets.symmetric(vertical: 8),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 3,
-                                    child: Text(
-                                      'Total Penapatan Hari ini (kg)',
-                                      style: subtitle2,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: Center(
-                                      child: Text(
-                                        (sumQty /
-                                                (int.parse(rnc_panen_kg) /
-                                                    int.parse(
-                                                        rnc_panen_janjang)))
-                                            .toString(),
-                                        style: subtitle2,
+                                      Container(
+                                        padding: EdgeInsets.all(8),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              flex: 3,
+                                              child: displayText(
+                                                'Total Penapatan Hari ini (kg)',
+                                              ),
+                                            ),
+                                            Expanded(
+                                              flex: 1,
+                                              child: Center(
+                                                child: displayText(
+                                                  (sumQty /
+                                                          (int.parse(
+                                                                  rnc_panen_kg) /
+                                                              int.parse(
+                                                                  rnc_panen_janjang)))
+                                                      .toString(),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
+                                      Container(
+                                        padding: EdgeInsets.all(8),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              flex: 3,
+                                              child: displayText(
+                                                'Pendapatan Pemanen Hari ini (Rp)',
+                                              ),
+                                            ),
+                                            Expanded(
+                                              flex: 1,
+                                              child: Center(
+                                                child: displayText(
+                                                  (((int.parse(rnc_penghasilan) /
+                                                              int.parse(
+                                                                  rnc_panen_kg))) *
+                                                          (sumQty /
+                                                              (int.parse(
+                                                                      rnc_panen_kg) /
+                                                                  int.parse(
+                                                                      rnc_panen_janjang))))
+                                                      .toStringAsFixed(2),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
                                   ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.all(8),
-                              margin: EdgeInsets.symmetric(vertical: 8),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 3,
-                                    child: Text(
-                                      'Pendapatan Pemanen Hari ini (Rp)',
-                                      style: subtitle2,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: Center(
-                                      child: Text(
-                                        (((int.parse(rnc_penghasilan) /
-                                                    int.parse(rnc_panen_kg))) *
-                                                (sumQty /
-                                                    (int.parse(rnc_panen_kg) /
-                                                        int.parse(
-                                                            rnc_panen_janjang))))
-                                            .toStringAsFixed(2),
-                                        style: subtitle2,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        );
-                      }).toList(),
+                                ),
+                              ],
+                            );
+                          }).toList(),
 
-                      // Other Containers...
-                    ],
-                  ),
+                          // Other Containers...
+                        ],
+                      ),
+                    ),
+                  ],
                 );
               }
 
