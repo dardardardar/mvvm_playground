@@ -59,17 +59,18 @@ class _MyAppState extends State<MyApp> {
     getIt.get<AuthCubit>().checkTrial();
   }
 
-  void _startTrialTimer() {
+  Future<void> _startTrialTimer() async {
     _trialTimer?.cancel();
     _trialTimer = Timer.periodic(Duration(seconds: 80), (timer) async {
       await _checkTrial();
       getIt.get<MapsCubit>().sendSyncAll();
-      _startConnectivityCheck();
+      await _startConnectivityCheck();
     });
   }
 
   Future<void> _startConnectivityCheck() async {
     while (true) {
+      Future.delayed(Duration(seconds: 1));
       var connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult[0] == ConnectivityResult.mobile ||
           connectivityResult[0] == ConnectivityResult.wifi) {
