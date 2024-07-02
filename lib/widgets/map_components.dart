@@ -84,14 +84,13 @@ CircleMarker circleMarkerOverlays(
 
 Marker treeMarker(BuildContext context, {required Tree tree}) {
   return Marker(
-    width: sizeByScreenWidth(context: context, sizePercent: 1),
-    height: sizeByScreenWidth(context: context, sizePercent: 1),
+    width: sizeByScreenWidth(context: context, sizePercent: 0.25),
+    height: sizeByScreenWidth(context: context, sizePercent: 0.21),
     point: tree.position,
     child: Stack(
       children: [
         Center(
           child: Container(
-            color: Colors.red,
             padding: const EdgeInsets.all(8),
             child: Container(
               padding: const EdgeInsets.all(1),
