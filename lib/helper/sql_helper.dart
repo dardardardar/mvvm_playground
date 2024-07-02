@@ -101,6 +101,16 @@ class DatabaseService {
     return await db.insert(table, row);
   }
 
+  Future<void> insertBatch(
+      List<Map<String, dynamic>> rows, String table) async {
+    final db = await instance.database;
+    var batch = db.batch();
+    for (var row in rows) {
+      batch.insert(table, row);
+    }
+    await batch.commit(noResult: true);
+  }
+
   Future<List<Map<String, dynamic>>> queryAllRows(
       String table, String filter, String id) async {
     Database db = await database;

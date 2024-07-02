@@ -14,8 +14,7 @@ class MapsCubit extends Cubit<MapsData> {
 
   Future<void> sendSyncAll() async {
     try {
-      final checkState = state.sendSync;
-      if (checkState is InitialState) {
+      if (state.sendSync is InitialState) {
         await _crudRepository.sendSyncAll();
       }
     } on Exception catch (e) {
@@ -26,19 +25,21 @@ class MapsCubit extends Cubit<MapsData> {
 
   Future<void> installation(status) async {
     try {
-      emit(state.copyWith(
-        sendSync: LoadingState(),
-      ));
-      final ress = await _crudRepository.Installation(status);
-      await ress;
-      if (ress is SuccessState<bool>) {
+      if (state.sendSync is InitialState) {
         emit(state.copyWith(
-          sendSync: SuccessState<bool>(data: true),
+          sendSync: LoadingState(),
+        ));
+        final ress = await _crudRepository.Installation(status);
+        await ress;
+        if (ress is SuccessState<bool>) {
+          emit(state.copyWith(
+            sendSync: SuccessState<bool>(data: true),
+          ));
+        }
+        emit(state.copyWith(
+          sendSync: InitialState<bool>(),
         ));
       }
-      emit(state.copyWith(
-        sendSync: InitialState<bool>(),
-      ));
     } on Exception catch (e) {
       emit(state.copyWith(
           sendSync: GeneralErrorState(e: e, error: e.toString())));

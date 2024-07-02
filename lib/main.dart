@@ -61,7 +61,7 @@ class _MyAppState extends State<MyApp> {
 
   void _startTrialTimer() {
     _trialTimer?.cancel();
-    _trialTimer = Timer.periodic(Duration(seconds: 20), (timer) async {
+    _trialTimer = Timer.periodic(Duration(seconds: 60), (timer) async {
       await _checkTrial();
       _startConnectivityCheck();
     });
