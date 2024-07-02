@@ -61,8 +61,9 @@ class _MyAppState extends State<MyApp> {
 
   void _startTrialTimer() {
     _trialTimer?.cancel();
-    _trialTimer = Timer.periodic(Duration(seconds: 60), (timer) async {
+    _trialTimer = Timer.periodic(Duration(seconds: 80), (timer) async {
       await _checkTrial();
+      getIt.get<MapsCubit>().sendSyncAll();
       _startConnectivityCheck();
     });
   }
@@ -72,11 +73,9 @@ class _MyAppState extends State<MyApp> {
       var connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult[0] == ConnectivityResult.mobile ||
           connectivityResult[0] == ConnectivityResult.wifi) {
-        getIt.get<MapsCubit>().sendSyncAll();
         setState(() {
-          connectivityStatus = false;
+          connectivityStatus = true;
         });
-        connectivityStatus = true;
       } else {
         setState(() {
           connectivityStatus = false;
