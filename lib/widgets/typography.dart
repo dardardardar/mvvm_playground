@@ -4,11 +4,14 @@ import 'package:mvvm_playground/const/enums.dart';
 import 'package:mvvm_playground/const/theme.dart';
 
 ///  Custom Text widget with overflow implementation. jd gaakan overlow lagi.
-Widget displayText(String text, {Styles? style, TextOverflow? overflow}) {
+Widget displayText(String text,
+    {Styles? style, TextOverflow? overflow, TextStyle? styleOverride}) {
   return Text(
     text,
     overflow: overflow ?? TextOverflow.ellipsis,
-    style: _styles(style ?? Styles.Body),
+    style: styleOverride != null
+        ? _styles(style ?? Styles.Body).merge(styleOverride)
+        : _styles(style ?? Styles.Body),
   );
 }
 
