@@ -61,12 +61,6 @@ class _HomeViewPageState extends State<FlutterMapPage> {
     }
   }
 
-  double metersToPixels(double meters, double latitude, double zoom) {
-    final metersPerPixel =
-        (156543.03392 * math.cos(latitude * math.pi / 180) / math.pow(2, zoom));
-    return meters / metersPerPixel;
-  }
-
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -97,9 +91,9 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                 if (snapshot.hasData) {
                   var userLocation = Provider.of<GeoLocation>(context);
                   userLocation.radiuscentermeters = 4;
-                  for (var i = 0; i < trees.length; i++) {
-                    userLocation.setPointCenter(trees[i]);
-                  }
+                  trees.forEach((tree) {
+                    userLocation.setPointCenter(tree);
+                  });
                   var userLocationCurrent = snapshot.data!;
 
                   return SafeArea(
