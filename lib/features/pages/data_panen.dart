@@ -235,7 +235,7 @@ class _HomeViewPageState extends State<HasilPanenPage> {
                                           child: Row(
                                             children: [
                                               displayText(
-                                                'Total Penapatan Hari ini (kg)',
+                                                'Total Pendapatan Hari ini (kg)',
                                               ),
                                               Spacer(),
                                               displayText(
