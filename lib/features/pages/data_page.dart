@@ -6,7 +6,6 @@ import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit_data.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
-import 'package:mvvm_playground/main.dart';
 import 'package:mvvm_playground/widgets/navigation_bar.dart';
 import 'package:provider/provider.dart';
 

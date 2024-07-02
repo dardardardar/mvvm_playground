@@ -330,6 +330,32 @@ class CRUDRepository {
     }
   }
 
+  Future<List<Harvest>> getHarvestResult() async {
+    final prefs = await SharedPreferences.getInstance();
+    final id_user = prefs.getString("id_user").toString();
+    try {
+      final result = await Api.get('wp-json/sinar/v1/bum/results-dategroup',
+          data: {"id_user": id_user});
+      final responseHarvestData = result.data;
+      final status = responseHarvestData['status'];
+      if (status == 'ok') {
+        final data = responseHarvestData['data'] as List<dynamic>;
+        final harvestList = data.map((e) => Harvest.fromJson(e));
+        return harvestList.toList();
+      } else {
+        return [];
+      }
+    } on Exception catch (e, s) {
+      final response = await DatabaseService.instance.getHarvestResult(id_user);
+      if (response.isNotEmpty) {
+        final harvestList = response.map((e) => Harvest.fromJson(e));
+        return harvestList.toList();
+      } else {
+        return [];
+      }
+    }
+  }
+
   Future<List<Tree>> getHistory() async {
     final prefs = await SharedPreferences.getInstance();
     final id_user = prefs.getString("id_user").toString();
@@ -517,18 +543,20 @@ class CRUDRepository {
     try {
       final prefs = await SharedPreferences.getInstance();
       final id_user = prefs.getString("id_user").toString();
+
       final getDataRoutes = await DatabaseService.instance
           .queryAllRowsDobule('routes', 'tipe', 'id_user', '1', id_user);
       if (getDataRoutes.length > 0) {
         var arrRoutes = [];
         for (var i = 0; getDataRoutes.length > i; i++) {
+          await DatabaseService.instance
+              .update({'tipe': '2'}, 'routes', 'id', getDataRoutes[i]['id']);
           arrRoutes.add({
             "lat": getDataRoutes[i]['lat'],
             "long": getDataRoutes[i]['long']
           });
         }
-        await DatabaseService.instance
-            .update({'tipe': '2'}, 'routes', 'id_user', int.parse(id_user));
+
         var sendArrayRoute = {
           "id_user": id_user,
           "data": arrRoutes,
@@ -541,6 +569,9 @@ class CRUDRepository {
       if (getDataHarvest.length > 0) {
         var arrHarvest = [];
         for (var i = 0; getDataHarvest.length > i; i++) {
+          await DatabaseService.instance
+              .update({'tipe': '2'}, 'harvest', 'id', getDataHarvest[i]['id']);
+
           arrHarvest.add({
             "qty": getDataHarvest[i]['qty'],
             "id_tree": getDataHarvest[i]['id_tree'],
@@ -549,9 +580,6 @@ class CRUDRepository {
             "date": getDataHarvest[i]['date']
           });
         }
-        await DatabaseService.instance
-            .update({'tipe': '2'}, 'harvest', 'id_user', int.parse(id_user));
-
         var sendArrayHarvest = {
           "id_user": id_user,
           "data": arrHarvest,
