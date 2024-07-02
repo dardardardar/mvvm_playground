@@ -68,7 +68,14 @@ class _HomeViewPageState extends State<HasilPanenPage> {
                     (state.listHarvest as SuccessState<List<Harvest>>).data;
                 final histories =
                     (state.listHistory as SuccessState<List<Tree>>).data;
-
+                if (histories.isEmpty) {
+                  return SizedBox(
+                    height: double.infinity,
+                    child: Center(
+                      child: displayText('Hasil Panen Kosong'),
+                    ),
+                  );
+                }
                 return SingleChildScrollView(
                   child: Column(
                     children: [
