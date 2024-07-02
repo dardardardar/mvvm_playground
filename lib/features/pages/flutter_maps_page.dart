@@ -38,6 +38,8 @@ class FlutterMapPage extends StatefulWidget {
 }
 
 class _HomeViewPageState extends State<FlutterMapPage> {
+  bool _isCheckedCheckbox = false;
+
   bool showhistory = false;
   late MapController mapController = MapController();
   late Stream<latLng.LatLng> locationStream;
@@ -128,7 +130,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                 ),
                               ),
                               Visibility(
-                                visible: (widget.isHistory),
+                                visible: _isCheckedCheckbox,
                                 // visible: false,
                                 child: PolylineLayer(
                                   polylines: histories.isEmpty
@@ -169,7 +171,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                 ],
                               ),
                               Visibility(
-                                visible: widget.isHistory,
+                                visible: _isCheckedCheckbox,
                                 child: MarkerLayer(markers: [
                                   for (var i = 0; i < histories.length; i++)
                                     InputMarkers(context,
@@ -193,7 +195,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Visibility(
-                                    visible: !widget.isHistory,
+                                    visible: true,
                                     child: Flexible(
                                       flex: 4,
                                       child: Column(
@@ -203,6 +205,24 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
+                                          Row(
+                                            children: [
+                                              Checkbox(
+                                                value: _isCheckedCheckbox,
+                                                onChanged: (bool? value) {
+                                                  setState(() {
+                                                    _isCheckedCheckbox = value!;
+                                                  });
+                                                },
+                                                activeColor: Colors.green,
+                                                checkColor: Colors.white,
+                                                hoverColor: Colors.green,
+                                                focusColor: Colors.green,
+                                              ),
+                                              displayText('Show History',
+                                                  style: Styles.Captions),
+                                            ],
+                                          ),
                                           Row(
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
@@ -266,7 +286,8 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Visibility(
-                                          visible: !widget.isHistory,
+                                          visible:
+                                              (_isCheckedCheckbox == false),
                                           child: boxButton(
                                               context: context,
                                               onTap: () {
@@ -303,7 +324,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                               icon: Icons.add_circle_outline),
                                         ),
                                         Visibility(
-                                          visible: widget.isHistory,
+                                          visible: _isCheckedCheckbox,
                                           child: boxButton(
                                               context: context,
                                               onTap: () {
@@ -344,7 +365,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                 } else if (snapshot.hasError) {
                   return errorAlert(text: snapshot.error.toString());
                 } else {
-                  if (!widget.isHistory) {
+                  if (_isCheckedCheckbox == false) {
                     Future.delayed(Duration(seconds: 1), () {
                       showModalSchedule(context,
                           tree: trees.isEmpty ? [] : trees.reversed.toList());

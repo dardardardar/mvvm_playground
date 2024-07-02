@@ -149,30 +149,6 @@ class _MainMenuPageState extends State<MainMenuPage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const FlutterMapPage(
-                                      isHistory: true,
-                                      title: 'History',
-                                    ),
-                                  ),
-                                );
-                              },
-                              title: 'History',
-                              backgroundColor: primaryColor,
-                              icon: Icons.timer_outlined,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        Visibility(
-                          visible: (buttontext != 'Loading..'),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: flatButton(
-                              context: context,
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
                                     builder: (context) => const HasilPanenPage(
                                       title: 'Hasil Panen',
                                     ),
