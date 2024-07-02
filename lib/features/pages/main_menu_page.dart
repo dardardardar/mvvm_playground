@@ -29,13 +29,8 @@ class _MainMenuPageState extends State<MainMenuPage> {
   @override
   void initState() {
     super.initState();
-    initSync();
-    checkNav = true;
-  }
-
-  void initSync() {
-    Future.delayed(Duration(seconds: 2));
     context.read<MapsCubit>().installation('online');
+    checkNav = true;
   }
 
   String buttontext = 'Sync';
@@ -121,45 +116,75 @@ class _MainMenuPageState extends State<MainMenuPage> {
                           ),
                         ),
                         const SizedBox(height: 100),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: flatButton(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const FlutterMapPage(
-                                    isHistory: false,
-                                    title: 'Harvest',
+                        Visibility(
+                          visible: (buttontext != 'Loading..'),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: flatButton(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const FlutterMapPage(
+                                      isHistory: false,
+                                      title: 'Harvest',
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                            context: context,
-                            title: 'Harvest',
-                            backgroundColor: primaryColor,
-                            icon: Icons.shopping_cart_rounded,
-                            color: Colors.white,
+                                );
+                              },
+                              context: context,
+                              title: 'Harvest',
+                              backgroundColor: primaryColor,
+                              icon: Icons.shopping_cart_rounded,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: flatButton(
-                            context: context,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const HasilPanenPage(
-                                    title: 'Hasil Panen',
+                        Visibility(
+                          visible: (buttontext != 'Loading..'),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: flatButton(
+                              context: context,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const FlutterMapPage(
+                                      isHistory: true,
+                                      title: 'History',
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                            title: 'Hasil Panen',
-                            backgroundColor: primaryColor,
-                            icon: Icons.timer_outlined,
-                            color: Colors.white,
+                                );
+                              },
+                              title: 'History',
+                              backgroundColor: primaryColor,
+                              icon: Icons.timer_outlined,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        Visibility(
+                          visible: (buttontext != 'Loading..'),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: flatButton(
+                              context: context,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const HasilPanenPage(
+                                      title: 'Hasil Panen',
+                                    ),
+                                  ),
+                                );
+                              },
+                              title: 'Hasil Panen',
+                              backgroundColor: primaryColor,
+                              icon: Icons.timer_outlined,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                         Visibility(
@@ -180,26 +205,29 @@ class _MainMenuPageState extends State<MainMenuPage> {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: flatButton(
-                            context: context,
-                            onTap: () {
-                              context.read<AuthCubit>().logout();
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const LoginPage(),
-                                ),
-                              );
-                              showSnackbar(context,
-                                  message: 'Berhasil Logout',
-                                  status: Status.Success);
-                            },
-                            title: 'Logout',
-                            backgroundColor: primaryColor,
-                            icon: Icons.timer_outlined,
-                            color: Colors.white,
+                        Visibility(
+                          visible: (buttontext != 'Loading..'),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: flatButton(
+                              context: context,
+                              onTap: () {
+                                context.read<AuthCubit>().logout();
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const LoginPage(),
+                                  ),
+                                );
+                                showSnackbar(context,
+                                    message: 'Berhasil Logout',
+                                    status: Status.Success);
+                              },
+                              title: 'Logout',
+                              backgroundColor: primaryColor,
+                              icon: Icons.timer_outlined,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 100),
