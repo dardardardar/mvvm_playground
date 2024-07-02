@@ -14,7 +14,10 @@ class MapsCubit extends Cubit<MapsData> {
 
   Future<void> sendSyncAll() async {
     try {
-      await _crudRepository.sendSyncAll();
+      final checkState = state.sendSync;
+      if (checkState is InitialState) {
+        await _crudRepository.sendSyncAll();
+      }
     } on Exception catch (e) {
       emit(state.copyWith(
           sendSync: GeneralErrorState(e: e, error: e.toString())));
