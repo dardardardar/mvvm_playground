@@ -207,17 +207,30 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                         children: [
                                           Row(
                                             children: [
-                                              Checkbox(
-                                                value: _isCheckedCheckbox,
-                                                onChanged: (bool? value) {
-                                                  setState(() {
-                                                    _isCheckedCheckbox = value!;
-                                                  });
-                                                },
-                                                activeColor: Colors.green,
-                                                checkColor: Colors.green,
-                                                hoverColor: Colors.green,
-                                                focusColor: Colors.green,
+                                              Theme(
+                                                data:
+                                                    Theme.of(context).copyWith(
+                                                  checkboxTheme:
+                                                      CheckboxThemeData(
+                                                    side: BorderSide(
+                                                        color: Colors.green,
+                                                        width:
+                                                            2), // Set your border color here
+                                                  ),
+                                                ),
+                                                child: Checkbox(
+                                                  value: _isCheckedCheckbox,
+                                                  onChanged: (bool? value) {
+                                                    setState(() {
+                                                      _isCheckedCheckbox =
+                                                          value!;
+                                                    });
+                                                  },
+                                                  activeColor: Colors.green,
+                                                  checkColor: Colors.white,
+                                                  hoverColor: Colors.green,
+                                                  focusColor: Colors.green,
+                                                ),
                                               ),
                                               displayText('Show History',
                                                   style: Styles.Captions),
