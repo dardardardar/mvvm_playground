@@ -15,7 +15,6 @@ import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit_data.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
 import 'package:mvvm_playground/functions/geolocation.dart';
-import 'package:mvvm_playground/main.dart';
 import 'package:mvvm_playground/widgets/bottom_bar.dart';
 import 'package:mvvm_playground/widgets/buttons.dart';
 import 'package:mvvm_playground/widgets/map_components.dart';
