@@ -117,6 +117,17 @@ class DatabaseService {
     return await db.query(table, where: "$filter = ?", whereArgs: [id]);
   }
 
+  Future<List<Map<String, dynamic>>> getHarvestResult(id_user) async {
+    Database db = await database;
+    return await db.rawQuery('''
+  SELECT *,
+         strftime('%Y-%m-%d', date_column) as date
+  FROM harvest
+  WHERE id_user = ?
+  GROUP BY date
+  ''', [id_user]);
+  }
+
   Future<List<Map<String, dynamic>>> queryAllRowsDobule(String table,
       String filter1, String filter2, String where1, String where2) async {
     Database db = await database;

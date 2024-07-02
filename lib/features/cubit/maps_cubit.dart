@@ -66,6 +66,27 @@ class MapsCubit extends Cubit<MapsData> {
     }
   }
 
+  Future<void> initHarvest() async {
+    try {
+      emit(state.copyWith(
+        listHarvest: LoadingState<List<Harvest>>(),
+        listHistory: LoadingState<List<Tree>>(),
+      ));
+      final harvest = await _crudRepository.getHarvestResult();
+      final history = await _crudRepository.getHistory();
+
+      emit(state.copyWith(
+        listHarvest: SuccessState<List<Harvest>>(data: harvest),
+        listHistory: SuccessState<List<Tree>>(data: history),
+      ));
+    } on Exception catch (e) {
+      emit(state.copyWith(
+        listHarvest: GeneralErrorState(e: e, error: e.toString()),
+        listHistory: GeneralErrorState(e: e, error: e.toString()),
+      ));
+    }
+  }
+
   Future<void> initMarker() async {
     try {
       emit(state.copyWith(

@@ -49,6 +49,20 @@ class Tree {
   }
 }
 
+class Harvest {
+  final String date;
+
+  Harvest({
+    required this.date,
+  });
+
+  factory Harvest.fromJson(data) {
+    return Harvest(
+      date: data['date'].toString(),
+    );
+  }
+}
+
 class User {
   final String id_user;
   final String name;
@@ -80,5 +94,3 @@ class Routes {
             LatLng(double.parse(data['lat']), double.parse(data['long'])));
   }
 }
-
-
