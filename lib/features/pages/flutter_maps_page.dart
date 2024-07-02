@@ -216,6 +216,8 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                 },
                                                 activeColor: Colors.green,
                                                 checkColor: Colors.white,
+                                                hoverColor: Colors.green,
+                                                focusColor: Colors.green,
                                               ),
                                               displayText('Show History',
                                                   style: Styles.Captions),
