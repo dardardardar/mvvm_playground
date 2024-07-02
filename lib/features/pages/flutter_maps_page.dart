@@ -215,7 +215,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                   });
                                                 },
                                                 activeColor: Colors.green,
-                                                checkColor: Colors.white,
+                                                checkColor: Colors.green,
                                                 hoverColor: Colors.green,
                                                 focusColor: Colors.green,
                                               ),
