@@ -224,10 +224,7 @@ class _HomeViewPageState extends State<HasilPanenPage> {
                                               ),
                                               Spacer(),
                                               displayText(
-                                                ((int.parse(rnc_penghasilan) /
-                                                        int.parse(
-                                                            rnc_panen_kg)))
-                                                    .toStringAsFixed(2),
+                                                '${((int.parse(rnc_penghasilan) / int.parse(rnc_panen_kg))).toStringAsFixed(2)} kg',
                                               ),
                                             ],
                                           ),
@@ -242,12 +239,7 @@ class _HomeViewPageState extends State<HasilPanenPage> {
                                               ),
                                               Spacer(),
                                               displayText(
-                                                (sumQty /
-                                                        (int.parse(
-                                                                rnc_panen_kg) /
-                                                            int.parse(
-                                                                rnc_panen_janjang)))
-                                                    .toString(),
+                                                '${sumQty / (int.parse(rnc_panen_kg) / int.parse(rnc_panen_janjang))} kg',
                                               ),
                                             ],
                                           ),
@@ -258,19 +250,22 @@ class _HomeViewPageState extends State<HasilPanenPage> {
                                           child: Row(
                                             children: [
                                               displayText(
-                                                'Pendapatan Pemanen Hari ini (Rp)',
+                                                'Pendapatan Pemanen Hari ini :',
                                               ),
                                               Spacer(),
                                               displayText(
-                                                (((int.parse(rnc_penghasilan) /
+                                                NumberFormat.currency(
+                                                  locale: 'id',
+                                                  symbol: 'Rp ',
+                                                ).format(((((int.parse(
+                                                            rnc_penghasilan) /
+                                                        int.parse(
+                                                            rnc_panen_kg))) *
+                                                    (sumQty /
+                                                        (int.parse(
+                                                                rnc_panen_kg) /
                                                             int.parse(
-                                                                rnc_panen_kg))) *
-                                                        (sumQty /
-                                                            (int.parse(
-                                                                    rnc_panen_kg) /
-                                                                int.parse(
-                                                                    rnc_panen_janjang))))
-                                                    .toStringAsFixed(2),
+                                                                rnc_panen_janjang)))))),
                                               ),
                                             ],
                                           ),
@@ -291,7 +286,7 @@ class _HomeViewPageState extends State<HasilPanenPage> {
                 );
               }
 
-              return circularLoading(text: 'Loading Stream...');
+              return circularLoading(text: 'Fetching Data...');
             },
           ),
         );
