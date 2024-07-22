@@ -53,6 +53,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
   late MapController mapController = MapController();
   late Stream<latLng.LatLng> locationStream;
   bool isDebug = false;
+  double speedMaps = 0.0;
   bool loadingData = false;
   String? mbtilesFilePath;
   List<latLng.LatLng> polylinePoints = [];
@@ -109,8 +110,43 @@ class _HomeViewPageState extends State<FlutterMapPage> {
     }
   }
 
+  Future<void> getSpeed() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      setState(() {
+        speedMaps = 0.0;
+      });
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission != LocationPermission.whileInUse &&
+          permission != LocationPermission.always) {
+        setState(() {
+          speedMaps = 0.0;
+        });
+      }
+    }
+
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+
+    double speed = position.speed;
+    setState(() {
+      speedMaps = speed;
+    });
+  }
+
   Future<void> processPathData() async {
-    final startLatLng = latLng.LatLng(-6.237219322313317, 106.75905813088389);
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.bestForNavigation);
+
+    final startLatLng = latLng.LatLng(position.latitude, position.longitude);
     final endLatLng = latLng.LatLng(-6.225127062360678, 106.85693674283463);
     final path = await dijkstra(geoJson, graph, startLatLng, endLatLng);
 
@@ -122,9 +158,10 @@ class _HomeViewPageState extends State<FlutterMapPage> {
       polylinePoints.add(latLng.LatLng(path[i].latitude, path[i].longitude));
     }
 
+    await getSpeed();
     print('Jarak: $countDistance Meter');
-    print('Kecepatan: 10 m/s');
-    print('Waktu: ${countDistance / 10} Detik');
+    print('$speedMaps m/s');
+    print('Waktu: ${countDistance / speedMaps} Detik');
 
     setState(() {
       generatedPolylines.add(Polyline(
@@ -221,6 +258,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                     polylineCulling: true,
                                   ),
                                 ),
+                                PolylineLayer(polylines: generatedPolylines),
                                 Visibility(
                                   visible: (widget.isHistory),
                                   child: PolylineLayer(
@@ -357,7 +395,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                     child: Center(),
                                   ),
                                   Flexible(
-                                    flex: 3,
+                                    flex: 4,
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
@@ -426,6 +464,16 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                             },
                                             title: 'RKH',
                                             icon: Icons.calendar_month),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        boxButton(
+                                            context: context,
+                                            onTap: () {
+                                              processPathData();
+                                            },
+                                            title: 'Djikstra',
+                                            icon: Icons.route),
                                       ],
                                     ),
                                   ),
