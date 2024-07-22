@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -11,7 +12,6 @@ import 'package:mvvm_playground/features/cubit/auth_cubit_data.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit_data.dart';
 import 'package:mvvm_playground/features/pages/data_panen.dart';
-import 'package:mvvm_playground/features/pages/example_maps_page.dart';
 import 'package:mvvm_playground/features/pages/flutter_maps_page.dart';
 import 'package:mvvm_playground/features/pages/login_page.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
@@ -20,7 +20,6 @@ import 'package:mvvm_playground/widgets/snackbar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:path/path.dart' as path;
 
 bool checkNav = true;
 
@@ -61,36 +60,31 @@ class _MainMenuPageState extends State<MainMenuPage> {
   }
 
   Future<File> _updateFile(String url, String fileName) async {
+    url = 'https://be-bum.tvindo.net/assets/tiles/map1.mbtiles';
     final request = http.Request('GET', Uri.parse(url));
     final response = await request.send();
-    final contentLength = response.contentLength;
     final directory = await getApplicationDocumentsDirectory();
     final filePath = '${directory.path}/$fileName';
     final file = File(filePath);
+    final totalData = request.contentLength!.toDouble();
 
-    response.stream.listen((newBytes) {
-      bytes.addAll(newBytes);
-      downloaded += newBytes.length;
-      setState(() {
-        _progress = downloaded.toString();
-      });
-    }, onDone: () async {
-      await file.writeAsBytes(bytes);
-      setState(() {
-        _isLoading = false;
-        _progress = 'Download Maps';
-      });
+    Dio dio = Dio();
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Download complete!')),
-      );
-    }, onError: (error) {
-      setState(() {
-        _isLoading = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to download file')),
-      );
+    // Download the file.
+    await dio.download(url, filePath, onReceiveProgress: (received, total) {
+      if (total != -1) {
+        setState(() {
+          _progress = (received / total * 100).toInt().toString();
+        });
+      } else {
+        setState(() {
+          _isLoading = false;
+          _progress = 'Download Maps';
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Download complete!')),
+        );
+      }
     });
 
     return file;
