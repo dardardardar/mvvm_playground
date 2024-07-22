@@ -33,16 +33,14 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.6
-  flutter_map: ^6.1.0
-  flutter_map_cancellable_tile_provider: ^2.0.0
-  google_maps_flutter: ^2.5.3 
+  flutter_map: ^6.2.1
+  flutter_map_mbtiles: ^1.0.3
   flutter_bloc: ^8.1.5
-  geolocator: ^11.0.0
+  geolocator: ^12.0.0
   injectable: ^2.3.2
   permission_handler: ^11.3.1
   provider: ^6.1.2
-  location: ^6.0.2
+  location: ^7.0.0
   dio: ^5.4.3+1
   flutter_map_arcgis: ^2.0.6
   flutter_svg: ^2.0.10+1
@@ -54,7 +52,9 @@ dependencies:
   sqflite: ^2.3.2
   path: ^1.9.0
   connectivity: ^3.0.6
-  mbtiles: ^0.4.1
+  http: ^1.2.2
+  path_provider: ^2.1.3
+  flutter_map_geojson: ^1.0.8
 
 dev_dependencies:
   flutter_test:
@@ -65,7 +65,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^3.0.0
+  flutter_lints: ^4.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -83,7 +83,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
 
   assets:
-    - assets/json/
+    - assets/jaksel.geojson
     - assets/icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see

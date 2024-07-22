@@ -1,18 +1,21 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 import 'dart:math' as math;
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
+import 'package:flutter_map_mbtiles/flutter_map_mbtiles.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart' as latLng;
 import 'package:mvvm_playground/const/enums.dart';
 import 'package:mvvm_playground/const/theme.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit_data.dart';
+import 'package:mvvm_playground/features/response/djikstra.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
 import 'package:mvvm_playground/functions/geolocation.dart';
 import 'package:mvvm_playground/widgets/bottom_bar.dart';
@@ -22,8 +25,16 @@ import 'package:mvvm_playground/widgets/modal_sheets.dart';
 import 'package:mvvm_playground/widgets/navigation_bar.dart';
 import 'package:mvvm_playground/widgets/states.dart';
 import 'package:mvvm_playground/widgets/typography.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter_map_geojson/flutter_map_geojson.dart';
+import 'package:path/path.dart' as path;
 import '../models/tree_model.dart';
+
+late Map<String, dynamic> geoJson;
+late Graph graph;
 
 class FlutterMapPage extends StatefulWidget {
   final bool isHistory;
@@ -42,12 +53,51 @@ class _HomeViewPageState extends State<FlutterMapPage> {
   late MapController mapController = MapController();
   late Stream<latLng.LatLng> locationStream;
   bool isDebug = false;
+  bool loadingData = false;
+  String? mbtilesFilePath;
+  List<latLng.LatLng> polylinePoints = [];
+  final List<Polyline> generatedPolylines = [];
+  final GeoJsonParser geoJsonParser = GeoJsonParser(
+    defaultMarkerColor: Colors.red,
+    defaultPolylineColor: Colors.red,
+    defaultPolygonBorderColor: Colors.red,
+    defaultPolygonFillColor: Colors.red.withOpacity(0.1),
+    defaultCircleMarkerColor: Colors.red.withOpacity(0.25),
+  );
 
   @override
   void initState() {
     super.initState();
     locationStream = getLocationStream();
+    _loadMbtilesFile();
+    getGeoJson();
     context.read<MapsCubit>().initMarker();
+  }
+
+  Future<void> getGeoJson() async {
+    String geoJsonString = await rootBundle.loadString('assets/jaksel.geojson');
+    geoJsonParser.parseGeoJsonAsString(geoJsonString);
+    setState(() {
+      geoJson = json.decode(geoJsonString);
+      graph = buildGraphFromGeoJson(geoJson);
+    });
+  }
+
+  Future<void> _loadMbtilesFile() async {
+    final documentsDir = await getApplicationDocumentsDirectory();
+    final mbtilesFile = File(path.join(documentsDir.path, 'map.mbtiles'));
+
+    if (await mbtilesFile.exists()) {
+      setState(() {
+        mbtilesFilePath = mbtilesFile.path;
+        loadingData = false;
+      });
+    } else {
+      setState(() {
+        mbtilesFilePath = null;
+        loadingData = false;
+      });
+    }
   }
 
   Stream<latLng.LatLng> getLocationStream() async* {
@@ -57,6 +107,32 @@ class _HomeViewPageState extends State<FlutterMapPage> {
           desiredAccuracy: LocationAccuracy.bestForNavigation);
       yield latLng.LatLng(position.latitude, position.longitude);
     }
+  }
+
+  Future<void> processPathData() async {
+    final startLatLng = latLng.LatLng(-6.237219322313317, 106.75905813088389);
+    final endLatLng = latLng.LatLng(-6.225127062360678, 106.85693674283463);
+    final path = await dijkstra(geoJson, graph, startLatLng, endLatLng);
+
+    double countDistance = 0;
+    for (var i = 1; i < path.length; i++) {
+      countDistance += kmDistance(
+          latLng.LatLng(path[i].latitude, path[i].longitude),
+          latLng.LatLng(path[i - 1].latitude, path[i - 1].longitude));
+      polylinePoints.add(latLng.LatLng(path[i].latitude, path[i].longitude));
+    }
+
+    print('Jarak: $countDistance Meter');
+    print('Kecepatan: 10 m/s');
+    print('Waktu: ${countDistance / 10} Detik');
+
+    setState(() {
+      generatedPolylines.add(Polyline(
+        points: polylinePoints,
+        color: Colors.green,
+        strokeWidth: 10.0,
+      ));
+    });
   }
 
   double metersToPixels(double meters, double latitude, double zoom) {
@@ -105,79 +181,99 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                       children: [
                         Expanded(
                           flex: 5,
-                          child: FlutterMap(
-                            mapController: mapController,
-                            options: MapOptions(
-                                onTap: (p, l) {
-                                  print('${l.latitude}, ${l.longitude}');
-                                },
-                                initialZoom: 20,
-                                initialCenter: latLng.LatLng(
-                                    userLocationCurrent.latitude,
-                                    userLocationCurrent.longitude)),
-                            children: [
-                              mapTiles(context),
-                              Visibility(
-                                // visible: (widget.isHistory == false),
-                                visible: false,
-                                child: PolylineLayer(
-                                  polylines: routes.isEmpty
-                                      ? []
-                                      : mapPolyline(routes: routes),
-                                  polylineCulling: true,
-                                ),
+                          child: Visibility(
+                            visible: mbtilesFilePath != null,
+                            child: FlutterMap(
+                              mapController: mapController,
+                              // options: MapOptions(
+                              //     onTap: (p, l) {
+                              //       print('${l.latitude}, ${l.longitude}');
+                              //     },
+                              //     initialZoom: 20,
+                              //     initialCenter: latLng.LatLng(
+                              //         userLocationCurrent.latitude,
+                              //         userLocationCurrent.longitude)),
+                              options: MapOptions(
+                                initialCenter:
+                                    latLng.LatLng(-6.2278322, 106.8333253),
+                                initialZoom: 16,
                               ),
-                              Visibility(
-                                visible: (widget.isHistory),
-                                // visible: false,
-                                child: PolylineLayer(
-                                  polylines: histories.isEmpty
-                                      ? []
-                                      : mapPolylineHistories(routes: histories),
-                                  polylineCulling: true,
-                                ),
-                              ),
-                              MarkerClusterLayerWidget(
-                                options: MarkerClusterLayerOptions(
-                                  maxClusterRadius: 100,
-                                  size: const Size(40, 40),
-                                  markers: [
-                                    for (var i = 0; i < trees.length; i++)
-                                      treeMarker(context, tree: trees[i])
-                                  ],
-                                  builder: (context, markers) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        color: primaryColor,
-                                      ),
+                              children: [
+                                TileLayer(
+                                  tileProvider: MbTilesTileProvider.fromPath(
+                                      path: mbtilesFilePath!),
+                                  errorTileCallback:
+                                      (context, exception, stackTrace) {
+                                    Container(
+                                      color: Colors.red,
                                       child: Center(
-                                        child: displayText(
-                                            markers.length.toString(),
-                                            style: Styles.BodyAlt),
+                                        child: Text('Error loading map'),
                                       ),
                                     );
                                   },
                                 ),
-                              ),
-                              MarkerLayer(
-                                markers: [
-                                  userMarker(
-                                      position: latLng.LatLng(
-                                          userLocationCurrent.latitude,
-                                          userLocationCurrent.longitude)),
-                                ],
-                              ),
-                              Visibility(
-                                visible: widget.isHistory,
-                                child: MarkerLayer(markers: [
-                                  for (var i = 0; i < histories.length; i++)
-                                    InputMarkers(context,
-                                        tree: histories[i],
-                                        no: (i + 1).toString()),
-                                ]),
-                              )
-                            ],
+                                Visibility(
+                                  visible: false,
+                                  child: PolylineLayer(
+                                    polylines: routes.isEmpty
+                                        ? []
+                                        : mapPolyline(routes: routes),
+                                    polylineCulling: true,
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: (widget.isHistory),
+                                  child: PolylineLayer(
+                                    polylines: histories.isEmpty
+                                        ? []
+                                        : mapPolylineHistories(
+                                            routes: histories),
+                                    polylineCulling: true,
+                                  ),
+                                ),
+                                MarkerClusterLayerWidget(
+                                  options: MarkerClusterLayerOptions(
+                                    maxClusterRadius: 100,
+                                    size: const Size(40, 40),
+                                    markers: [
+                                      for (var i = 0; i < trees.length; i++)
+                                        treeMarker(context, tree: trees[i])
+                                    ],
+                                    builder: (context, markers) {
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          color: primaryColor,
+                                        ),
+                                        child: Center(
+                                          child: displayText(
+                                              markers.length.toString(),
+                                              style: Styles.BodyAlt),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                                MarkerLayer(
+                                  markers: [
+                                    userMarker(
+                                        position: latLng.LatLng(
+                                            userLocationCurrent.latitude,
+                                            userLocationCurrent.longitude)),
+                                  ],
+                                ),
+                                Visibility(
+                                  visible: widget.isHistory,
+                                  child: MarkerLayer(markers: [
+                                    for (var i = 0; i < histories.length; i++)
+                                      InputMarkers(context,
+                                          tree: histories[i],
+                                          no: (i + 1).toString()),
+                                  ]),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                         Column(

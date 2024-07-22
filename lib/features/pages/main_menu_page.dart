@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -9,12 +11,16 @@ import 'package:mvvm_playground/features/cubit/auth_cubit_data.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit_data.dart';
 import 'package:mvvm_playground/features/pages/data_panen.dart';
+import 'package:mvvm_playground/features/pages/example_maps_page.dart';
 import 'package:mvvm_playground/features/pages/flutter_maps_page.dart';
 import 'package:mvvm_playground/features/pages/login_page.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
 import 'package:mvvm_playground/widgets/buttons.dart';
 import 'package:mvvm_playground/widgets/snackbar.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'package:path/path.dart' as path;
 
 bool checkNav = true;
 
@@ -26,11 +32,68 @@ class MainMenuPage extends StatefulWidget {
 }
 
 class _MainMenuPageState extends State<MainMenuPage> {
+  bool _isLoading = false;
+  String _progress = 'Download Maps';
+  List<int> bytes = [];
+  int downloaded = 0;
+
   @override
   void initState() {
     super.initState();
     context.read<MapsCubit>().installation('online');
     checkNav = true;
+  }
+
+  // download maps
+  Future<void> downloadFile() async {
+    setState(() {
+      _isLoading = true;
+      _progress = '0.0';
+    });
+
+    try {
+      await _updateFile(
+          'http://be-bum.tvindo.net/api/v1/gis/road/download-tiles',
+          'map.mbtiles');
+    } catch (e) {
+      print('Error downloading file: $e');
+    }
+  }
+
+  Future<File> _updateFile(String url, String fileName) async {
+    final request = http.Request('GET', Uri.parse(url));
+    final response = await request.send();
+    final contentLength = response.contentLength;
+    final directory = await getApplicationDocumentsDirectory();
+    final filePath = '${directory.path}/$fileName';
+    final file = File(filePath);
+
+    response.stream.listen((newBytes) {
+      bytes.addAll(newBytes);
+      downloaded += newBytes.length;
+      setState(() {
+        _progress = downloaded.toString();
+      });
+    }, onDone: () async {
+      await file.writeAsBytes(bytes);
+      setState(() {
+        _isLoading = false;
+        _progress = 'Download Maps';
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Download complete!')),
+      );
+    }, onError: (error) {
+      setState(() {
+        _isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to download file')),
+      );
+    });
+
+    return file;
   }
 
   String buttontext = 'Sync';
@@ -41,12 +104,6 @@ class _MainMenuPageState extends State<MainMenuPage> {
         listener: (context, state) {
           if (state.checkAuth is InitialState) {
             if (checkNav == true) {
-              // Navigator.pushReplacement(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => const LoginPage(),
-              //   ),
-              // );
               setState(() {
                 checkNav = false;
               });
@@ -145,7 +202,6 @@ class _MainMenuPageState extends State<MainMenuPage> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: flatButton(
-                              context: context,
                               onTap: () {
                                 Navigator.push(
                                   context,
@@ -157,9 +213,10 @@ class _MainMenuPageState extends State<MainMenuPage> {
                                   ),
                                 );
                               },
+                              context: context,
                               title: 'History',
                               backgroundColor: primaryColor,
-                              icon: Icons.timer_outlined,
+                              icon: Icons.shopping_cart_rounded,
                               color: Colors.white,
                             ),
                           ),
@@ -181,6 +238,22 @@ class _MainMenuPageState extends State<MainMenuPage> {
                                 );
                               },
                               title: 'Hasil Panen',
+                              backgroundColor: primaryColor,
+                              icon: Icons.timer_outlined,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        Visibility(
+                          visible: true,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: flatButton(
+                              context: context,
+                              onTap: () {
+                                downloadFile();
+                              },
+                              title: _progress.toString(),
                               backgroundColor: primaryColor,
                               icon: Icons.timer_outlined,
                               color: Colors.white,
