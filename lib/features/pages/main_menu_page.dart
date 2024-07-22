@@ -66,7 +66,6 @@ class _MainMenuPageState extends State<MainMenuPage> {
     final directory = await getApplicationDocumentsDirectory();
     final filePath = '${directory.path}/$fileName';
     final file = File(filePath);
-    final totalData = request.contentLength!.toDouble();
 
     Dio dio = Dio();
 
