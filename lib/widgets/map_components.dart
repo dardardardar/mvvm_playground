@@ -51,27 +51,30 @@ List<Polyline> mapPolylineHistories({required List<dynamic> routes}) {
   ];
 }
 
-Marker userMarker({required LatLng position}) {
-  return Marker(
-      point: position,
-      child: Container(
-        decoration: const ShapeDecoration(
-            shape: CircleBorder(),
-            shadows: [
-              BoxShadow(
-                color: Colors.black12,
-                spreadRadius: 3,
-                blurRadius: 7,
-                offset: Offset(0, 3), // changes position of shadow
-              ),
-            ],
-            color: Colors.white),
-        child: const Icon(
-          Icons.circle,
-          color: Colors.blue,
-        ),
-      ));
-}
+// Marker userMarker({required LatLng position, required double direction}) {
+//   return Marker(
+//       point: position,
+//       child: Container(
+//         decoration: const ShapeDecoration(
+//             shape: CircleBorder(),
+//             shadows: [
+//               BoxShadow(
+//                 color: Colors.black12,
+//                 spreadRadius: 3,
+//                 blurRadius: 7,
+//                 offset: Offset(0, 3), // changes position of shadow
+//               ),
+//             ],
+//             color: Colors.white),
+//         child: Transform.rotate(
+//           angle: _currentDirection * (3.141592653589793 / 180),
+//           child: const Icon(
+//             Icons.keyboard_double_arrow_up,
+//             color: Colors.grey,
+//           ),
+//         ),
+//       ));
+// }
 
 CircleMarker circleMarkerOverlays(
     {required LatLng position, required double radius, Color? color}) {

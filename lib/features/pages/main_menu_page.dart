@@ -12,6 +12,7 @@ import 'package:mvvm_playground/features/cubit/auth_cubit_data.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit_data.dart';
 import 'package:mvvm_playground/features/pages/data_panen.dart';
+import 'package:mvvm_playground/features/pages/example_maps_page.dart';
 import 'package:mvvm_playground/features/pages/flutter_maps_page.dart';
 import 'package:mvvm_playground/features/pages/login_page.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
@@ -290,6 +291,27 @@ class _MainMenuPageState extends State<MainMenuPage> {
                                     status: Status.Success);
                               },
                               title: 'Logout',
+                              backgroundColor: primaryColor,
+                              icon: Icons.timer_outlined,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        Visibility(
+                          visible: (buttontext != 'Loading..'),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: flatButton(
+                              context: context,
+                              onTap: () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => CompassScreen(),
+                                  ),
+                                );
+                              },
+                              title: 'Compas',
                               backgroundColor: primaryColor,
                               icon: Icons.timer_outlined,
                               color: Colors.white,

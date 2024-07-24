@@ -1,362 +1,72 @@
 import 'dart:async';
-import 'dart:math' as math;
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:latlong2/latlong.dart' as latLng;
-import 'package:mvvm_playground/const/enums.dart';
-import 'package:mvvm_playground/const/theme.dart';
-import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
-import 'package:mvvm_playground/features/cubit/maps_cubit_data.dart';
-import 'package:mvvm_playground/features/state/base_state.dart';
-import 'package:mvvm_playground/functions/geolocation.dart';
-import 'package:mvvm_playground/widgets/bottom_bar.dart';
-import 'package:mvvm_playground/widgets/buttons.dart';
-import 'package:mvvm_playground/widgets/map_components.dart';
-import 'package:mvvm_playground/widgets/modal_sheets.dart';
-import 'package:mvvm_playground/widgets/navigation_bar.dart';
-import 'package:mvvm_playground/widgets/states.dart';
-import 'package:mvvm_playground/widgets/typography.dart';
-import 'package:provider/provider.dart';
-import '../models/tree_model.dart';
+import 'package:sensors_plus/sensors_plus.dart';
+import 'package:rxdart/rxdart.dart';
+import 'dart:math';
 
-class ExamplePage extends StatefulWidget {
-  final bool isHistory;
-  final String title;
-  const ExamplePage({super.key, required this.isHistory, required this.title});
-
+class CompassScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() {
-    return _HomeViewPageState();
-  }
+  _CompassScreenState createState() => _CompassScreenState();
 }
 
-class _HomeViewPageState extends State<ExamplePage> {
-  bool showhistory = false;
-  late MapController mapController = MapController();
-  late Stream<latLng.LatLng> locationStream;
-  bool isDebug = false;
+class _CompassScreenState extends State<CompassScreen> {
+  final _magnetometerStream = Sensors().magnetometerEventStream();
+  final _accelerometerStream = Sensors().accelerometerEventStream();
+  final _combinedStream = Rx.combineLatest2(
+    Sensors().magnetometerEventStream(),
+    Sensors().accelerometerEventStream(),
+    (MagnetometerEvent mag, AccelerometerEvent acc) {
+      return _calculateHeading(mag, acc);
+    },
+  );
+  double _heading = 0.0;
 
   @override
   void initState() {
     super.initState();
-    locationStream = getLocationStream();
-    context.read<MapsCubit>().initMarker();
+
+    _combinedStream.listen((heading) {
+      setState(() {
+        _heading = heading;
+      });
+    });
   }
 
-  Stream<latLng.LatLng> getLocationStream() async* {
-    Future.delayed(const Duration(seconds: 5));
-    while (true) {
-      Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.bestForNavigation);
-      yield latLng.LatLng(position.latitude, position.longitude);
-    }
-  }
+  static double _calculateHeading(
+      MagnetometerEvent magnetometer, AccelerometerEvent accelerometer) {
+    final ax = accelerometer.x;
+    final ay = accelerometer.y;
+    final az = accelerometer.z;
 
-  double metersToPixels(double meters, double latitude, double zoom) {
-    final metersPerPixel =
-        (156543.03392 * math.cos(latitude * math.pi / 180) / math.pow(2, zoom));
-    return meters / metersPerPixel;
-  }
+    final mx = magnetometer.x;
+    final my = magnetometer.y;
+    final mz = magnetometer.z;
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+    final pitch = atan2(-ax, sqrt(ay * ay + az * az));
+    final roll = atan2(ay, az);
+
+    final mx1 = mx * cos(pitch) + mz * sin(pitch);
+    final my1 = mx * sin(roll) * sin(pitch) +
+        my * cos(roll) -
+        mz * sin(roll) * cos(pitch);
+    final mz1 = mx * cos(roll) * sin(pitch) -
+        my * sin(roll) -
+        mz * cos(pitch) * cos(roll);
+
+    final heading = atan2(-my1, mx1) * (180 / pi);
+    return (heading + 360) % 360; // Normalize to 0-360 degrees
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
-      appBar: appBar(title: widget.title, context: context),
-      body: _buildInputDataBody(context),
-    );
-  }
-
-  Widget _buildInputDataBody(BuildContext context) {
-    return Container(
-      color: secondaryColor,
-      child: BlocBuilder<MapsCubit, MapsData>(
-        builder: (context, state) {
-          if (state.listTree is SuccessState<List<Tree>> &&
-              state.listRoute is SuccessState<List<Tree>> &&
-              state.listHistory is SuccessState<List<Tree>>) {
-            final trees = (state.listTree as SuccessState<List<Tree>>).data;
-            final routes = (state.listRoute as SuccessState<List<Tree>>).data;
-            final histories =
-                (state.listHistory as SuccessState<List<Tree>>).data;
-
-            return StreamBuilder<latLng.LatLng>(
-              stream: locationStream,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  var userLocation = Provider.of<GeoLocation>(context);
-                  userLocation.radiuscentermeters = 4;
-                  for (var i = 0; i < trees.length; i++) {
-                    userLocation.setPointCenter(trees[i]);
-                  }
-                  var userLocationCurrent = snapshot.data!;
-
-                  return SafeArea(
-                    child: Column(
-                      children: [
-                        Expanded(
-                          flex: 5,
-                          child: FlutterMap(
-                            mapController: mapController,
-                            options: MapOptions(
-                                onTap: (p, l) {
-                                  print('${l.latitude}, ${l.longitude}');
-                                },
-                                initialZoom: 20,
-                                initialCenter: latLng.LatLng(
-                                    userLocationCurrent.latitude,
-                                    userLocationCurrent.longitude)),
-                            children: [
-                              mapTiles(context),
-                              Visibility(
-                                // visible: (widget.isHistory == false),
-                                visible: false,
-                                child: PolylineLayer(
-                                  polylines: routes.isEmpty
-                                      ? []
-                                      : mapPolyline(routes: routes),
-                                  polylineCulling: true,
-                                ),
-                              ),
-                              Visibility(
-                                visible: (widget.isHistory),
-                                // visible: false,
-                                child: PolylineLayer(
-                                  polylines: histories.isEmpty
-                                      ? []
-                                      : mapPolylineHistories(routes: histories),
-                                  polylineCulling: true,
-                                ),
-                              ),
-                              MarkerClusterLayerWidget(
-                                options: MarkerClusterLayerOptions(
-                                  maxClusterRadius: 100,
-                                  size: const Size(40, 40),
-                                  markers: [
-                                    for (var i = 0; i < trees.length; i++)
-                                      treeMarker(context, tree: trees[i])
-                                  ],
-                                  builder: (context, markers) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        color: primaryColor,
-                                      ),
-                                      child: Center(
-                                        child: displayText(
-                                            markers.length.toString(),
-                                            style: Styles.BodyAlt),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                              MarkerLayer(
-                                markers: [
-                                  userMarker(
-                                      position: latLng.LatLng(
-                                          userLocationCurrent.latitude,
-                                          userLocationCurrent.longitude)),
-                                ],
-                              ),
-                              Visibility(
-                                visible: widget.isHistory,
-                                child: MarkerLayer(markers: [
-                                  for (var i = 0; i < histories.length; i++)
-                                    InputMarkers(context,
-                                        tree: histories[i],
-                                        no: (i + 1).toString()),
-                                ]),
-                              )
-                            ],
-                          ),
-                        ),
-                        Column(
-                          children: [
-                            debugBar(
-                                geolocation: userLocation,
-                                pos: userLocationCurrent,
-                                visible: isDebug),
-                            Container(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Visibility(
-                                    visible: !widget.isHistory,
-                                    child: Flexible(
-                                      flex: 4,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Flexible(
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    displayText('Palm near',
-                                                        style: Styles.Captions),
-                                                    displayText(
-                                                        userLocation.currentTree
-                                                                .isEmpty
-                                                            ? '-'
-                                                            : '${userLocation.currentTree}',
-                                                        style: Styles.Body),
-                                                  ],
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                width: 24,
-                                              ),
-                                              Flexible(
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    displayText('No. reg',
-                                                        style: Styles.Captions),
-                                                    displayText(
-                                                      userLocation.currentTree
-                                                              .isEmpty
-                                                          ? '-'
-                                                          : '${userLocation.currentidTree}',
-                                                      style: Styles.Body,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  const Expanded(
-                                    flex: 1,
-                                    child: Center(),
-                                  ),
-                                  Flexible(
-                                    flex: 3,
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Visibility(
-                                          visible: !widget.isHistory,
-                                          child: boxButton(
-                                              context: context,
-                                              onTap: () {
-                                                showModalInputQty(context,
-                                                    isNear: userLocation.status
-                                                        .contains(true),
-                                                    current: latLng.LatLng(
-                                                        userLocationCurrent
-                                                            .latitude,
-                                                        userLocationCurrent
-                                                            .longitude),
-                                                    data: Tree(
-                                                        idTree: userLocation
-                                                                .currentidTree
-                                                                .isEmpty
-                                                            ? ''
-                                                            : userLocation
-                                                                .currentidTree,
-                                                        name: userLocation.currentTree.isEmpty
-                                                            ? 'No Tree found'
-                                                            : userLocation
-                                                                .currentTree,
-                                                        position: latLng.LatLng(
-                                                            userLocation
-                                                                    .centerlocation
-                                                                    .latitude ??
-                                                                0,
-                                                            userLocation
-                                                                    .centerlocation
-                                                                    .longitude ??
-                                                                0)));
-                                              },
-                                              title: 'Collect',
-                                              icon: Icons.add_circle_outline),
-                                        ),
-                                        Visibility(
-                                          visible: widget.isHistory,
-                                          child: boxButton(
-                                              context: context,
-                                              onTap: () {
-                                                showModalHistory(context,
-                                                    history: histories.isEmpty
-                                                        ? []
-                                                        : histories.reversed
-                                                            .toList());
-                                              },
-                                              title: 'History',
-                                              icon: Icons.history),
-                                        ),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        boxButton(
-                                            context: context,
-                                            onTap: () {
-                                              showModalSchedule(context,
-                                                  tree: trees.isEmpty
-                                                      ? []
-                                                      : trees.reversed
-                                                          .toList());
-                                            },
-                                            title: 'RKH',
-                                            icon: Icons.calendar_month),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  return errorAlert(text: snapshot.error.toString());
-                } else {
-                  if (!widget.isHistory) {
-                    Future.delayed(Duration(seconds: 1), () {
-                      showModalSchedule(context,
-                          tree: trees.isEmpty ? [] : trees.reversed.toList());
-                    });
-                  }
-                  return circularLoading(text: 'Loading Stream...');
-                }
-              },
-            );
-          }
-
-          return circularLoading(text: 'Loading States...');
-        },
+      appBar: AppBar(title: Text('Compass Example')),
+      body: Center(
+        child: Text(
+          'Heading: ${_heading.toStringAsFixed(2)}°',
+          style: TextStyle(fontSize: 24, color: Colors.black),
+        ),
       ),
     );
   }
