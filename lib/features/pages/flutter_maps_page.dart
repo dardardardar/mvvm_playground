@@ -93,7 +93,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
       });
     });
 
-    _startTimer();
+    // _startTimer();
   }
 
   @override
@@ -566,12 +566,12 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                 } else if (snapshot.hasError) {
                   return errorAlert(text: snapshot.error.toString());
                 } else {
-                  if (!widget.isHistory) {
-                    Future.delayed(Duration(seconds: 1), () {
-                      showModalSchedule(context,
-                          tree: trees.isEmpty ? [] : trees.reversed.toList());
-                    });
-                  }
+                  // if (!widget.isHistory) {
+                  //   Future.delayed(Duration(seconds: 2), () {
+                  //     showModalSchedule(context,
+                  //         tree: trees.isEmpty ? [] : trees.reversed.toList());
+                  //   });
+                  // }
                   return circularLoading(text: 'Loading Stream...');
                 }
               },

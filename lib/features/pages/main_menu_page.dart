@@ -263,7 +263,7 @@ class _MainMenuPageState extends State<MainMenuPage> {
                               onTap: () {
                                 context
                                     .read<MapsCubit>()
-                                    .installation('online');
+                                    .installation('offline');
                               },
                               title: buttontext,
                               backgroundColor: primaryColor,

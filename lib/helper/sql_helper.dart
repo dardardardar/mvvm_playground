@@ -117,6 +117,11 @@ class DatabaseService {
     return await db.query(table, where: "$filter = ?", whereArgs: [id]);
   }
 
+  Future<List<Map<String, dynamic>>> getTreesAll(String table) async {
+    Database db = await database;
+    return await db.query(table);
+  }
+
   Future<List<Map<String, dynamic>>> getHarvestResult(id_user) async {
     Database db = await database;
     return await db.rawQuery('''

@@ -290,8 +290,10 @@ class CRUDRepository {
     final prefs = await SharedPreferences.getInstance();
     final id_user = prefs.getString("id_user").toString();
     try {
-      final response = await DatabaseService.instance
-          .queryAllRows('schedules', 'id_user', id_user);
+      // final response = await DatabaseService.instance
+      //     .queryAllRows('schedules', 'id_user', id_user);
+
+      final response = await DatabaseService.instance.getTreesAll('trees');
 
       if (response.isNotEmpty) {
         final treeData = response.map((e) => Tree.fromJson(e));
