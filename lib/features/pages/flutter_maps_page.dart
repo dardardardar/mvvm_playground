@@ -315,7 +315,8 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                               mapController: mapController,
                               options: MapOptions(
                                 initialCenter: latLng.LatLng(
-                                    -1.48429254132818, 112.764188841751),
+                                    userLocationCurrent.latitude,
+                                    userLocationCurrent.longitude),
                                 initialZoom: 20,
                                 onMapReady: () {
                                   setState(() {
