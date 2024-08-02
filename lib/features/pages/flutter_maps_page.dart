@@ -160,7 +160,6 @@ class _HomeViewPageState extends State<FlutterMapPage> {
     }
   }
 
-  //https://chatgpt.com/c/7e11a25f-4c99-44a4-9215-12bed4efccd7
   List<Marker> getVisibleMarkers(List<Marker> allMarkers) {
     if (!isMapReady) {
       return [];
@@ -294,27 +293,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
 
             // Convert trees to markers
             List<Marker> allMarkers = trees.map((tree) {
-              return Marker(
-                width: 100,
-                height: 100,
-                point: tree.position,
-                child: Stack(
-                  alignment: Alignment.center,
-                  fit: StackFit.loose,
-                  children: [
-                    Positioned(
-                      top: 16,
-                      child: Container(
-                        alignment: Alignment.center,
-                        padding: EdgeInsets.all(6),
-                        decoration: ShapeDecoration(
-                            shape: CircleBorder(), color: dangerColor),
-                        child: displayText(tree.name, style: Styles.BodyAlt),
-                      ),
-                    ),
-                  ],
-                ),
-              );
+              return treeMarker(context, tree: tree);
             }).toList();
 
             // Get only visible markers based on current map bounds
@@ -393,7 +372,174 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                             ),
                           ),
                         ),
-                        // The rest of your widget tree remains unchanged
+                        Column(
+                          children: [
+                            debugBar(
+                                geolocation: userLocation,
+                                pos: userLocationCurrent,
+                                visible: isDebug),
+                            Container(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Visibility(
+                                    visible: !widget.isHistory,
+                                    child: Flexible(
+                                      flex: 4,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Flexible(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    displayText('Palm near',
+                                                        style: Styles.Captions),
+                                                    displayText(
+                                                        userLocation.currentTree
+                                                                .isEmpty
+                                                            ? '-'
+                                                            : '${userLocation.currentTree}',
+                                                        style: Styles.Body),
+                                                  ],
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: 24,
+                                              ),
+                                              Flexible(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    displayText('No. reg',
+                                                        style: Styles.Captions),
+                                                    displayText(
+                                                      userLocation.currentTree
+                                                              .isEmpty
+                                                          ? '-'
+                                                          : '${userLocation.currentidTree}',
+                                                      style: Styles.Body,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const Expanded(
+                                    flex: 1,
+                                    child: Center(),
+                                  ),
+                                  Flexible(
+                                    flex: 4,
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Visibility(
+                                          visible: !widget.isHistory,
+                                          child: boxButton(
+                                              context: context,
+                                              onTap: () {
+                                                showModalInputQty(context,
+                                                    isNear: userLocation.status
+                                                        .contains(true),
+                                                    current: latLng.LatLng(
+                                                        userLocationCurrent
+                                                            .latitude,
+                                                        userLocationCurrent
+                                                            .longitude),
+                                                    data: Tree(
+                                                        idTree: userLocation
+                                                                .currentidTree
+                                                                .isEmpty
+                                                            ? ''
+                                                            : userLocation
+                                                                .currentidTree,
+                                                        name: userLocation.currentTree.isEmpty
+                                                            ? 'No Tree found'
+                                                            : userLocation
+                                                                .currentTree,
+                                                        position: latLng.LatLng(
+                                                            userLocation
+                                                                    .centerlocation
+                                                                    .latitude ??
+                                                                0,
+                                                            userLocation
+                                                                    .centerlocation
+                                                                    .longitude ??
+                                                                0)));
+                                              },
+                                              title: 'Collect',
+                                              icon: Icons.add_circle_outline),
+                                        ),
+                                        Visibility(
+                                          visible: widget.isHistory,
+                                          child: boxButton(
+                                              context: context,
+                                              onTap: () {
+                                                showModalHistory(context,
+                                                    history: histories.isEmpty
+                                                        ? []
+                                                        : histories.reversed
+                                                            .toList());
+                                              },
+                                              title: 'History',
+                                              icon: Icons.history),
+                                        ),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        boxButton(
+                                            context: context,
+                                            onTap: () {
+                                              showModalSchedule(context,
+                                                  tree: trees.isEmpty
+                                                      ? []
+                                                      : trees.reversed
+                                                          .toList());
+                                            },
+                                            title: 'RKH',
+                                            icon: Icons.calendar_month),
+                                        // SizedBox(
+                                        //   width: 5,
+                                        // ),
+                                        // boxButton(
+                                        //     context: context,
+                                        //     onTap: () {
+                                        //       processPathData();
+                                        //     },
+                                        //     title: 'Djikstra',
+                                        //     icon: Icons.route),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
                       ],
                     ),
                   );

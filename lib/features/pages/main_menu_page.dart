@@ -12,7 +12,6 @@ import 'package:mvvm_playground/features/cubit/auth_cubit_data.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit.dart';
 import 'package:mvvm_playground/features/cubit/maps_cubit_data.dart';
 import 'package:mvvm_playground/features/pages/data_panen.dart';
-import 'package:mvvm_playground/features/pages/example_maps_page.dart';
 import 'package:mvvm_playground/features/pages/flutter_maps_page.dart';
 import 'package:mvvm_playground/features/pages/login_page.dart';
 import 'package:mvvm_playground/features/state/base_state.dart';
@@ -32,7 +31,6 @@ class MainMenuPage extends StatefulWidget {
 }
 
 class _MainMenuPageState extends State<MainMenuPage> {
-  bool _isLoading = false;
   String _progress = 'Download Maps';
   List<int> bytes = [];
   int downloaded = 0;
@@ -47,7 +45,6 @@ class _MainMenuPageState extends State<MainMenuPage> {
   // download maps
   Future<void> downloadFile() async {
     setState(() {
-      _isLoading = true;
       _progress = '0.0';
     });
 
@@ -75,10 +72,12 @@ class _MainMenuPageState extends State<MainMenuPage> {
       if (total != -1) {
         setState(() {
           _progress = (received / total * 100).toInt().toString();
+          if (_progress == '100') {
+            _progress = 'done';
+          }
         });
       } else {
         setState(() {
-          _isLoading = false;
           _progress = 'Download Maps';
         });
         ScaffoldMessenger.of(context).showSnackBar(
@@ -239,7 +238,7 @@ class _MainMenuPageState extends State<MainMenuPage> {
                           ),
                         ),
                         Visibility(
-                          visible: true,
+                          visible: (buttontext != 'Loading..'),
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: flatButton(
@@ -263,7 +262,7 @@ class _MainMenuPageState extends State<MainMenuPage> {
                               onTap: () {
                                 context
                                     .read<MapsCubit>()
-                                    .installation('offline');
+                                    .installation('online');
                               },
                               title: buttontext,
                               backgroundColor: primaryColor,
@@ -291,27 +290,6 @@ class _MainMenuPageState extends State<MainMenuPage> {
                                     status: Status.Success);
                               },
                               title: 'Logout',
-                              backgroundColor: primaryColor,
-                              icon: Icons.timer_outlined,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        Visibility(
-                          visible: (buttontext != 'Loading..'),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: flatButton(
-                              context: context,
-                              onTap: () {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => CompassScreen(),
-                                  ),
-                                );
-                              },
-                              title: 'Compas',
                               backgroundColor: primaryColor,
                               icon: Icons.timer_outlined,
                               color: Colors.white,
