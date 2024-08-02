@@ -93,13 +93,11 @@ class _HomeViewPageState extends State<FlutterMapPage> {
         _heading = heading;
       });
     });
-
-    // _startTimer();
   }
 
   @override
   void dispose() {
-    _timer?.cancel(); // Cancel the timer when the widget is disposed
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -347,6 +345,17 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                 PolylineLayer(polylines: generatedPolylines),
                                 PolylineLayer(
                                     polylines: generatedPolylinesRoute),
+                                MarkerLayer(
+                                  markers: [
+                                    Marker(
+                                        point: latLng.LatLng(
+                                          userLocationCurrent.latitude,
+                                          userLocationCurrent.longitude,
+                                        ),
+                                        child:
+                                            _buildCompass(_heading.toDouble())),
+                                  ],
+                                ),
                                 MarkerClusterLayerWidget(
                                   options: MarkerClusterLayerOptions(
                                     maxClusterRadius: 100,
