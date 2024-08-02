@@ -93,6 +93,9 @@ class _HomeViewPageState extends State<FlutterMapPage> {
         _heading = heading;
       });
     });
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      getSpeed();
+    });
   }
 
   @override
@@ -124,12 +127,9 @@ class _HomeViewPageState extends State<FlutterMapPage> {
     final my1 = mx * sin(roll) * sin(pitch) +
         my * cos(roll) -
         mz * sin(roll) * cos(pitch);
-    final mz1 = mx * cos(roll) * sin(pitch) -
-        my * sin(roll) -
-        mz * cos(pitch) * cos(roll);
 
     final heading = atan2(-my1, mx1) * (180 / pi);
-    return (heading + 360) % 360; // Normalize to 0-360 degrees
+    return (heading + 360) % 360;
   }
 
   Future<void> getGeoJson() async {
@@ -285,16 +285,13 @@ class _HomeViewPageState extends State<FlutterMapPage> {
               state.listRoute is SuccessState<List<Tree>> &&
               state.listHistory is SuccessState<List<Tree>>) {
             final trees = (state.listTree as SuccessState<List<Tree>>).data;
-            final routes = (state.listRoute as SuccessState<List<Tree>>).data;
             final histories =
                 (state.listHistory as SuccessState<List<Tree>>).data;
 
-            // Convert trees to markers
             List<Marker> allMarkers = trees.map((tree) {
               return treeMarker(context, tree: tree);
             }).toList();
 
-            // Get only visible markers based on current map bounds
             List<Marker> visibleMarkers = getVisibleMarkers(allMarkers);
 
             return StreamBuilder<latLng.LatLng>(
@@ -397,7 +394,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                   Visibility(
                                     visible: !widget.isHistory,
                                     child: Flexible(
-                                      flex: 4,
+                                      flex: 5,
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         mainAxisAlignment:
@@ -429,7 +426,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                 ),
                                               ),
                                               const SizedBox(
-                                                width: 24,
+                                                width: 8,
                                               ),
                                               Flexible(
                                                 child: Column(
@@ -452,18 +449,38 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                                   ],
                                                 ),
                                               ),
+                                              const SizedBox(
+                                                width: 8,
+                                              ),
+                                              Flexible(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    displayText('Speed',
+                                                        style: Styles.Captions),
+                                                    displayText(
+                                                      (speedMaps * 3.6)
+                                                              .toStringAsFixed(
+                                                                  2) +
+                                                          ' km/Jam',
+                                                      style: Styles.Body,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
                                             ],
                                           ),
                                         ],
                                       ),
                                     ),
                                   ),
-                                  const Expanded(
-                                    flex: 1,
-                                    child: Center(),
-                                  ),
                                   Flexible(
-                                    flex: 4,
+                                    flex: 2,
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
@@ -532,16 +549,6 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                             },
                                             title: 'RKH',
                                             icon: Icons.calendar_month),
-                                        // SizedBox(
-                                        //   width: 5,
-                                        // ),
-                                        // boxButton(
-                                        //     context: context,
-                                        //     onTap: () {
-                                        //       processPathData();
-                                        //     },
-                                        //     title: 'Djikstra',
-                                        //     icon: Icons.route),
                                       ],
                                     ),
                                   ),
