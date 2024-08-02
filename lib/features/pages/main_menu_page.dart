@@ -20,6 +20,7 @@ import 'package:mvvm_playground/widgets/snackbar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart' as path;
 
 bool checkNav = true;
 
@@ -34,12 +35,29 @@ class _MainMenuPageState extends State<MainMenuPage> {
   String _progress = 'Download Maps';
   List<int> bytes = [];
   int downloaded = 0;
+  bool filesMaps = false;
 
   @override
   void initState() {
     super.initState();
     context.read<MapsCubit>().installation('online');
     checkNav = true;
+    checkMbtilesFile();
+  }
+
+  void checkMbtilesFile() async {
+    final documentsDir = await getApplicationDocumentsDirectory();
+    final mbtilesFile = File(path.join(documentsDir.path, 'map.mbtiles'));
+
+    if (await mbtilesFile.exists()) {
+      setState(() {
+        filesMaps = true;
+      });
+    } else {
+      setState(() {
+        filesMaps = false;
+      });
+    }
   }
 
   // download maps
@@ -74,6 +92,7 @@ class _MainMenuPageState extends State<MainMenuPage> {
           _progress = (received / total * 100).toInt().toString();
           if (_progress == '100') {
             _progress = 'done';
+            checkMbtilesFile();
           }
         });
       } else {
@@ -167,7 +186,8 @@ class _MainMenuPageState extends State<MainMenuPage> {
                         ),
                         const SizedBox(height: 100),
                         Visibility(
-                          visible: (buttontext != 'Loading..'),
+                          visible:
+                              (buttontext != 'Loading..' && filesMaps == true),
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: flatButton(
@@ -191,7 +211,8 @@ class _MainMenuPageState extends State<MainMenuPage> {
                           ),
                         ),
                         Visibility(
-                          visible: (buttontext != 'Loading..'),
+                          visible:
+                              (buttontext != 'Loading..' && filesMaps == true),
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: flatButton(
