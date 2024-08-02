@@ -25,6 +25,9 @@ class MapsCubit extends Cubit<MapsData> {
 
   Future<void> installation(status) async {
     try {
+      emit(state.copyWith(
+        sendSync: LoadingState(),
+      ));
       if (state.sendSync is InitialState) {
         emit(state.copyWith(
           sendSync: LoadingState(),
