@@ -86,7 +86,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
 
   assets:
-    - assets/jaksel.geojson
+    - assets/jalur.geojson
     - assets/icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see

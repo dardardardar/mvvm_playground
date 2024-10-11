@@ -88,13 +88,19 @@ class _HomeViewPageState extends State<FlutterMapPage> {
     _loadMbtilesFile();
     getGeoJson();
     context.read<MapsCubit>().initMarker();
+
     _combinedStream.listen((heading) {
-      setState(() {
-        _heading = heading;
-      });
+      if (mounted) {
+        setState(() {
+          _heading = heading;
+        });
+      }
     });
+
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      getSpeed();
+      if (mounted) {
+        getSpeed();
+      }
     });
   }
 
@@ -133,11 +139,35 @@ class _HomeViewPageState extends State<FlutterMapPage> {
   }
 
   Future<void> getGeoJson() async {
-    String geoJsonString = await rootBundle.loadString('assets/jaksel.geojson');
+    String geoJsonString = await rootBundle.loadString('assets/jalur.geojson');
     geoJsonParser.parseGeoJsonAsString(geoJsonString);
     setState(() {
       geoJson = json.decode(geoJsonString);
       graph = buildGraphFromGeoJson(geoJson);
+
+      generatedPolylines.clear();
+      for (var feature in geoJson['features']) {
+        if (feature['geometry']['type'] == 'LineString') {
+          List<latLng.LatLng> polylinePoints = [];
+          for (var coord in feature['geometry']['coordinates']) {
+            polylinePoints.add(latLng.LatLng(coord[1], coord[0]));
+          }
+          generatedPolylines.add(Polyline(
+              points: polylinePoints, color: Colors.blue, strokeWidth: 3.0));
+        } else if (feature['geometry']['type'] == 'MultiLineString') {
+          for (var line in feature['geometry']['coordinates']) {
+            List<latLng.LatLng> polylinePoints = [];
+            for (var coord in line) {
+              polylinePoints.add(latLng.LatLng(coord[1], coord[0]));
+            }
+            generatedPolylines.add(Polyline(
+              points: polylinePoints,
+              color: Colors.blue,
+              strokeWidth: 3.0,
+            ));
+          }
+        }
+      }
     });
   }
 
@@ -164,7 +194,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
     }
 
     LatLngBounds? bounds = mapController.camera.visibleBounds;
-    if (bounds == null) {
+    if (bounds == false) {
       return [];
     }
 
@@ -215,22 +245,24 @@ class _HomeViewPageState extends State<FlutterMapPage> {
   }
 
   Future<void> processPathData() async {
+    // Get the current position of the device
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.bestForNavigation);
 
     final startLatLng = latLng.LatLng(position.latitude, position.longitude);
     final endLatLng = latLng.LatLng(-6.23057988673238, 106.82135814751845);
+
     final path = await dijkstra(geoJson, graph, startLatLng, endLatLng);
 
-    double countDistance = 0;
     polylinePoints.clear();
     polylinePointsRoutes.clear();
-    polylinePointsRoutes
-        .add(latLng.LatLng(position.latitude, position.longitude));
+    polylinePointsRoutes.add(startLatLng);
+
+    double totalDistance = 0;
+
     for (var i = 1; i < path.length; i++) {
-      countDistance += kmDistance(
-          latLng.LatLng(path[i].latitude, path[i].longitude),
-          latLng.LatLng(path[i - 1].latitude, path[i - 1].longitude));
+      totalDistance += _calculateDistance(path[i], path[i - 1]);
+
       if (i == 1) {
         polylinePointsRoutes
             .add(latLng.LatLng(path[i].latitude, path[i].longitude));
@@ -239,10 +271,17 @@ class _HomeViewPageState extends State<FlutterMapPage> {
     }
 
     await getSpeed();
-    print('Jarak: $countDistance Meter');
-    print('$speedMaps m/s');
-    print('Waktu: ${countDistance / speedMaps} Detik');
+    _updatePolylines();
+  }
 
+  double _calculateDistance(latLng.LatLng point1, latLng.LatLng point2) {
+    return kmDistance(
+      latLng.LatLng(point1.latitude, point1.longitude),
+      latLng.LatLng(point2.latitude, point2.longitude),
+    );
+  }
+
+  void _updatePolylines() {
     setState(() {
       generatedPolylines.add(Polyline(
         points: polylinePoints,
@@ -321,9 +360,7 @@ class _HomeViewPageState extends State<FlutterMapPage> {
                                   });
                                 },
                                 onPositionChanged: (mapPosition, hasGesture) {
-                                  setState(() {
-                                    // Update the markers based on new map position
-                                  });
+                                  setState(() {});
                                 },
                               ),
                               children: [

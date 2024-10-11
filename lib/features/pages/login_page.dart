@@ -32,7 +32,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    getIt.get<MapsCubit>().syncLogin('offline');
   }
 
   final _formKey = GlobalKey<FormState>();

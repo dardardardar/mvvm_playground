@@ -63,7 +63,6 @@ class _MyAppState extends State<MyApp> {
     _trialTimer?.cancel();
     _trialTimer = Timer.periodic(Duration(seconds: 60), (timer) async {
       await _checkTrial();
-      getIt.get<MapsCubit>().sendSyncAll();
       await _startConnectivityCheck();
     });
   }

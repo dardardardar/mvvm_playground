@@ -6,8 +6,6 @@ import 'package:mvvm_playground/helper/logger.dart';
 import 'package:mvvm_playground/helper/sql_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models/tree_model.dart';
-
 @injectable
 class AuthRepository {
   Future<BaseState> Login(String username) async {

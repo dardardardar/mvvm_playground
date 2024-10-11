@@ -40,7 +40,6 @@ class _MainMenuPageState extends State<MainMenuPage> {
   @override
   void initState() {
     super.initState();
-    context.read<MapsCubit>().installation('online');
     checkNav = true;
     checkMbtilesFile();
   }
@@ -60,7 +59,6 @@ class _MainMenuPageState extends State<MainMenuPage> {
     }
   }
 
-  // download maps
   Future<void> downloadFile() async {
     setState(() {
       _progress = '0.0';
@@ -76,16 +74,15 @@ class _MainMenuPageState extends State<MainMenuPage> {
   }
 
   Future<File> _updateFile(String url, String fileName) async {
-    url = 'https://be-bum.tvindo.net/assets/tiles/map1.mbtiles';
+    url = 'https://cms-bum.tvindo.net/assets/tiles/map1.mbtiles';
     final request = http.Request('GET', Uri.parse(url));
-    final response = await request.send();
+    await request.send();
     final directory = await getApplicationDocumentsDirectory();
     final filePath = '${directory.path}/$fileName';
     final file = File(filePath);
 
     Dio dio = Dio();
 
-    // Download the file.
     await dio.download(url, filePath, onReceiveProgress: (received, total) {
       if (total != -1) {
         setState(() {
@@ -111,6 +108,7 @@ class _MainMenuPageState extends State<MainMenuPage> {
   String buttontext = 'Sync';
   @override
   Widget build(BuildContext context) {
+    bool hasSynced = false;
     return SafeArea(
       child: BlocListener<AuthCubit, authData>(
         listener: (context, state) {
@@ -152,12 +150,27 @@ class _MainMenuPageState extends State<MainMenuPage> {
                       });
                     } else if (state.sendSync is SuccessState<bool>) {
                       setState(() {
-                        buttontext = 'Berhasil..';
+                        buttontext = 'Sync';
                       });
+
+                      if (hasSynced == true) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Berhasil sync!',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            backgroundColor: Colors.green,
+                            duration: Duration(seconds: 3),
+                          ),
+                        );
+                        hasSynced = false;
+                      }
                     } else if (state.sendSync is InitialState) {
                       setState(() {
                         buttontext = 'Sync';
                       });
+                      hasSynced = false;
                     } else {
                       setState(() {
                         buttontext = 'Sync';
@@ -192,6 +205,7 @@ class _MainMenuPageState extends State<MainMenuPage> {
                             padding: const EdgeInsets.all(8.0),
                             child: flatButton(
                               onTap: () {
+                                hasSynced = false;
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -236,7 +250,7 @@ class _MainMenuPageState extends State<MainMenuPage> {
                           ),
                         ),
                         Visibility(
-                          visible: (buttontext != 'Loading..'),
+                          visible: state.sendSync is SuccessState<bool>,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: flatButton(
@@ -259,7 +273,7 @@ class _MainMenuPageState extends State<MainMenuPage> {
                           ),
                         ),
                         Visibility(
-                          visible: (buttontext != 'Loading..'),
+                          visible: state.sendSync is SuccessState<bool>,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: flatButton(
@@ -293,7 +307,7 @@ class _MainMenuPageState extends State<MainMenuPage> {
                           ),
                         ),
                         Visibility(
-                          visible: (buttontext != 'Loading..'),
+                          visible: state.sendSync is SuccessState<bool>,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: flatButton(

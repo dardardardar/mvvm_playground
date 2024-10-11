@@ -23,7 +23,7 @@ class MapsData {
         listHarvest = listHarvest ?? InitialState<Harvest>(),
         listHistory = listHistory ?? InitialState<Tree>(),
         listUsers = listUsers ?? InitialState<User>(),
-        sendSync = sendSync ?? InitialState<bool>(),
+        sendSync = sendSync ?? SuccessState<bool>(data: true),
         sendQty = sendQty ?? InitialState<bool>();
 
   MapsData copyWith({
