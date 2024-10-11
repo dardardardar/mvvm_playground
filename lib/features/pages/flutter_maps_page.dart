@@ -245,7 +245,6 @@ class _HomeViewPageState extends State<FlutterMapPage> {
   }
 
   Future<void> processPathData() async {
-    // Get the current position of the device
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.bestForNavigation);
 
@@ -338,6 +337,11 @@ class _HomeViewPageState extends State<FlutterMapPage> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   var userLocation = Provider.of<GeoLocation>(context);
+                  userLocation.radiuscentermeters = 4;
+                  for (var i = 0; i < trees.length; i++) {
+                    userLocation.setPointCenter(trees[i]);
+                  }
+
                   var userLocationCurrent = snapshot.data!;
 
                   return SafeArea(
